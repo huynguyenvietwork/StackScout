@@ -24,17 +24,17 @@ catalog_version: 3
 
 industries:
   software-ai:
-    label: "Phần mềm & AI"
+    label: "Software & AI"
     sources:
       # ---------------------------------------------------------------- core: first-party AI labs
       # Where new models and AI coding tools are announced first.
-      - { id: anthropic-news, name: "Anthropic: tin tức & nghiên cứu", type: sitemap, url: "https://www.anthropic.com/sitemap.xml", paths: [/news/, /research/], tier: core, official: true }
-      - { id: claude-code-releases, name: Claude Code (bản phát hành), type: rss, url: "https://github.com/anthropics/claude-code/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: anthropic-news, name: "Anthropic: news & research", type: sitemap, url: "https://www.anthropic.com/sitemap.xml", paths: [/news/, /research/], tier: core, official: true }
+      - { id: claude-code-releases, name: Claude Code releases, type: rss, url: "https://github.com/anthropics/claude-code/releases.atom", tier: core, official: true, limit: 3 }
       - { id: openai-news, name: OpenAI News, type: rss, url: "https://openai.com/news/rss.xml", tier: core, official: true }
-      - { id: openai-codex-releases, name: OpenAI Codex (bản phát hành), type: rss, url: "https://github.com/openai/codex/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: openai-codex-releases, name: OpenAI Codex releases, type: rss, url: "https://github.com/openai/codex/releases.atom", tier: core, official: true, limit: 3 }
       - { id: gemini-blog, name: Google Gemini Blog, type: rss, url: "https://blog.google/products/gemini/rss/", tier: core, official: true }
       - { id: google-deepmind, name: Google DeepMind, type: rss, url: "https://deepmind.google/blog/rss.xml", tier: core, official: true }
-      - { id: gemini-cli-releases, name: Gemini CLI (bản phát hành), type: rss, url: "https://github.com/google-gemini/gemini-cli/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: gemini-cli-releases, name: Gemini CLI releases, type: rss, url: "https://github.com/google-gemini/gemini-cli/releases.atom", tier: core, official: true, limit: 3 }
       - { id: huggingface-blog, name: Hugging Face Blog, type: rss, url: "https://huggingface.co/blog/feed.xml", tier: core, official: true }
 
       # ---------------------------------------------------------------- core: well-known AI channels
@@ -47,7 +47,7 @@ industries:
       - { id: yt-ai-explained, name: AI Explained (YouTube), type: rss, url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw", tier: core, limit: 5 }
 
       # ---------------------------------------------------------------- stack: AI & dev tools
-      - { id: claude-agent-sdk-releases, name: Claude Agent SDK (bản phát hành), type: rss, url: "https://github.com/anthropics/claude-agent-sdk-python/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [claude agent sdk, anthropic sdk, claude api] } }
+      - { id: claude-agent-sdk-releases, name: Claude Agent SDK releases, type: rss, url: "https://github.com/anthropics/claude-agent-sdk-python/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [claude agent sdk, anthropic sdk, claude api] } }
       - { id: github-blog, name: GitHub Blog, type: rss, url: "https://github.blog/feed/", tier: stack, official: true, match: { categories: [ci-cd, ai-coding-tool], keywords: [github, github actions, github copilot] } }
       - { id: github-changelog, name: GitHub Changelog, type: rss, url: "https://github.blog/changelog/feed/", tier: stack, official: true, match: { categories: [ci-cd, ai-coding-tool], keywords: [github, github actions, github copilot] } }
       - { id: microsoft-foundry, name: Microsoft Foundry Blog, type: rss, url: "https://devblogs.microsoft.com/foundry/feed/", tier: stack, official: true, match: { keywords: [azure openai, semantic kernel, azure ai, microsoft foundry] } }
@@ -57,7 +57,7 @@ industries:
 
       # ---------------------------------------------------------------- stack: languages & runtimes
       - { id: dotnet-blog, name: .NET Blog, type: rss, url: "https://devblogs.microsoft.com/dotnet/feed/", tier: stack, official: true, match: { ecosystems: [dotnet] } }
-      - { id: abp-releases, name: ABP Framework (bản phát hành), type: rss, url: "https://github.com/abpframework/abp/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [abp, abp framework] } }
+      - { id: abp-releases, name: ABP Framework releases, type: rss, url: "https://github.com/abpframework/abp/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [abp, abp framework] } }
       - { id: abp-community, name: ABP Community, type: rss, url: "https://abp.io/community/rss", tier: stack, official: true, match: { keywords: [abp, abp framework] } }
       - { id: nodejs, name: Node.js Blog, type: rss, url: "https://nodejs.org/en/feed/blog.xml", tier: stack, official: true, match: { ecosystems: [node] } }
       - { id: typescript, name: TypeScript Blog, type: rss, url: "https://devblogs.microsoft.com/typescript/feed/", tier: stack, official: true, match: { keywords: [typescript] } }
@@ -76,10 +76,10 @@ industries:
       - { id: vercel, name: Vercel Blog, type: rss, url: "https://vercel.com/atom", tier: stack, official: true, match: { keywords: [vercel] } }
       - { id: vite, name: Vite Blog, type: rss, url: "https://vite.dev/blog.rss", tier: stack, official: true, match: { keywords: [vite, vitest] } }
       - { id: tailwind, name: Tailwind CSS Blog, type: rss, url: "https://tailwindcss.com/feeds/feed.xml", tier: stack, official: true, match: { keywords: [tailwind, tailwind css] } }
-      - { id: tanstack-query, name: TanStack Query (bản phát hành), type: rss, url: "https://github.com/TanStack/query/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [tanstack query, react query] } }
+      - { id: tanstack-query, name: TanStack Query releases, type: rss, url: "https://github.com/TanStack/query/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [tanstack query, react query] } }
       - { id: android, name: Android Developers Blog, type: rss, url: "https://developer.android.com/static/blog/atom.xml", tier: stack, official: true, match: { keywords: [android, jetpack compose] } }
       - { id: swift, name: Swift.org Blog, type: rss, url: "https://www.swift.org/atom.xml", tier: stack, official: true, match: { keywords: [swift, swiftui] } }
-      - { id: flutter-releases, name: Flutter (bản phát hành), type: rss, url: "https://github.com/flutter/flutter/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [flutter, dart] } }
+      - { id: flutter-releases, name: Flutter releases, type: rss, url: "https://github.com/flutter/flutter/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [flutter, dart] } }
       - { id: firebase, name: Firebase Blog, type: rss, url: "https://firebase.blog/rss.xml", tier: stack, official: true, match: { keywords: [firebase, firestore] } }
 
       # ---------------------------------------------------------------- stack: data & infrastructure
@@ -100,7 +100,7 @@ industries:
       # ---------------------------------------------------------------- extra (off by default)
       # Community signals and broad sources: useful, but not first-party.
       - { id: hackernews, name: Hacker News, type: hackernews, min_points: 150, tier: extra }
-      - { id: github-new-repos, name: "GitHub: repo mới nổi (cộng đồng)", type: github_new_repos, min_stars: 200, tier: extra }
+      - { id: github-new-repos, name: "GitHub: trending new repos (community)", type: github_new_repos, min_stars: 200, tier: extra }
       - { id: lobsters, name: Lobsters, type: rss, url: "https://lobste.rs/rss", tier: extra }
       - { id: infoq, name: InfoQ, type: rss, url: "https://feed.infoq.com/", tier: extra }
       - { id: pragmatic-engineer, name: The Pragmatic Engineer, type: rss, url: "https://newsletter.pragmaticengineer.com/feed", tier: extra }
