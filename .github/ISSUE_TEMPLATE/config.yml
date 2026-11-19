@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Question or idea
+    url: https://github.com/huynguyenvietwork/StackScout/discussions
+    about: Ask a question or talk an idea through in Discussions before opening an issue.
   - name: Security issue
-    url: https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability
+    url: https://github.com/huynguyenvietwork/StackScout/security/advisories/new
     about: Please report vulnerabilities privately (see SECURITY.md), not in a public issue.
