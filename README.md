@@ -22,7 +22,7 @@ Keeping up is a part-time job: new models every week, new libraries, release not
 
 <table>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 📡 Your week at a glance
 
@@ -36,10 +36,10 @@ One page with the week's headlines, grouped by what they mean for you.
 Click **Details** to read a group in full.
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/overview.png"><img src="docs/assets/overview.png" alt="Weekly overview: headlines grouped by type"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/overview.png"><img src="docs/assets/overview.png" alt="Weekly overview: headlines grouped by type"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 🤖 New AI models vs. their strongest rivals
 
@@ -52,10 +52,10 @@ Click a model to see its **3–5 strongest competitors**, already researched:
 - benchmark numbers and prices, a link behind every line
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/rivals.png"><img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/rivals.png"><img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 🧩 Compared with your stack, automatically
 
@@ -66,10 +66,10 @@ Right after the radar runs, every new technology of the same kind as one of your
 - **⋯** compares it with any other tool in your profile
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/vs-stack.png"><img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/vs-stack.png"><img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 🔗 Every claim has a source
 
@@ -82,10 +82,10 @@ Enforced in code, not left to the AI:
 - independent benchmarks preferred and labelled
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/claims.png"><img src="docs/assets/claims.png" alt="SQLite vs PostgreSQL: verdict, fit, pros, cons and numbered sources"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/claims.png"><img src="docs/assets/claims.png" alt="SQLite vs PostgreSQL: verdict, fit, pros, cons and numbered sources"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 📬 The digest, where you read
 
@@ -99,10 +99,10 @@ Every week, in your language, on any of:
 Under each item: the verdict against your tool, or the rivals of a new model.
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/digests.png"><img src="docs/assets/digests.png" alt="The weekly digest by email and on Telegram"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/digests.png"><img src="docs/assets/digests.png" alt="The weekly digest by email and on Telegram"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 👤 Your profile, in your own words
 
@@ -112,10 +112,10 @@ Type what you use, typos and all (*"c#, entity framwork, postgres, k8s"*), or ge
 - **private by design**: only technology names and levels are stored, nothing about your projects or employer
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/profile.png"><img src="docs/assets/profile.png" alt="Skill profile grouped by category, with levels"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/profile.png"><img src="docs/assets/profile.png" alt="Skill profile grouped by category, with levels"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 📰 Sources that matter, picked for your stack
 
@@ -127,10 +127,10 @@ About 60 curated, live feeds.
 - add any blog, RSS feed or GitHub repo
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/sources.png"><img src="docs/assets/sources.png" alt="Source list with first-party and official feeds"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/sources.png"><img src="docs/assets/sources.png" alt="Source list with first-party and official feeds"></a></td>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td width="29%" valign="top">
 
 ### 🌏 5 languages, light and dark, on your phone
 
@@ -139,7 +139,7 @@ English, Tiếng Việt, 中文, 日本語, 한국어 for the interface, the AI-
 Light and dark themes; comparisons open as a bottom sheet on phones.
 
 </td>
-<td width="50%" valign="top"><a href="docs/assets/looks.png"><img src="docs/assets/looks.png" alt="Dark theme in Japanese, light theme in Vietnamese, and a phone"></a></td>
+<td width="71%" valign="top"><a href="docs/assets/looks.png"><img src="docs/assets/looks.png" alt="Dark theme in Japanese, light theme in Vietnamese, and a phone"></a></td>
 </tr>
 </table>
 
