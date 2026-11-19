@@ -5,7 +5,7 @@ Thanks for helping! Issues, ideas and pull requests are all welcome.
 ## Run it locally
 
 ```bash
-git clone <your fork> && cd stackscout
+git clone <your fork> && cd StackScout
 uv sync                      # Python 3.11+, https://docs.astral.sh/uv/
 cp .env.example .env         # set ANTHROPIC_API_KEY, or log in to the `claude` CLI
 uv run main.py web           # http://127.0.0.1:8000

@@ -1,6 +1,6 @@
 # StackScout (Tiếng Việt)
 
-**Công nghệ mới, đối chiếu với stack của bạn.** · [English](README.md) · [Xem demo](https://OWNER.github.io/stackscout/)
+**Công nghệ mới, đối chiếu với stack của bạn.** · [English](README.md) · [Xem demo](https://huynguyenvietwork.github.io/StackScout/)
 
 StackScout là radar công nghệ hằng tuần: đọc các nguồn chính chủ và uy tín, chọn ra tin liên quan tới **đúng những công cụ bạn đang dùng**, rồi tự so sánh từng công nghệ mới với chúng, mọi nhận định đều có link nguồn.
 
@@ -13,7 +13,7 @@ StackScout là radar công nghệ hằng tuần: đọc các nguồn chính ch�
 ## Chạy thử
 
 ```bash
-git clone https://github.com/OWNER/stackscout && cd stackscout
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
 cp .env.example .env     # điền ANTHROPIC_API_KEY (hoặc để trống nếu đã đăng nhập Claude Code CLI)
 docker compose up -d     # mở http://127.0.0.1:8000
 ```

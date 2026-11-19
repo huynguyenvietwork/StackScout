@@ -46,7 +46,7 @@ def snapshot(user: str, repo: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--user", default="demo")
-    parser.add_argument("--repo", default="https://github.com/OWNER/stackscout")
+    parser.add_argument("--repo", default="https://github.com/huynguyenvietwork/StackScout")
     parser.add_argument("--out", default=str(ROOT / "docs" / "index.html"))
     args = parser.parse_args()
 

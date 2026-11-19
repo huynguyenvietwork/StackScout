@@ -6,7 +6,7 @@
 
 A weekly tech radar that reads the sources that matter, picks what is relevant to *the tools you actually use*, and compares each new thing with them, with a source link for every claim.
 
-[**Live demo**](https://OWNER.github.io/stackscout/) · [Quick start](#quick-start) · [Tiếng Việt](README.vi.md) · [**Want it hosted? Join the waitlist**](../../issues/new?template=hosted_waitlist.yml)
+[**Live demo**](https://huynguyenvietwork.github.io/StackScout/) · [Quick start](#quick-start) · [Tiếng Việt](README.vi.md) · [**Want it hosted? Join the waitlist**](../../issues/new?template=hosted_waitlist.yml)
 
 ![CI](../../actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
@@ -52,7 +52,7 @@ You need an AI backend: an **Anthropic API key**, or the [Claude Code](https://c
 ### Docker
 
 ```bash
-git clone https://github.com/OWNER/stackscout && cd stackscout
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
 cp .env.example .env          # set ANTHROPIC_API_KEY, and a notification channel if you want one
 docker compose up -d          # web UI on http://127.0.0.1:8000 + weekly digest (Monday 08:00)
 docker compose --profile bot up -d   # optional: the Telegram bot too
@@ -61,7 +61,7 @@ docker compose --profile bot up -d   # optional: the Telegram bot too
 ### uv
 
 ```bash
-git clone https://github.com/OWNER/stackscout && cd stackscout
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
 uv sync                       # Python 3.11+, https://docs.astral.sh/uv/
 cp .env.example .env          # ANTHROPIC_API_KEY, or leave it empty to use the `claude` CLI
 uv run main.py web            # http://127.0.0.1:8000
