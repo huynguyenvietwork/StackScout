@@ -111,6 +111,15 @@
   .mini { border: 1px solid var(--divider); border-radius: 12px; padding: 14px; }
   .mini p { margin: 6px 0 0; font-size: 14px; color: var(--body); }
   .chip.off { opacity: .5; }
+  .card.update { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 12px; background: var(--soft); border: 1px solid var(--border); flex-wrap: wrap; }
+  .seg button { font: inherit; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
+    border: 0; border-radius: 9px; background: none; color: var(--muted); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  @media (max-width: 640px) { .seg { width: 100%; flex-wrap: nowrap; } .seg button { flex: 1; justify-content: center; padding: 8px 6px; } }
+  .filebtn input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .filebtn:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
   .demobar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; justify-content: center; padding: 10px 16px;
     margin: -8px 0 12px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-strong); font-size: 14px; font-weight: 600; }
   .demobar a { color: var(--link); }
@@ -289,7 +298,8 @@ vi: {
   "mk.button": "So với đối thủ", "mk.ready": "So với {n} đối thủ: {names}", "mk.loading": "Đang tìm 3–5 đối thủ mạnh nhất và bài so sánh… (khoảng 1–2 phút)", "mk.queued": "Đang chờ so sánh với các đối thủ…", "mk.kicker": "So với đối thủ mạnh nhất", "mk.pros": "Hơn {rival}", "mk.cons": "Kém {rival}", "mk.pick": "Nên chọn:", "mk.none": "Chưa tìm được bài so sánh có nguồn. Theo dõi tiếp.", "mk.insufficient": "Chưa đủ dữ liệu (dưới 2 nguồn), theo dõi tiếp.", "mk.open": "Xem so sánh {name} với đối thủ",
   "prof.privacy": "Chỉ lưu tên công nghệ, công cụ, framework và mức độ. Không lưu tên dự án, repo hay dự án dùng để làm gì.",
   "notify.title": "Thông báo hằng tuần", "notify.hint": "Bản tin được gửi tự động mỗi tuần qua các kênh bên dưới, theo ngôn ngữ bạn chọn. Kênh được cấu hình trong file .env (xem README).", "notify.none": "Chưa cấu hình kênh nào. Thêm TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL hoặc STACKSCOUT_WEBHOOK_URL vào .env rồi khởi động lại.", "notify.test": "Gửi thử bản tin mới nhất", "notify.sending": "Đang gửi…", "notify.sent": "Đã gửi qua {list}", "notify.partial": "Có kênh gửi lỗi: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
-  "demo.banner": "Bản demo: dữ liệu mẫu của một lập trình viên giả định, chỉ xem.", "demo.install": "Cài StackScout →", "demo.waitlist": "Muốn bản online? Đăng ký chờ →", "demo.readonly": "Bản demo chỉ xem. Cài StackScout để chạy với stack của bạn."
+  "demo.banner": "Bản demo: dữ liệu mẫu của một lập trình viên giả định, chỉ xem.", "demo.install": "Cài StackScout →", "demo.waitlist": "Muốn bản online? Đăng ký chờ →", "demo.readonly": "Bản demo chỉ xem. Cài StackScout để chạy với stack của bạn.",
+  "upd.title": "Cập nhật hồ sơ", "upd.import": "Nhập từ code / CV"
 },
 en: {
   "app.tagline": "New tech, matched to your stack.",
@@ -373,7 +383,8 @@ en: {
   "mk.button": "Compare with rivals", "mk.ready": "Vs. {n} rivals: {names}", "mk.loading": "Finding the 3–5 strongest rivals and comparisons… (about 1–2 minutes)", "mk.queued": "Waiting to compare with rivals…", "mk.kicker": "Vs. the strongest rivals", "mk.pros": "Better than {rival}", "mk.cons": "Worse than {rival}", "mk.pick": "Which to pick:", "mk.none": "No sourced comparison found yet. Keep watching.", "mk.insufficient": "Not enough data (fewer than 2 sources), keep watching.", "mk.open": "Compare {name} with its rivals",
   "prof.privacy": "Only technology, tool and framework names and your level are stored. No project or repo names, nor what they are for.",
   "notify.title": "Weekly notifications", "notify.hint": "The digest goes out every week on the channels below, in your language. Channels are configured in the .env file (see the README).", "notify.none": "No channel configured yet. Add TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL or STACKSCOUT_WEBHOOK_URL to .env and restart.", "notify.test": "Send the latest digest now", "notify.sending": "Sending…", "notify.sent": "Sent on {list}", "notify.partial": "Some channels failed: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
-  "demo.banner": "Demo: sample data for a made-up developer, read-only.", "demo.install": "Install StackScout →", "demo.waitlist": "Want it hosted? Join the waitlist →", "demo.readonly": "This demo is read-only. Install StackScout to run it on your stack."
+  "demo.banner": "Demo: sample data for a made-up developer, read-only.", "demo.install": "Install StackScout →", "demo.waitlist": "Want it hosted? Join the waitlist →", "demo.readonly": "This demo is read-only. Install StackScout to run it on your stack.",
+  "upd.title": "Update your profile", "upd.import": "Import from code / CV"
 },
 zh: {
   "app.tagline": "新技术，对照你的技术栈。",
@@ -455,7 +466,8 @@ zh: {
   "mk.button": "与竞品对比", "mk.ready": "与 {n} 个竞品对比：{names}", "mk.loading": "正在查找 3–5 个最强竞品及对比文章…（约 1–2 分钟）", "mk.queued": "等待与竞品对比…", "mk.kicker": "与最强竞品对比", "mk.pros": "优于 {rival}", "mk.cons": "不如 {rival}", "mk.pick": "怎么选：", "mk.none": "暂未找到有来源的对比。继续关注。", "mk.insufficient": "数据不足（少于 2 个来源），继续关注。", "mk.open": "查看 {name} 与竞品的对比",
   "prof.privacy": "只保存技术、工具、框架名称和熟练程度。不保存项目名、仓库名，也不保存项目用途。",
   "notify.title": "每周通知", "notify.hint": "简报每周通过以下渠道自动发送，使用你选择的语言。渠道在 .env 文件中配置（见 README）。", "notify.none": "尚未配置任何渠道。请在 .env 中添加 TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL 或 STACKSCOUT_WEBHOOK_URL 后重启。", "notify.test": "立即发送最新简报", "notify.sending": "正在发送…", "notify.sent": "已通过 {list} 发送", "notify.partial": "部分渠道发送失败：{list}", "ch.telegram": "Telegram", "ch.email": "邮件", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
-  "demo.banner": "演示：虚构开发者的示例数据，只读。", "demo.install": "安装 StackScout →", "demo.waitlist": "想要在线版？加入等候名单 →", "demo.readonly": "演示为只读。安装 StackScout 以用于你的技术栈。"
+  "demo.banner": "演示：虚构开发者的示例数据，只读。", "demo.install": "安装 StackScout →", "demo.waitlist": "想要在线版？加入等候名单 →", "demo.readonly": "演示为只读。安装 StackScout 以用于你的技术栈。",
+  "upd.title": "更新档案", "upd.import": "从代码 / 简历导入"
 },
 ja: {
   "app.tagline": "新しい技術を、あなたのスタックと照らし合わせて。",
@@ -539,7 +551,8 @@ ja: {
   "mk.button": "競合と比較", "mk.ready": "競合 {n} 件と比較：{names}", "mk.loading": "最も強い競合 3〜5 件と比較記事を探しています…（約 1〜2 分）", "mk.queued": "競合との比較を待機中…", "mk.kicker": "最も強い競合との比較", "mk.pros": "{rival} より優れる点", "mk.cons": "{rival} より劣る点", "mk.pick": "選び方：", "mk.none": "出典のある比較がまだ見つかりません。引き続き注目。", "mk.insufficient": "データ不足（出典 2 件未満）。引き続き注目。", "mk.open": "{name} を競合と比較",
   "prof.privacy": "保存するのは技術・ツール・フレームワーク名と習熟度だけです。プロジェクト名やリポジトリ名、用途は保存しません。",
   "notify.title": "毎週の通知", "notify.hint": "ダイジェストは毎週、選んだ言語で下のチャネルに自動送信されます。チャネルは .env ファイルで設定します（README 参照）。", "notify.none": "チャネルが未設定です。.env に TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL、STACKSCOUT_WEBHOOK_URL のいずれかを追加して再起動してください。", "notify.test": "最新のダイジェストを今すぐ送信", "notify.sending": "送信中…", "notify.sent": "{list} に送信しました", "notify.partial": "一部のチャネルで失敗しました：{list}", "ch.telegram": "Telegram", "ch.email": "メール", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
-  "demo.banner": "デモ：架空の開発者のサンプルデータ（閲覧のみ）。", "demo.install": "StackScout をインストール →", "demo.waitlist": "ホスト版が欲しい？ウェイトリストへ →", "demo.readonly": "このデモは閲覧専用です。あなたのスタックで使うには StackScout をインストールしてください。"
+  "demo.banner": "デモ：架空の開発者のサンプルデータ（閲覧のみ）。", "demo.install": "StackScout をインストール →", "demo.waitlist": "ホスト版が欲しい？ウェイトリストへ →", "demo.readonly": "このデモは閲覧専用です。あなたのスタックで使うには StackScout をインストールしてください。",
+  "upd.title": "プロフィールを更新", "upd.import": "コード / 履歴書から取り込む"
 },
 ko: {
   "app.tagline": "새로운 기술, 당신의 스택과 비교해서.",
@@ -623,7 +636,8 @@ ko: {
   "mk.button": "경쟁 제품과 비교", "mk.ready": "경쟁 제품 {n}개와 비교: {names}", "mk.loading": "가장 강한 경쟁 제품 3~5개와 비교 자료를 찾는 중… (약 1~2분)", "mk.queued": "경쟁 제품과 비교 대기 중…", "mk.kicker": "가장 강한 경쟁 제품과 비교", "mk.pros": "{rival}보다 나은 점", "mk.cons": "{rival}보다 부족한 점", "mk.pick": "선택 기준:", "mk.none": "출처가 있는 비교를 아직 찾지 못했습니다. 계속 지켜보세요.", "mk.insufficient": "데이터 부족(출처 2개 미만), 계속 지켜보세요.", "mk.open": "{name}을(를) 경쟁 제품과 비교",
   "prof.privacy": "기술·도구·프레임워크 이름과 숙련도만 저장합니다. 프로젝트·저장소 이름이나 용도는 저장하지 않습니다.",
   "notify.title": "주간 알림", "notify.hint": "다이제스트는 매주 선택한 언어로 아래 채널에 자동 발송됩니다. 채널은 .env 파일에서 설정합니다(README 참고).", "notify.none": "설정된 채널이 없습니다. .env에 TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL 또는 STACKSCOUT_WEBHOOK_URL을 추가하고 다시 시작하세요.", "notify.test": "최신 다이제스트 지금 보내기", "notify.sending": "보내는 중…", "notify.sent": "{list}(으)로 보냈습니다", "notify.partial": "일부 채널 전송 실패: {list}", "ch.telegram": "Telegram", "ch.email": "이메일", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
-  "demo.banner": "데모: 가상의 개발자 샘플 데이터(읽기 전용).", "demo.install": "StackScout 설치 →", "demo.waitlist": "호스팅 버전이 필요하신가요? 대기자 등록 →", "demo.readonly": "이 데모는 읽기 전용입니다. 내 스택에서 쓰려면 StackScout를 설치하세요."
+  "demo.banner": "데모: 가상의 개발자 샘플 데이터(읽기 전용).", "demo.install": "StackScout 설치 →", "demo.waitlist": "호스팅 버전이 필요하신가요? 대기자 등록 →", "demo.readonly": "이 데모는 읽기 전용입니다. 내 스택에서 쓰려면 StackScout를 설치하세요.",
+  "upd.title": "프로필 업데이트", "upd.import": "코드 / 이력서에서 가져오기"
 }
 };
 
@@ -940,9 +954,9 @@ function personCard() {
     h("div", { class: "row" }, h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: save, disabled: state.busy === "person" }, t("common.save"))));
 }
 
-function addCard() {
-  if (state.busy === "add") return h("div", { class: "card" }, loading(t("add.normalizing")));
-  if (state.addPreview) return h("div", { class: "card" }, h("h2", {}, t("add.previewTitle")),
+function addBody() {
+  if (state.busy === "add") return loading(t("add.normalizing"));
+  if (state.addPreview) return h("div", {}, h("h3", { style: "margin:0" }, t("add.previewTitle")),
     h("p", { class: "hint", style: "margin-top:4px" }, t("add.previewHint")), skillGroups(state.addPreview, null),
     h("div", { class: "row" }, h("span", { class: "spacer" }),
       h("button", { class: "btn", onclick: () => { state.addPreview = null; render(); } }, t("common.cancel")),
@@ -960,16 +974,16 @@ function addCard() {
     });
   };
   onEnter(input, submit);
-  return h("div", { class: "card" }, h("h2", {}, t("add.title")), h("p", { class: "hint", style: "margin-top:4px" }, t("add.hint")),
+  return h("div", {}, h("p", { class: "hint" }, t("add.hint")),
     h("div", { class: "row", style: "margin-top:0" }, h("div", { style: "flex:1;min-width:200px" }, input),
       h("button", { class: "btn primary", onclick: submit }, t("common.add"))));
 }
 
-function importCard() {
-  if (state.busy === "imp") return h("div", { class: "card" }, loading(t("imp.reading")));
+function importBody() {
+  if (state.busy === "imp") return loading(t("imp.reading"));
   if (state.importPreview) {
     const { profile, added } = state.importPreview;
-    return h("div", { class: "card" }, h("h2", {}, t("imp.previewTitle")),
+    return h("div", {}, h("h3", { style: "margin:0" }, t("imp.previewTitle")),
       h("p", { class: "hint", style: "margin-top:4px" }, added.length ? t("imp.adds", { n: added.length }) : t("imp.noNew")),
       added.length > 0 && skillGroups(added, null),
       h("div", { class: "row" }, h("span", { class: "spacer" }),
@@ -980,8 +994,13 @@ function importCard() {
         }) }, t("imp.merge"))));
   }
   const box = h("textarea", { rows: 5, maxlength: 200000, "aria-label": "YAML", placeholder: t("imp.placeholder") });
-  const file = h("input", { type: "file", accept: ".yaml,.yml,.txt", "aria-label": t("imp.file") });
-  file.addEventListener("change", async () => { if (file.files[0]) box.value = await file.files[0].text(); });
+  // The native file input shows the browser's own words ("Choose File"): use a labelled button instead.
+  const file = h("input", { type: "file", accept: ".yaml,.yml,.txt" });
+  const fileName = h("span", { class: "muted", style: "font-size:13px" });
+  file.addEventListener("change", async () => {
+    if (file.files[0]) { box.value = await file.files[0].text(); fileName.textContent = file.files[0].name; }
+  });
+  const fileBtn = h("label", { class: "btn sm filebtn" }, file, svg('<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>', 15), t("imp.file"));
   const copyPrompt = () => run(null, async () => {
     const { prompt } = await api("GET", "/api/profile/import/prompt");
     try { await navigator.clipboard.writeText(prompt); toast(t("imp.copied")); }
@@ -991,13 +1010,27 @@ function importCard() {
     if (!box.value.trim()) { box.focus(); return; }
     run("imp", async () => { state.importPreview = await api("POST", "/api/profile/import/preview", { yaml: box.value }); });
   };
-  return h("div", { class: "card" }, h("h2", {}, t("imp.title")), h("p", { class: "hint", style: "margin-top:4px" }, t("imp.hint")),
+  return h("div", {}, h("p", { class: "hint" }, t("imp.hint")),
     h("div", { class: "row", style: "margin:0 0 12px" }, h("button", { class: "btn sm", onclick: copyPrompt }, t("imp.copy"))),
-    box, h("div", { class: "row" }, file, h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: preview }, t("imp.preview"))));
+    box, h("div", { class: "row" }, fileBtn, fileName, h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: preview }, t("imp.preview"))));
+}
+
+// First thing on the Profile tab: the two ways to update it, one click apart.
+function updateCard() {
+  const mode = state.updateMode || "add";
+  const seg = (id, icon, label) => h("button", { "aria-pressed": String(mode === id),
+    onclick: () => { state.updateMode = id; render(); } }, svg(icon, 16), label);
+  return h("div", { class: "card update" },
+    h("div", { class: "row", style: "margin:0 0 12px;align-items:center" }, h("h2", {}, t("upd.title")), h("span", { class: "spacer" }),
+      h("div", { class: "seg", role: "group", "aria-label": t("upd.title") },
+        seg("add", '<path d="M12 5v14M5 12h14"/>', t("add.title")),
+        seg("import", '<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>', t("upd.import")))),
+    mode === "import" ? importBody() : addBody());
 }
 
 function profileTab() {
   return [
+    updateCard(),
     h("div", { class: "card" },
       h("div", { class: "row", style: "margin:0 0 8px" },
         h("h2", {}, t("prof.title")), h("span", { class: "spacer" }),
@@ -1006,7 +1039,7 @@ function profileTab() {
              h("button", { class: "btn danger", onclick: () => { state.confirmReset = false; state.view = "wizard"; state.step = 0; render(); } }, t("prof.recreateConfirm"))]
           : h("button", { class: "btn link", onclick: () => { state.confirmReset = true; render(); } }, t("prof.recreate"))),
       h("p", { class: "hint" }, t("prof.hint")), profileBody(state.profile, removeSkill)),
-    personCard(), addCard(), importCard(),
+    personCard(),
   ];
 }
 
@@ -1049,6 +1082,11 @@ function sourcesTab() {
   };
   onEnter(input, add);
   return [
+    // Adding a source comes first: it is what people come to this tab for.
+    h("div", { class: "card update" }, h("h2", {}, t("src.addTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.addHint")),
+      state.busy === "src" ? loading(t("src.finding"))
+        : h("div", { class: "row", style: "margin-top:0" }, h("div", { style: "flex:1;min-width:200px" }, input),
+            h("button", { class: "btn primary", onclick: add }, t("common.add")))),
     h("div", { class: "card" },
       h("div", { class: "row", style: "margin:0 0 4px" }, h("h2", {}, t("src.title")), h("span", { class: "spacer" }),
         state.confirmSourceReset
@@ -1060,10 +1098,6 @@ function sourcesTab() {
       h("p", { class: "hint" }, `${t("src.onCount", { n: on.length })} ${t("src.onHint")}`),
       on.length ? on.map(row) : h("p", { class: "muted" }, t("src.none"))),
     off.length > 0 && h("div", { class: "card" }, h("h2", {}, t("src.offTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.offHint")), off.map(row)),
-    h("div", { class: "card" }, h("h2", {}, t("src.addTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.addHint")),
-      state.busy === "src" ? loading(t("src.finding"))
-        : h("div", { class: "row", style: "margin-top:0" }, h("div", { style: "flex:1;min-width:200px" }, input),
-            h("button", { class: "btn primary", onclick: add }, t("common.add")))),
     notifyCard(),
   ];
 }
