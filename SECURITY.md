@@ -9,8 +9,10 @@ repository. Do not open a public issue. You will get an answer within a week.
 
 - **Your profile** holds technology names and levels only; project names, employers and
   what you work on are dropped on save and on import (`profile.clean`).
-- **Secrets** (API keys, bot token, SMTP password, webhook URLs) live in `.env` only and are
-  never sent to the browser.
+- **Secrets** (API keys, bot token, SMTP password, webhook URLs) are sent only to your
+  self-hosted StackScout server, stored locally with owner-only permissions (`.env`, or
+  `data/users/<id>/notify.yaml` when entered in the Notifications tab), and never returned
+  to the browser after saving: the page only learns whether a secret is set.
 - **Custom sources**: links you add are fetched only if they resolve to public addresses,
   checked again on every request (`sources.check_public_host`), to prevent SSRF.
 - **AI steps** run without tools, except comparisons, which get web search and fetch only.

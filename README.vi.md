@@ -6,6 +6,18 @@ StackScout là radar công nghệ hằng tuần: đọc các nguồn chính ch�
 
 ![StackScout demo](docs/assets/demo.gif)
 
+## Chạy thử
+
+> **Phạm vi:** StackScout hiện được thiết kế để tự host cho cá nhân. Web UI phục vụ một hồ sơ local và không có đăng nhập (chỉ nghe trên 127.0.0.1, đừng mở ra mạng nếu không có lớp xác thực phía trước). Phiên bản hosted chính thức có thể được phát triển sau.
+
+```bash
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
+cp .env.example .env     # điền ANTHROPIC_API_KEY (hoặc để trống nếu đã đăng nhập Claude Code CLI)
+docker compose up -d     # mở http://127.0.0.1:8000
+```
+
+Không dùng Docker: `uv sync && uv run main.py web`. Hướng dẫn đầy đủ (kênh thông báo, bot Telegram, lịch gửi) ở [README.md](README.md).
+
 ## Tính năng chính
 
 <table>
@@ -145,15 +157,5 @@ Có giao diện sáng và tối; trên điện thoại, so sánh mở dạng khu
 <td width="71%" valign="top"><a href="docs/assets/looks.png"><img src="docs/assets/looks.png" alt="Giao diện tối tiếng Nhật, sáng tiếng Việt và trên điện thoại"></a></td>
 </tr>
 </table>
-
-## Chạy thử
-
-```bash
-git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
-cp .env.example .env     # điền ANTHROPIC_API_KEY (hoặc để trống nếu đã đăng nhập Claude Code CLI)
-docker compose up -d     # mở http://127.0.0.1:8000
-```
-
-Không dùng Docker: `uv sync && uv run main.py web`. Hướng dẫn đầy đủ (kênh thông báo, bot Telegram, lịch gửi) ở [README.md](README.md).
 
 Muốn dùng **bản online không cần cài đặt**? [Đăng ký ở đây](../../issues/new?template=hosted_waitlist.yml), số người đăng ký sẽ quyết định có làm hay không. Góp ý, thêm nguồn tin, thêm ngôn ngữ: xem [CONTRIBUTING.md](CONTRIBUTING.md).

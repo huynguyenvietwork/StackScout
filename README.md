@@ -6,13 +6,39 @@
 
 A weekly tech radar that reads the sources that matter, picks what is relevant to *the tools you actually use*, and compares each new thing with them, with a source link for every claim.
 
-[**Live demo**](https://huynguyenvietwork.github.io/StackScout/) · [Quick start](#quick-start) · [Tiếng Việt](README.vi.md) · [**Want it hosted? Join the waitlist**](../../issues/new?template=hosted_waitlist.yml)
+[**Live demo**](https://huynguyenvietwork.github.io/StackScout/) · [Quick start](#quick-start) · [Changelog](CHANGELOG.md) · [Tiếng Việt](README.vi.md) · [**Want it hosted? Join the waitlist**](../../issues/new?template=hosted_waitlist.yml)
 
 ![CI](../../actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
 ![StackScout demo](docs/assets/demo.gif)
 
 </div>
+
+## Quick start
+
+> **Scope:** StackScout is currently designed for personal self-hosting. The web UI serves one local profile and has no login: it listens on 127.0.0.1 only, so don't expose it to a network without authentication in front of it. A managed hosted version may come later.
+
+You need an AI backend: an **Anthropic API key**, or the [Claude Code](https://code.claude.com) CLI already logged in (any CLI that reads a prompt on stdin works through `STACKSCOUT_AI_CMD`).
+
+### Docker
+
+```bash
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
+cp .env.example .env          # set ANTHROPIC_API_KEY, and a notification channel if you want one
+docker compose up -d          # web UI on http://127.0.0.1:8000 + weekly digest (Monday 08:00)
+docker compose --profile bot up -d   # optional: the Telegram bot too
+```
+
+### uv
+
+```bash
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
+uv sync                       # Python 3.11+, https://docs.astral.sh/uv/
+cp .env.example .env          # ANTHROPIC_API_KEY, or leave it empty to use the `claude` CLI
+uv run main.py web            # http://127.0.0.1:8000
+```
+
+Create your profile in the browser (about 2 minutes), press **Run this week's radar** (2–3 minutes), and comparisons fill in on their own over the next minutes.
 
 ## Why
 
@@ -174,37 +200,11 @@ Light and dark themes; comparisons open as a bottom sheet on phones.
 
 4. **Compare** with web search, then enforce the source rules in code; **deliver** on your channels.
 
-## Quick start
-
-You need an AI backend: an **Anthropic API key**, or the [Claude Code](https://code.claude.com) CLI already logged in (any CLI that reads a prompt on stdin works through `STACKSCOUT_AI_CMD`).
-
-### Docker
-
-```bash
-git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
-cp .env.example .env          # set ANTHROPIC_API_KEY, and a notification channel if you want one
-docker compose up -d          # web UI on http://127.0.0.1:8000 + weekly digest (Monday 08:00)
-docker compose --profile bot up -d   # optional: the Telegram bot too
-```
-
-### uv
-
-```bash
-git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
-uv sync                       # Python 3.11+, https://docs.astral.sh/uv/
-cp .env.example .env          # ANTHROPIC_API_KEY, or leave it empty to use the `claude` CLI
-uv run main.py web            # http://127.0.0.1:8000
-```
-
-Create your profile in the browser (about 2 minutes), press **Run this week's radar** (2–3 minutes), and comparisons fill in on their own over the next minutes.
-
-> The web UI has **no login** and listens on 127.0.0.1 only. Don't expose it to a network without authentication in front of it.
-
 ## Notifications
 
 Open the **Notifications** tab, pick **daily, weekly or monthly** and the time, and set up any of **Telegram, email, Slack, Discord** or a **JSON webhook** (n8n, Zapier, Make, ntfy…). Each channel has a step-by-step guide, a test button and a delivery log. A daily digest only has what is new since the last one (no message on quiet days); a monthly one covers the last 31 days. The web server sends on schedule, so there is no cron to set up; if the machine was off at that time, the digest goes out as soon as it is back.
 
-Secrets are stored in `data/users/<id>/notify.yaml` (owner-only file) and never sent back to the browser. For Docker or several users, the same settings can come from `.env` (`TELEGRAM_BOT_TOKEN`, `SMTP_HOST`…, see `.env.example`); they fill any field left empty in the tab.
+Secrets you enter there go only to your own StackScout server, are stored in `data/users/<id>/notify.yaml` (owner-only file) and are never returned to the browser after saving. For Docker or several users, the same settings can come from `.env` (`TELEGRAM_BOT_TOKEN`, `SMTP_HOST`…, see `.env.example`); they fill any field left empty in the tab.
 
 Without the web UI: `uv run main.py schedule` sends on the same schedule, and `uv run main.py digest` sends right now (cron-friendly).
 
@@ -224,7 +224,7 @@ Without the web UI: `uv run main.py schedule` sends on the same schedule, and `u
 ## Privacy
 
 - Your profile stores **technology names and levels only**. Project names, repos, what they are for and anything about your employer are dropped on save and on import; URLs, emails, IPs, hostnames and secret-looking strings are scrubbed from free text.
-- Secrets (API key, bot token, SMTP password, webhook URLs) live in `.env` and never go through the browser.
+- Secrets (API key, bot token, SMTP password, webhook URLs) are sent only to your self-hosted StackScout server, stored locally with owner-only permissions (`.env` or `data/users/<id>/notify.yaml`), and never returned to the browser after saving.
 - Every AI step runs without tools, except comparisons, which get web search and fetch only. Your profile is never put in a search query.
 - Data stays on your machine: `data/` (profiles, sources, comparisons) and `reports/` are plain files.
 
