@@ -1,6 +1,7 @@
 # Contributing to StackScout
 
-Thanks for helping! Issues, ideas and pull requests are all welcome.
+Thanks for helping! Issues, ideas and pull requests are all welcome. Please follow the
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Questions, bugs and ideas
 
@@ -51,8 +52,9 @@ Tests never call a real AI, feed or messaging service: they replace `ai.complete
 - **Every claim needs a link.** Comparison rules are enforced in code (`compare.finalize`), not trusted to the AI.
 - **Privacy:** a profile stores technology names and levels only. Never add fields that hold
   project names, what someone works on, or anything about their employer.
-- **Secrets never reach the browser or the logs.** They live in `.env` or in owner-only files under
-  `data/` (set from the Notifications tab), and the API only ever returns whether a secret is set.
+- **Secrets stay on the user's server.** They are sent only to the self-hosted StackScout server,
+  stored in `.env` or owner-only files under `data/`, never written to logs and never returned to the
+  browser after saving: the API only says whether a secret is set.
 - User-facing text goes in all five languages.
 - Keep changes small and focused; explain the "why" in the PR.
 
