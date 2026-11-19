@@ -1,6 +1,6 @@
 [project]
 name = "stackscout"
-version = "0.1.0"
+version = "0.1.1"
 description = "New tech, matched to your stack. A weekly tech radar on the web and Telegram."
 readme = "README.md"
 license = "MIT"

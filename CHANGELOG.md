@@ -2,6 +2,12 @@
 
 All notable changes to StackScout are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-19
+
+### Changed
+
+- `LICENSE` now names the copyright holder: "huynguyenvietwork and StackScout contributors". The license is still MIT, with unchanged terms.
+
 ## [0.1.0] - 2026-11-19
 
 First public release. StackScout is designed for personal self-hosting: one local profile, no login.
@@ -31,4 +37,5 @@ First public release. StackScout is designed for personal self-hosting: one loca
 - Notification channels can now be set in the Notifications tab; `.env` values still fill empty fields.
 - `STACKSCOUT_DIGEST_DAY` and `STACKSCOUT_DIGEST_TIME` are replaced by the schedule in the Notifications tab, and the separate `scheduler` service is gone from `docker-compose.yml` (the web service sends on schedule).
 
+[0.1.1]: https://github.com/huynguyenvietwork/StackScout/releases/tag/v0.1.1
 [0.1.0]: https://github.com/huynguyenvietwork/StackScout/releases/tag/v0.1.0
