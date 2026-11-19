@@ -52,6 +52,7 @@ def main() -> int:
 
     snap = snapshot(args.user, args.repo.rstrip("/"))
     data = json.dumps(snap, ensure_ascii=False, separators=(",", ":"))
+    data = data.replace(" (bản phát hành)", " releases")  # source names stored before the catalog was English
     data = data.replace("</", "<\\/")  # the JSON sits inside a <script> element
     page = (ROOT / "stackscout" / "static" / "index.html").read_text(encoding="utf-8")
     marker = "<script>\n"
