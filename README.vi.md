@@ -45,11 +45,11 @@ Bấm **Xem chi tiết** để đọc đầy đủ từng loại.
 
 Tin lấy thẳng từ kênh chính chủ: Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…
 
-Bấm vào một model để xem so sánh với **3–5 đối thủ mạnh nhất**, đã tìm sẵn:
+Bấm vào một model để mở trang riêng so sánh với **3–5 đối thủ mạnh nhất**, đã tìm sẵn:
 
-- hơn gì, kém gì
-- nên chọn cái nào, khi nào
-- số liệu benchmark, giá, mỗi ý đều có link
+- bảng tổng quan các đối thủ, rồi từng phần chi tiết cho mỗi đối thủ
+- số liệu đặt cạnh nhau (benchmark, giá, context window…)
+- hơn gì, kém gì, nên chọn khi nào, mỗi ý đều có link
 
 </td>
 <td width="71%" valign="top"><a href="docs/assets/rivals.png"><img src="docs/assets/rivals.png" alt="So sánh model với đối thủ"></a></td>
@@ -62,7 +62,7 @@ Bấm vào một model để xem so sánh với **3–5 đối thủ mạnh nh�
 Ngay sau khi radar chạy, công nghệ mới cùng loại với công cụ bạn dùng được tự so sánh và chia theo từng skill.
 
 - kết luận: **nên chuyển, thử nghiệm, theo dõi hay bỏ qua**
-- hơn/kém xem nhanh, chi tiết một cú bấm
+- **Xem chi tiết** mở trang riêng toàn màn hình; Back quay lại đúng chỗ đang đọc
 - **⋯** để so với công cụ khác trong hồ sơ
 
 </td>
@@ -73,7 +73,7 @@ Ngay sau khi radar chạy, công nghệ mới cùng loại với công cụ bạ
 
 ### 🔗 Nhận định nào cũng có nguồn
 
-Mỗi so sánh có kết luận và độ tin cậy, nhận xét *với bạn*, điểm mới, tối đa 3 hơn và 3 kém, kèm danh sách nguồn đánh số.
+Mỗi so sánh có trang riêng: kết luận và độ tin cậy, nhận xét *với bạn*, điểm mới, **bảng số liệu đặt cạnh nhau**, tối đa 5 hơn và 5 kém, **mức độ khó khi chuyển đổi**, kèm danh sách nguồn đánh số.
 
 Kiểm tra bằng code, không phó mặc cho AI:
 

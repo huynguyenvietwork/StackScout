@@ -177,7 +177,7 @@ def test_settings_and_compare_endpoints(client, monkeypatch):
     assert client.put("/api/settings", json={"language": "xx"}).status_code == 422
     assert client.get("/api/compare", params={"week": "2026-W47"}).json() == {"comparisons": {}}
 
-    def fake_compare(uid, week, name, against):
+    def fake_compare(uid, week, name, against, force=False):
         if against == "nope":
             raise ValueError("Công cụ này không có trong hồ sơ của bạn.")
         if against == "down":

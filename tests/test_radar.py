@@ -260,11 +260,28 @@ def test_compare_caps_length_for_the_newsletter():
     srcs = [{"n": n, "url": f"https://s{n}.dev", "independent": True} for n in (1, 2)]
     out = compare.finalize(t, "Hangfire", {
         "what_is_new": "x" * 1000, "fit": "y" * 1000, "sources": srcs,
-        "pros": [{"text": f"pro {i} " + "z" * 400, "sources": [1]} for i in range(6)],
-        "cons": [{"text": f"con {i}", "sources": [2]} for i in range(6)]})
+        "pros": [{"text": f"pro {i} " + "z" * 500, "sources": [1]} for i in range(7)],
+        "cons": [{"text": f"con {i}", "sources": [2]} for i in range(7)]})
     assert len(out["pros"]) == len(out["cons"]) == compare.MAX_CLAIMS
     assert len(out["pros"][0]["text"]) == compare.MAX_CLAIM_CHARS and out["pros"][0]["text"].endswith("…")
-    assert len(out["what_is_new"]) <= 600 and len(out["fit"]) <= 500
+    assert len(out["what_is_new"]) <= 900 and len(out["fit"]) <= 700
+
+
+def test_compare_keeps_only_cited_numbers_and_a_valid_migration():
+    t = {**tech("TickerQ", "background-jobs", "dotnet"), "rivals": ["Hangfire"]}
+    srcs = [{"n": 1, "url": "https://bench.dev", "independent": True}, {"n": 2, "url": "https://docs.dev"},
+            {"n": 3, "url": "https://unused.dev"}]
+    out = compare.finalize(t, "Hangfire", {
+        "sources": srcs, "pros": [{"text": "Faster", "sources": [1]}],
+        "numbers": [{"metric": "Jobs/s", "new": "12,000", "current": "4,000", "sources": [1]},
+                    {"metric": "Price", "new": "free", "current": "", "sources": [2]},
+                    {"metric": "Uncited", "new": "1", "current": "2", "sources": [9]},
+                    {"metric": "Empty", "new": "", "current": "", "sources": [1]}],
+        "migration": {"effort": "medium", "notes": "Job definitions move to attributes.", "sources": [2, 7]}})
+    assert [n["metric"] for n in out["numbers"]] == ["Jobs/s", "Price"]
+    assert out["migration"] == {"effort": "medium", "notes": "Job definitions move to attributes.", "sources": [2]}
+    assert [s["url"] for s in out["sources"]] == ["https://bench.dev", "https://docs.dev"]  # unused source dropped
+    assert compare.finalize(t, "Hangfire", {"sources": srcs, "migration": {"effort": "huge", "notes": "x"}})["migration"] is None
 
 
 # ---------------------------------------------------------------- digest end to end

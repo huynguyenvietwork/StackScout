@@ -81,6 +81,7 @@ class CompareIn(BaseModel):
     week: str = Field(..., pattern=r"^\d{4}-W\d{2}$")
     name: str = Field(..., min_length=1, max_length=200)
     against: str = Field(..., min_length=1, max_length=200)
+    force: bool = False
 
 
 class WeekIn(BaseModel):
@@ -90,6 +91,7 @@ class WeekIn(BaseModel):
 class MarketIn(BaseModel):
     week: str = Field(..., pattern=r"^\d{4}-W\d{2}$")
     name: str = Field(..., min_length=1, max_length=200)
+    force: bool = False
 
 
 class NotifyIn(BaseModel):
@@ -387,7 +389,7 @@ def create_app(user_id: str | None = None) -> FastAPI:
     @app.post("/api/compare")
     def compare_item(body: CompareIn) -> dict:
         try:
-            result = digest.compare_item(uid, body.week, body.name, body.against)
+            result = digest.compare_item(uid, body.week, body.name, body.against, force=body.force)
         except ValueError as exc:
             raise user_error(422, exc) from exc
         except AIError as exc:
@@ -403,7 +405,7 @@ def create_app(user_id: str | None = None) -> FastAPI:
     @app.post("/api/market")
     def market_item(body: MarketIn) -> dict:
         try:
-            result = digest.market_item(uid, body.week, body.name)
+            result = digest.market_item(uid, body.week, body.name, force=body.force)
         except ValueError as exc:
             raise user_error(422, exc) from exc
         except AIError as exc:

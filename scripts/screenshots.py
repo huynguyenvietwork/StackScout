@@ -37,27 +37,24 @@ with sync_playwright() as p:
         page.evaluate("document.querySelector('.demobar')?.remove(); document.querySelectorAll('.toast').forEach(e => e.remove())")
 
     save(page.screenshot(), "overview.png")
-    # New models & AI: the feed, then the rivals drawer
+    # New models & AI: a model's page against its strongest rivals
     page.locator("aside .filters button").nth(1).click(); page.wait_for_timeout(250); clean()
-    page.locator(".titlebtn").first.click(); page.wait_for_selector(".drawer .rival"); page.wait_for_timeout(250); clean()
-    save(page.screenshot(), "rivals.png")
-    page.keyboard.press("Escape")
+    page.locator(".titlebtn").first.click(); page.wait_for_selector(".dgrid .rivalcard"); page.wait_for_timeout(250); clean()
+    save(page.screenshot(full_page=True, clip={"x": 0, "y": 0, "width": 1280, "height": 1250}), "rivals.png")
+    page.keyboard.press("Escape"); page.wait_for_timeout(200)
     # Vs. my stack: grouped list, then one comparison's details and its sources
     page.locator("nav.topnav .tab").nth(1).click(); page.wait_for_timeout(300); clean()
     save(page.screenshot(), "vs-stack.png")
-    # The comparison with full texts (nothing cut with "…") and the most independent sources.
+    # One comparison's own page: detailed ones (key numbers) first, then the most independent sources.
     shown = page.locator("article.item strong").all_inner_texts()
     best = max((c for k, c in snap["comparisons"].items()
-                if not c.get("fit", "").endswith("…") and not c.get("what_is_new", "").endswith("…")
-                and any(c["new"] == n or n.startswith(c["new"] + " ") for n in shown)),
-               key=lambda c: (c.get("independent_sources", 0), len(c.get("pros", [])) + len(c.get("cons", []))))
+                if any(c["new"] == n or n.startswith(c["new"] + " ") for n in shown)),
+               key=lambda c: (bool(c.get("numbers")), c.get("independent_sources", 0), len(c.get("pros", [])) + len(c.get("cons", []))))
     print("detail:", best["new"], "vs", best["current"])
     art = page.locator("article.item").filter(has=page.locator("strong", has_text=best["new"])).first
-    art.locator("button.cmpline").click(); page.wait_for_selector(".drawer .verdict"); page.wait_for_timeout(250); clean()
-    save(page.locator(".drawer").screenshot(), "stack-detail.png", width=560)
-    page.locator(".drawer").evaluate("d => d.scrollTop = d.scrollHeight"); page.wait_for_timeout(200)
-    save(page.locator(".drawer").screenshot(), "sources-cited.png", width=560)
-    page.keyboard.press("Escape")
+    art.locator("button.cmpline").click(); page.wait_for_selector(".dgrid .verdictcard"); page.wait_for_timeout(250); clean()
+    save(page.screenshot(full_page=True, clip={"x": 0, "y": 0, "width": 1280, "height": 1500}), "claims.png")
+    page.keyboard.press("Escape"); page.wait_for_timeout(200)
     # Profile and sources
     page.locator("nav.topnav .tab").nth(4).click(); page.wait_for_timeout(300); clean()
     save(page.screenshot(), "profile.png")
@@ -79,7 +76,8 @@ with sync_playwright() as p:
     m = b.new_context(viewport={"width": 390, "height": 780}, locale="en-US", device_scale_factor=2, is_mobile=True).new_page()
     m.goto(DEMO.as_uri()); m.wait_for_selector(".ovcard"); m.evaluate("document.querySelector('.demobar')?.remove()")
     m.locator("aside .filters button").nth(1).click(); m.wait_for_timeout(200)
-    m.locator(".titlebtn").first.click(); m.wait_for_selector(".drawer .rival"); m.wait_for_timeout(300)
+    m.locator(".titlebtn").first.click(); m.wait_for_selector(".dgrid .rivalcard"); m.wait_for_timeout(300)
+    m.locator(".rivalcard").first.scroll_into_view_if_needed(); m.wait_for_timeout(200)
     save(m.screenshot(), "mobile.png", width=390)
     m.context.close()
 
@@ -110,7 +108,6 @@ def compose(names: list[str], out: str, height: int = 820, gap: int = 24, pad: i
     buf = io.BytesIO(); canvas.save(buf, "PNG"); save(buf.getvalue(), out, width=1400)
 
 
-compose(["stack-detail.png", "sources-cited.png"], "claims.png")
 compose(["digest-email.png", "digest-telegram.png"], "digests.png", height=900)
 # Two desktop shots stacked, the phone beside them: close to square, readable at half width.
 def compose_looks():

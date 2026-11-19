@@ -2,6 +2,13 @@
 
 All notable changes to StackScout are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Comparisons open on their own full page (browser Back returns to the same place in the list), with sources and the week's original news beside them; a model's page starts with a table of its rivals.
+- More detailed comparisons: up to 5 pros and 5 cons, key numbers side by side, how hard it is to switch, longer "what's new" and "for you" notes. Older comparisons show a **Compare again** button.
+
 ## [0.1.1] - 2026-11-19
 
 ### Changed

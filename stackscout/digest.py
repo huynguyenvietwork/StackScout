@@ -217,7 +217,7 @@ def cached_comparisons(user_id, week: str) -> dict:
     return storage.read_json(_comparisons_path(user_id, week), {}) or {}
 
 
-def compare_item(user_id, week: str, name: str, against: str) -> dict:
+def compare_item(user_id, week: str, name: str, against: str, *, force: bool = False) -> dict:
     """Compare one technology of a weekly report with one tool of the profile.
 
     Raises ValueError (bad request) or ai.AIError (try again later). Results
@@ -238,7 +238,7 @@ def compare_item(user_id, week: str, name: str, against: str) -> dict:
     key = comparison_key(brief["name"], skill["name"])
     with _cache_lock:
         cache = cached_comparisons(user_id, week)
-        if key in cache:
+        if key in cache and not force:  # force: "Compare again" for a fresher, more detailed answer
             return cache[key]
 
     tech = {"name": brief["name"], "category": brief["category"], "ecosystem": brief["ecosystem"],
@@ -334,7 +334,7 @@ def cached_market(user_id, week: str) -> dict:
 _inflight: dict[str, threading.Event] = {}
 
 
-def market_item(user_id, week: str, name: str) -> dict:
+def market_item(user_id, week: str, name: str, *, force: bool = False) -> dict:
     """Compare a new AI model or tool of the week with its 3-5 strongest
     competitors. Cached per week; a click while the automatic run is already
     on it waits for that run instead of paying twice."""
@@ -349,7 +349,7 @@ def market_item(user_id, week: str, name: str) -> dict:
     while True:
         with _cache_lock:
             cache = cached_market(user_id, week)
-            if key in cache:
+            if key in cache and not force:
                 return cache[key]
             waiting = _inflight.get(flight)
             if waiting is None:
