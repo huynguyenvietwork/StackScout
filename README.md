@@ -36,35 +36,20 @@ Straight from first-party channels (Anthropic, OpenAI, Google DeepMind, Gemini, 
 
 Every new technology of the same kind as one of your tools is compared with that tool right after the radar runs, grouped by your skills. Each one gets a verdict, **adopt, trial, watch or skip**, plus what fits you and what doesn't. Use **⋯** to compare it with any other tool in your profile.
 
-<table>
-<tr>
-<td width="62%"><img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict"></td>
-<td width="38%"><img src="docs/assets/stack-detail.png" alt="SQLite vs PostgreSQL: verdict, fit, pros and cons"></td>
-</tr>
-</table>
+<img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict" width="100%">
 
 ### 🔗 Every claim has a source
 
-Rules enforced in code, not left to the AI:
+Each comparison shows the verdict and how confident it is, a short *for you* note based on your stack, what is new, at most 3 pros and 3 cons, and the numbered sources behind them. Rules enforced in code, not left to the AI:
 
 - a pro or con without a valid link is dropped;
 - fewer than 2 sources means *"not enough data yet"*;
-- independent benchmarks and hands-on reports are preferred, and labelled; with no independent source, confidence can't be *high*.
+- independent benchmarks and hands-on reports are preferred and labelled; with no independent source, confidence can't be *high*.
 
 <table>
 <tr>
-<td width="50%"><img src="docs/assets/sources-cited.png" alt="Numbered sources, independent ones labelled"></td>
-<td width="50%">
-
-**What you see in each comparison**
-
-- the verdict and the confidence, with how many sources are independent
-- a short *for you* note based on your stack
-- what is new, in one or two sentences
-- at most 3 pros and 3 cons, each with its sources `[1]` `[2]`
-- the source list: vendor posts, independent benchmarks, experience reports
-
-</td>
+<td width="50%"><img src="docs/assets/stack-detail.png" alt="SQLite vs PostgreSQL: verdict, fit for you, what is new, pros"></td>
+<td width="50%"><img src="docs/assets/sources-cited.png" alt="Cons and the numbered sources, independent ones labelled"></td>
 </tr>
 </table>
 

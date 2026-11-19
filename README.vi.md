@@ -24,12 +24,7 @@ Tin lấy thẳng từ kênh chính chủ (Anthropic, OpenAI, Google DeepMind, G
 
 Mỗi công nghệ mới cùng loại với một công cụ bạn dùng được **tự so sánh** ngay sau khi radar chạy, và chia theo từng skill. Mỗi cái có kết luận: **nên chuyển, thử nghiệm, theo dõi hay bỏ qua**, kèm nhận xét phù hợp với bạn đến đâu. Bấm **⋯** để so với công cụ khác trong hồ sơ.
 
-<table>
-<tr>
-<td width="62%"><img src="docs/assets/vs-stack.png" alt="Danh sách so sánh theo skill"></td>
-<td width="38%"><img src="docs/assets/stack-detail.png" alt="Chi tiết SQLite so với PostgreSQL"></td>
-</tr>
-</table>
+<img src="docs/assets/vs-stack.png" alt="Danh sách so sánh theo skill" width="100%">
 
 ### 🔗 Nhận định nào cũng có nguồn
 
@@ -39,7 +34,12 @@ Các quy tắc này được kiểm tra bằng code, không phó mặc cho AI:
 - dưới 2 nguồn thì ghi *"chưa đủ dữ liệu"*;
 - ưu tiên benchmark độc lập và bài trải nghiệm thật, có gắn nhãn; không có nguồn độc lập thì độ tin cậy không được ghi *cao*.
 
-<img src="docs/assets/sources-cited.png" alt="Danh sách nguồn có nhãn độc lập" width="50%">
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/stack-detail.png" alt="Chi tiết SQLite so với PostgreSQL"></td>
+<td width="50%"><img src="docs/assets/sources-cited.png" alt="Danh sách nguồn có nhãn độc lập"></td>
+</tr>
+</table>
 
 ### 📬 Bản tin gửi tới nơi bạn đọc
 
