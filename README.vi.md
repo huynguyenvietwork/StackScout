@@ -1,6 +1,8 @@
 # StackScout (Tiếng Việt)
 
-**Công nghệ mới, đối chiếu với stack của bạn.** · [English](README.md) · [Xem demo](https://huynguyenvietwork.github.io/StackScout/)
+**Công nghệ mới, đối chiếu với stack của bạn.** · [English](README.md) · [Xem demo](https://huynguyenvietwork.github.io/StackScout/) · [**Tải về**](https://github.com/huynguyenvietwork/StackScout/releases/latest)
+
+[![Bản mới nhất](https://img.shields.io/github/v/release/huynguyenvietwork/StackScout)](https://github.com/huynguyenvietwork/StackScout/releases/latest)
 
 StackScout là radar công nghệ hằng tuần: đọc các nguồn chính chủ và uy tín, chọn ra tin liên quan tới **đúng những công cụ bạn đang dùng**, rồi tự so sánh từng công nghệ mới với chúng. Mọi nhận định đều có link nguồn.
 
@@ -10,8 +12,10 @@ StackScout là radar công nghệ hằng tuần: đọc các nguồn chính ch�
 
 > **Phạm vi:** StackScout hiện được thiết kế để tự host cho cá nhân. Web UI phục vụ một hồ sơ local và không có đăng nhập (chỉ nghe trên 127.0.0.1, đừng mở ra mạng nếu không có lớp xác thực phía trước). Phiên bản hosted chính thức có thể được phát triển sau.
 
+**Lấy mã nguồn**: `git clone https://github.com/huynguyenvietwork/StackScout`, hoặc không cần git: [tải bản phát hành mới nhất](https://github.com/huynguyenvietwork/StackScout/releases/latest) (mục *Assets* → **Source code (zip)**), giải nén rồi mở terminal trong thư mục đó.
+
 ```bash
-git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout
+git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout   # hoặc: giải nén bản tải về rồi cd vào
 cp .env.example .env     # điền ANTHROPIC_API_KEY (hoặc để trống nếu đã đăng nhập Claude Code CLI)
 docker compose up -d     # mở http://127.0.0.1:8000
 ```
