@@ -203,13 +203,13 @@ FETCHERS = {"rss": fetch_rss, "hackernews": fetch_hackernews, "github_new_repos"
 
 
 def collect(sources: list[dict], *, now: datetime | None = None, client: httpx.Client | None = None,
-            per_source: int = PER_SOURCE_LIMIT) -> tuple[list[dict], list[dict]]:
-    """Fetch the last WINDOW_DAYS from every source. Returns (items, errors).
+            per_source: int = PER_SOURCE_LIMIT, window_days: int = WINDOW_DAYS) -> tuple[list[dict], list[dict]]:
+    """Fetch the last `window_days` from every source. Returns (items, errors).
 
     One broken source never stops the others; it is reported in `errors`.
     """
     now = now or datetime.now(timezone.utc)
-    since = now - timedelta(days=WINDOW_DAYS)
+    since = now - timedelta(days=window_days)
     own_client = client is None
     client = client or httpx.Client(timeout=20.0, follow_redirects=True, headers={"User-Agent": USER_AGENT})
     items: list[dict] = []

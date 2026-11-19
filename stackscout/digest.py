@@ -127,7 +127,9 @@ def ai_news(techs: list[dict], by_id: dict[str, dict], official: frozenset[str],
     return sorted(briefs, key=lambda b: AI_GROUP_ORDER.index(b["group"]))  # stable within a group
 
 
-def run_radar(user_id, *, progress: Progress | None = None, now: datetime | None = None) -> dict:
+def run_radar(user_id, *, progress: Progress | None = None, now: datetime | None = None,
+              window_days: int = collect.WINDOW_DAYS) -> dict:
+    """The week's report. `window_days` = how far back to read (31 for a monthly digest)."""
     progress = progress or (lambda _stage: None)
     now = now or datetime.now(timezone.utc)
     profile = storage.load_profile(user_id)
@@ -140,7 +142,7 @@ def run_radar(user_id, *, progress: Progress | None = None, now: datetime | None
     language = storage.output_language(user_id)
 
     progress("collect")
-    items, fetch_errors = collect.collect(active, now=now)
+    items, fetch_errors = collect.collect(active, now=now, window_days=window_days)
     seen_path = storage.user_dir(user_id) / "seen.json"
     seen = storage.read_json(seen_path, {}) or {}
     items = collect.filter_unseen(items, seen, week)

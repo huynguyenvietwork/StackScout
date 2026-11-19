@@ -222,7 +222,7 @@ def test_auto_compare_endpoints(client, monkeypatch):
 
 def test_notify_endpoints(client, monkeypatch):
     view = client.get("/api/notify").json()
-    assert view["schedule"] == {"enabled": True, "day": "mon", "time": "08:00"}
+    assert view["schedule"] == {"enabled": True, "frequency": "weekly", "day": "mon", "monthday": 1, "time": "08:00"}
     assert not any(c["enabled"] for c in view["channels"].values()) and view["next"] is None  # nothing set up
     assert view["tz"].startswith("UTC")
 

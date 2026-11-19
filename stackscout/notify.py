@@ -48,7 +48,9 @@ REQUIRED = {"telegram": ("token", "chat_id"), "email": ("host", "to"), "slack": 
 SECRETS = {("telegram", "token"), ("email", "password"), ("slack", "url"), ("discord", "url"),
            ("webhook", "url"), ("webhook", "header")}
 SECURITY = ("starttls", "ssl", "none")
-DEFAULT_SCHEDULE = {"enabled": True, "day": "mon", "time": "08:00"}
+FREQUENCIES = ("daily", "weekly", "monthly")
+DEFAULT_SCHEDULE = {"enabled": True, "frequency": "weekly", "day": "mon", "monthday": 1, "time": "08:00"}
+MAX_SENT_ITEMS = 3000
 
 
 class NotifyError(RuntimeError):
@@ -68,9 +70,13 @@ def _is_bot_user(user_id) -> bool:
 def load_settings(user_id) -> dict:
     raw = storage.read_yaml(user_id, SETTINGS_FILE, {}) or {}
     sched = raw.get("schedule") if isinstance(raw.get("schedule"), dict) else {}
+    monthday = sched.get("monthday")
     schedule = {
         "enabled": bool(sched.get("enabled", DEFAULT_SCHEDULE["enabled"])),
+        "frequency": sched.get("frequency") if sched.get("frequency") in FREQUENCIES else DEFAULT_SCHEDULE["frequency"],
         "day": sched.get("day") if sched.get("day") in DAYS else DEFAULT_SCHEDULE["day"],
+        # 1-28: every month has it
+        "monthday": monthday if isinstance(monthday, int) and 1 <= monthday <= 28 else DEFAULT_SCHEDULE["monthday"],
         "time": sched.get("time") if isinstance(sched.get("time"), str) and re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", sched["time"])
         else DEFAULT_SCHEDULE["time"],
     }
@@ -151,6 +157,14 @@ def save_settings(user_id, patch: dict) -> dict:
     if isinstance(sched, dict):
         if "enabled" in sched:
             settings["schedule"]["enabled"] = bool(sched["enabled"])
+        if "frequency" in sched:
+            if sched["frequency"] not in FREQUENCIES:
+                raise UserError("notify.bad_value", field="frequency")
+            settings["schedule"]["frequency"] = sched["frequency"]
+        if "monthday" in sched:
+            if not isinstance(sched["monthday"], int) or not 1 <= sched["monthday"] <= 28:
+                raise UserError("notify.bad_value", field="monthday")
+            settings["schedule"]["monthday"] = sched["monthday"]
         if "day" in sched:
             if sched["day"] not in DAYS:
                 raise UserError("notify.bad_value", field="day")
@@ -190,17 +204,22 @@ def save_settings(user_id, patch: dict) -> dict:
 
 def load_state(user_id) -> dict:
     state = storage.read_json(storage.user_dir(user_id) / STATE_FILE, {}) or {}
-    return {"last_week": state.get("last_week"), "log": state.get("log") or []}
+    return {"last_period": state.get("last_period") or state.get("last_week"),
+            "sent_items": state.get("sent_items") or [], "log": state.get("log") or []}
 
 
 def record(user_id, kind: str, results: dict[str, str | None], week: str | None = None,
-           sent_week: str | None = None) -> None:
+           period: str | None = None, sent_items: list[str] | None = None) -> None:
+    """Log a delivery. `period` = the schedule period it covers (once per period);
+    `sent_items` = item ids now delivered (a daily digest only sends new ones)."""
     state = load_state(user_id)
     at = datetime.now(timezone.utc).isoformat(timespec="seconds")
     state["log"] = ([{"at": at, "kind": kind, "channel": c, "ok": e is None, "error": e, "week": week}
                      for c, e in results.items()] + state["log"])[:MAX_LOG]
-    if sent_week:
-        state["last_week"] = sent_week
+    if period:
+        state["last_period"] = period
+    if sent_items:
+        state["sent_items"] = (list(dict.fromkeys(sent_items + state["sent_items"])))[:MAX_SENT_ITEMS]
     storage.write_json(storage.user_dir(user_id) / STATE_FILE, state)
 
 
@@ -357,10 +376,12 @@ def chat_for(user_id) -> str | None:
 
 def send_digest(user_id, report: dict, *, comparisons: dict | None = None, market: dict | None = None,
                 lang: str | None = None, client: httpx.Client | None = None,
-                channels: list[str] | None = None) -> dict[str, str | None]:
+                channels: list[str] | None = None, period: str | None = None,
+                when: datetime | None = None) -> dict[str, str | None]:
     """Send a report on every enabled channel. Returns {channel: error or None};
-    one failing channel never stops the others."""
-    model = render.build(report, comparisons, market, lang)
+    one failing channel never stops the others. `period` (daily/weekly/monthly)
+    + `when` name the digest ("Ngày 19/11/2026", "Tháng 11/2026")."""
+    model = render.build(report, comparisons, market, lang, period=period, when=when)
     settings = load_settings(user_id)
     targets = channels if channels is not None else configured(user_id)
     own = client is None

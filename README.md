@@ -106,7 +106,7 @@ Under each item: the verdict against your tool, or the rivals of a new model.
 
 ### 🔔 Notifications, set up in minutes
 
-A dedicated tab: pick the day and time, then turn on any channel.
+A dedicated tab: **daily, weekly or monthly**, at the time you pick, then turn on any channel.
 
 - step-by-step guide for each one (BotFather, Gmail app password, Slack and Discord webhooks…)
 - presets for Gmail, Outlook and SendGrid; **Find chat ID** for Telegram
@@ -202,7 +202,7 @@ Create your profile in the browser (about 2 minutes), press **Run this week's ra
 
 ## Notifications
 
-Open the **Notifications** tab, pick the day and time, and set up any of **Telegram, email, Slack, Discord** or a **JSON webhook** (n8n, Zapier, Make, ntfy…). Each channel has a step-by-step guide, a test button and a delivery log. The web server sends the digest on schedule, so there is no cron to set up; if the machine was off at that time, the digest goes out as soon as it is back during the week.
+Open the **Notifications** tab, pick **daily, weekly or monthly** and the time, and set up any of **Telegram, email, Slack, Discord** or a **JSON webhook** (n8n, Zapier, Make, ntfy…). Each channel has a step-by-step guide, a test button and a delivery log. A daily digest only has what is new since the last one (no message on quiet days); a monthly one covers the last 31 days. The web server sends on schedule, so there is no cron to set up; if the machine was off at that time, the digest goes out as soon as it is back.
 
 Secrets are stored in `data/users/<id>/notify.yaml` (owner-only file) and never sent back to the browser. For Docker or several users, the same settings can come from `.env` (`TELEGRAM_BOT_TOKEN`, `SMTP_HOST`…, see `.env.example`); they fill any field left empty in the tab.
 

@@ -94,7 +94,7 @@ Dưới mỗi tin: kết luận so với công cụ của bạn, hoặc các đ�
 
 ### 🔔 Thông báo, cài trong vài phút
 
-Một tab riêng: chọn ngày và giờ gửi, rồi bật kênh muốn nhận.
+Một tab riêng: gửi **hằng ngày, hằng tuần hoặc hằng tháng** vào giờ bạn chọn, rồi bật kênh muốn nhận.
 
 - hướng dẫn từng bước cho mỗi kênh (BotFather, App Password của Gmail, webhook Slack và Discord…)
 - mẫu sẵn cho Gmail, Outlook, SendGrid; nút **Tìm chat ID** cho Telegram

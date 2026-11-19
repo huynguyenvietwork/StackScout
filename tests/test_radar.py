@@ -308,7 +308,7 @@ def test_run_radar_end_to_end(monkeypatch):
                 "summary": "jobs", "published": "2026-11-17T00:00:00+00:00"},
                {"id": "i2", "source_id": "gemini-blog", "source": "Google Gemini Blog", "title": "Introducing Gemini 4",
                 "url": "https://blog.google/g4", "summary": "", "published": "2026-11-16T00:00:00+00:00"}]
-    monkeypatch.setattr(collect, "collect", lambda srcs, now=None: (list(fetched), [{"source": "X", "error": "down"}]))
+    monkeypatch.setattr(collect, "collect", lambda srcs, now=None, window_days=7: (list(fetched), [{"source": "X", "error": "down"}]))
     storage.save_settings("web", {"language": "en"})
     prompts = []
     monkeypatch.setattr(ai, "complete", lambda prompt, **kw: prompts.append((prompt, kw)) or fake_ai(prompt, **kw))
@@ -367,7 +367,7 @@ def test_auto_compare_every_natural_pair_and_show_verdicts(monkeypatch):
     storage.save_profile("web", PROFILE)
     fetched = [{"id": "i1", "source_id": "s", "source": "Cool", "title": "TickerQ 1.0", "url": "https://t.dev",
                 "summary": "jobs", "published": "2026-11-17T00:00:00+00:00"}]
-    monkeypatch.setattr(collect, "collect", lambda srcs, now=None: (list(fetched), []))
+    monkeypatch.setattr(collect, "collect", lambda srcs, now=None, window_days=7: (list(fetched), []))
     monkeypatch.setattr(ai, "complete", lambda prompt, **kw: fake_ai(prompt, **kw))
     report = digest.run_radar("web", now=NOW)
     assert digest.auto_pairs(report, PROFILE) == [("TickerQ", "Hangfire")]  # Gemini 4 has no rival in the profile
@@ -574,9 +574,17 @@ def test_schedule_next_run_is_the_coming_weekday():
     from stackscout import scheduler
     tz = timezone.utc
     wed = datetime(2026, 11, 18, 9, 0, tzinfo=tz)
-    assert scheduler.next_run(wed, "mon", "08:00") == datetime(2026, 11, 23, 8, 0, tzinfo=tz)
-    assert scheduler.next_run(wed, "wed", "10:30") == datetime(2026, 11, 18, 10, 30, tzinfo=tz)  # later today
-    assert scheduler.next_run(wed, "wed", "08:00") == datetime(2026, 11, 25, 8, 0, tzinfo=tz)  # already passed
+    weekly = lambda day, at: {"frequency": "weekly", "day": day, "time": at, "monthday": 1}
+    assert scheduler.next_run(wed, weekly("mon", "08:00")) == datetime(2026, 11, 23, 8, 0, tzinfo=tz)
+    assert scheduler.next_run(wed, weekly("wed", "10:30")) == datetime(2026, 11, 18, 10, 30, tzinfo=tz)  # later today
+    assert scheduler.next_run(wed, weekly("wed", "08:00")) == datetime(2026, 11, 25, 8, 0, tzinfo=tz)  # already passed
+    daily = {"frequency": "daily", "day": "mon", "time": "07:00", "monthday": 1}
+    assert scheduler.next_run(wed, daily) == datetime(2026, 11, 19, 7, 0, tzinfo=tz)
+    monthly = {"frequency": "monthly", "day": "mon", "time": "08:00", "monthday": 5}
+    assert scheduler.next_run(wed, monthly) == datetime(2026, 12, 5, 8, 0, tzinfo=tz)
+    dec = datetime(2026, 12, 20, 9, 0, tzinfo=tz)
+    assert scheduler.next_run(dec, monthly) == datetime(2027, 1, 5, 8, 0, tzinfo=tz)  # across the year
+    assert scheduler.period_id(wed, "daily") == "2026-11-18" and scheduler.period_id(wed, "monthly") == "2026-11"
 
 
 def test_digest_shows_no_stack_verdict_under_a_new_model():
@@ -596,7 +604,7 @@ def test_scheduler_sends_once_per_week_after_the_slot(monkeypatch):
 
     def fake_deliver(uid, now=None, send=True):
         delivered.append(uid)
-        notify.record(uid, "digest", {"slack": None}, sent_week=collect.week_id(now))
+        notify.record(uid, "digest", {"slack": None}, period=scheduler.period_id(now, "weekly"))
         return {"slack": None}
     monkeypatch.setattr(scheduler, "deliver", fake_deliver)
     tz = timezone.utc
@@ -625,3 +633,35 @@ def test_telegram_chat_ids_from_recent_messages():
             {"message": {"chat": {"id": 42, "type": "private", "first_name": "An"}}}]})
     chats = notify.telegram_chats("1:abc", client=httpx.Client(transport=httpx.MockTransport(handler)))
     assert chats == [{"id": "42", "name": "An", "type": "private"}, {"id": "-100", "name": "Team", "type": "group"}]
+
+
+def test_daily_digest_sends_only_new_items(monkeypatch):
+    from stackscout import scheduler
+    storage.save_profile("web", PROFILE)
+    notify.save_settings("web", {"schedule": {"frequency": "daily", "time": "07:00"},
+                                 "channels": {"slack": {"enabled": True, "url": "https://hooks.slack.com/services/x"}}})
+    report = {"week": "2026-W47", "stats": {"items": 2, "sources": 1},
+              "stack": [{"name": "A", "items": ["i1"]}, {"name": "B", "items": ["i2"]}]}
+    monkeypatch.setattr(scheduler.digest, "run_radar", lambda uid, progress=None, window_days=7: dict(report))
+    monkeypatch.setattr(scheduler.digest, "compare_all", lambda uid, week: {})
+    sent = []
+    monkeypatch.setattr(notify, "send_digest", lambda uid, rep, **kw: sent.append(([b["name"] for b in rep["stack"]], kw["period"])) or {"slack": None})
+    tz = timezone.utc
+    scheduler.deliver("web", now=datetime(2026, 11, 18, 7, 1, tzinfo=tz))
+    assert sent == [(["A", "B"], "daily")]
+    report["stack"].append({"name": "C", "items": ["i3"]})
+    scheduler.deliver("web", now=datetime(2026, 11, 19, 7, 1, tzinfo=tz))
+    assert sent[-1] == (["C"], "daily")  # only what the last digest did not have
+    scheduler.deliver("web", now=datetime(2026, 11, 20, 7, 1, tzinfo=tz))
+    assert len(sent) == 2 and notify.load_state("web")["log"][0]["kind"] == "empty"  # nothing new: no message
+    assert not scheduler.due("web", datetime(2026, 11, 20, 8, 0, tzinfo=tz))  # the day counts as done
+
+
+def test_digest_title_follows_the_period():
+    from stackscout import render
+    when = datetime(2026, 11, 19, tzinfo=timezone.utc)
+    assert render.period_label("daily", when, "2026-W47", "vi") == "Ngày 19/11/2026"
+    assert render.period_label("daily", when, "2026-W47", "en") == "Nov 19, 2026"
+    assert render.period_label("monthly", when, "2026-W47", "en") == "November 2026"
+    assert render.period_label("monthly", when, "2026-W47", "ja") == "2026年11月"
+    assert render.period_label("weekly", when, "2026-W47", "vi") == "Tuần 47/2026"

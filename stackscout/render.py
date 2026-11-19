@@ -22,6 +22,8 @@ ECOSYSTEM_LABEL = {"dotnet": ".NET", "node": "Node.js", "python": "Python", "jvm
 
 TEXT: dict[str, dict[str, str]] = {
     "week": {"vi": "Tuần {w}/{y}", "en": "Week {w}, {y}", "zh": "{y} 年第 {w} 周", "ja": "{y}年 第{w}週", "ko": "{y}년 {w}주차"},
+    "day": {"vi": "Ngày {d}/{m}/{y}", "en": "{mon} {d}, {y}", "zh": "{y}年{m}月{d}日", "ja": "{y}年{m}月{d}日", "ko": "{y}년 {m}월 {d}일"},
+    "month": {"vi": "Tháng {m}/{y}", "en": "{month} {y}", "zh": "{y}年{m}月", "ja": "{y}年{m}月", "ko": "{y}년 {m}월"},
     "title": {"vi": "TECH RADAR — {week}", "en": "TECH RADAR — {week}", "zh": "技术雷达 — {week}",
               "ja": "テックレーダー — {week}", "ko": "테크 레이더 — {week}"},
     "intro": {"vi": "Đã đọc {items} tin từ {sources} nguồn của bạn.",
@@ -116,10 +118,24 @@ def _market_verdict(b: dict, market: dict, lang: str) -> list[str]:
     return [tr("vs_rivals", lang, names=", ".join(names))] if names else []
 
 
-def build(report: dict, comparisons: dict | None = None, market: dict | None = None, lang: str | None = None) -> dict:
+MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December")
+
+
+def period_label(period: str | None, when, week: str, lang: str) -> str:
+    """"Tuần 47/2026" for a weekly digest, "Ngày 19/11/2026" daily, "Tháng 11/2026" monthly."""
+    if period == "daily" and when:
+        return tr("day", lang, d=when.day, m=when.month, y=when.year, mon=MONTHS[when.month - 1][:3])
+    if period == "monthly" and when:
+        return tr("month", lang, m=when.month, y=when.year, month=MONTHS[when.month - 1])
+    return week_label(week, lang)
+
+
+def build(report: dict, comparisons: dict | None = None, market: dict | None = None, lang: str | None = None,
+          *, period: str | None = None, when=None) -> dict:
     lang = i18n.lang_code(lang or report.get("language"))
     comparisons, market = comparisons or {}, market or {}
-    week = week_label(report["week"], lang)
+    week = period_label(period, when, report["week"], lang)
     s = report["stats"]
     sections = []
 
