@@ -571,12 +571,12 @@ def test_parse_import_accepts_fenced_yaml_and_rejects_junk():
 
 
 def test_schedule_next_run_is_the_coming_weekday():
-    import main
+    from stackscout import scheduler
     tz = timezone.utc
     wed = datetime(2026, 11, 18, 9, 0, tzinfo=tz)
-    assert main.next_run(wed, "mon", "08:00") == datetime(2026, 11, 23, 8, 0, tzinfo=tz)
-    assert main.next_run(wed, "wed", "10:30") == datetime(2026, 11, 18, 10, 30, tzinfo=tz)  # later today
-    assert main.next_run(wed, "wed", "08:00") == datetime(2026, 11, 25, 8, 0, tzinfo=tz)  # already passed
+    assert scheduler.next_run(wed, "mon", "08:00") == datetime(2026, 11, 23, 8, 0, tzinfo=tz)
+    assert scheduler.next_run(wed, "wed", "10:30") == datetime(2026, 11, 18, 10, 30, tzinfo=tz)  # later today
+    assert scheduler.next_run(wed, "wed", "08:00") == datetime(2026, 11, 25, 8, 0, tzinfo=tz)  # already passed
 
 
 def test_digest_shows_no_stack_verdict_under_a_new_model():
@@ -585,3 +585,43 @@ def test_digest_shows_no_stack_verdict_under_a_new_model():
     text = "\n".join(digest.render_telegram(report, {"gemini 4|anthropic sdk": {"current": "Anthropic SDK", "recommendation": "trial"}},
                                            lang="en", market={"gemini 4": {"rivals": [{"name": "GPT-6.2"}]}}))
     assert "vs Anthropic SDK" not in text and "↳ Vs.: GPT-6.2" in text
+
+
+def test_scheduler_sends_once_per_week_after_the_slot(monkeypatch):
+    from stackscout import scheduler
+    storage.save_profile("web", PROFILE)
+    notify.save_settings("web", {"schedule": {"day": "wed", "time": "08:00"},
+                                 "channels": {"slack": {"enabled": True, "url": "https://hooks.slack.com/services/x"}}})
+    delivered = []
+
+    def fake_deliver(uid, now=None, send=True):
+        delivered.append(uid)
+        notify.record(uid, "digest", {"slack": None}, sent_week=collect.week_id(now))
+        return {"slack": None}
+    monkeypatch.setattr(scheduler, "deliver", fake_deliver)
+    tz = timezone.utc
+    assert scheduler.tick(datetime(2026, 11, 18, 7, 59, tzinfo=tz)) == []  # Wednesday, before the slot
+    assert scheduler.tick(datetime(2026, 11, 18, 8, 1, tzinfo=tz)) == ["web"]
+    assert scheduler.tick(datetime(2026, 11, 19, 9, 0, tzinfo=tz)) == []  # already sent this week
+    assert scheduler.next_delivery("web", datetime(2026, 11, 19, 9, 0, tzinfo=tz)) == datetime(2026, 11, 25, 8, 0, tzinfo=tz)
+    notify.save_settings("web", {"schedule": {"enabled": False}})
+    assert scheduler.tick(datetime(2026, 11, 26, 9, 0, tzinfo=tz)) == [] and delivered == ["web"]
+
+
+def test_notify_settings_fall_back_to_env(monkeypatch):
+    monkeypatch.setenv("STACKSCOUT_DISCORD_WEBHOOK_URL", "https://discord.com/api/webhooks/1/abc")
+    assert notify.configured("web") == ["discord"]  # complete from .env and never switched off: on
+    view = notify.public_settings("web")["channels"]["discord"]
+    assert view["from_env"] == ["url"] and view["values"]["url"]["set"]
+    notify.save_settings("web", {"channels": {"discord": {"enabled": False}}})
+    assert notify.configured("web") == []
+
+
+def test_telegram_chat_ids_from_recent_messages():
+    def handler(request):
+        return httpx.Response(200, json={"ok": True, "result": [
+            {"message": {"chat": {"id": 42, "type": "private", "first_name": "An", "last_name": "Le"}}},
+            {"my_chat_member": {"chat": {"id": -100, "type": "group", "title": "Team"}}},
+            {"message": {"chat": {"id": 42, "type": "private", "first_name": "An"}}}]})
+    chats = notify.telegram_chats("1:abc", client=httpx.Client(transport=httpx.MockTransport(handler)))
+    assert chats == [{"id": "42", "name": "An", "type": "private"}, {"id": "-100", "name": "Team", "type": "group"}]

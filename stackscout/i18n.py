@@ -110,6 +110,27 @@ MESSAGES: dict[str, dict[str, str]] = {
         "vi": "Ngôn ngữ không được hỗ trợ.", "en": "Unsupported language.", "zh": "不支持该语言。",
         "ja": "対応していない言語です。", "ko": "지원하지 않는 언어입니다."},
     # ---- notifications
+    "notify.need_token": {
+        "vi": "Dán bot token trước đã.", "en": "Paste the bot token first.", "zh": "请先粘贴机器人令牌。",
+        "ja": "先にボットトークンを貼り付けてください。", "ko": "먼저 봇 토큰을 붙여 넣으세요."},
+    "notify.need_fields": {
+        "vi": "Điền các ô bắt buộc rồi lưu trước đã.", "en": "Fill in the required fields and save first.",
+        "zh": "请先填写必填项并保存。", "ja": "必須項目を入力して保存してください。", "ko": "필수 항목을 입력하고 먼저 저장하세요."},
+    "notify.bad_slack": {
+        "vi": "URL webhook của Slack phải bắt đầu bằng https://hooks.slack.com/", "en": "Slack webhook URLs start with https://hooks.slack.com/",
+        "zh": "Slack webhook URL 必须以 https://hooks.slack.com/ 开头", "ja": "Slack の Webhook URL は https://hooks.slack.com/ で始まります",
+        "ko": "Slack 웹후크 URL은 https://hooks.slack.com/ 으로 시작해야 합니다"},
+    "notify.bad_discord": {
+        "vi": "URL webhook của Discord phải bắt đầu bằng https://discord.com/api/webhooks/", "en": "Discord webhook URLs start with https://discord.com/api/webhooks/",
+        "zh": "Discord webhook URL 必须以 https://discord.com/api/webhooks/ 开头", "ja": "Discord の Webhook URL は https://discord.com/api/webhooks/ で始まります",
+        "ko": "Discord 웹후크 URL은 https://discord.com/api/webhooks/ 로 시작해야 합니다"},
+    "notify.bad_url": {
+        "vi": "URL phải bắt đầu bằng https:// (hoặc http:// cho dịch vụ trên máy).", "en": "The URL must start with https:// (or http:// for a local service).",
+        "zh": "URL 必须以 https:// 开头（本地服务可用 http://）。", "ja": "URL は https://（ローカルのサービスなら http://）で始めてください。",
+        "ko": "URL은 https://(로컬 서비스는 http://)로 시작해야 합니다."},
+    "notify.bad_value": {
+        "vi": "Giá trị không hợp lệ: {field}", "en": "Invalid value: {field}", "zh": "无效的值：{field}",
+        "ja": "値が正しくありません: {field}", "ko": "올바르지 않은 값: {field}"},
     "notify.not_configured": {
         "vi": "Chưa cấu hình kênh thông báo nào. Xem phần “Notifications” trong README.",
         "en": "No notification channel is configured. See “Notifications” in the README.",

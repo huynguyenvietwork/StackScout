@@ -104,6 +104,21 @@ Under each item: the verdict against your tool, or the rivals of a new model.
 <tr>
 <td width="29%" valign="top">
 
+### 🔔 Notifications, set up in minutes
+
+A dedicated tab: pick the day and time, then turn on any channel.
+
+- step-by-step guide for each one (BotFather, Gmail app password, Slack and Discord webhooks…)
+- presets for Gmail, Outlook and SendGrid; **Find chat ID** for Telegram
+- **Save and send a test**, plus a delivery log
+- secrets stay on your machine, never shown again
+
+</td>
+<td width="71%" valign="top"><a href="docs/assets/notifications.png"><img src="docs/assets/notifications.png" alt="Notifications tab: schedule and channel setup"></a></td>
+</tr>
+<tr>
+<td width="29%" valign="top">
+
 ### 👤 Your profile, in your own words
 
 Type what you use, typos and all (*"c#, entity framwork, postgres, k8s"*), or generate it from your code or CV with the included prompt.
@@ -187,21 +202,11 @@ Create your profile in the browser (about 2 minutes), press **Run this week's ra
 
 ## Notifications
 
-The digest goes out every week, in your language, on every channel configured in `.env`:
+Open the **Notifications** tab, pick the day and time, and set up any of **Telegram, email, Slack, Discord** or a **JSON webhook** (n8n, Zapier, Make, ntfy…). Each channel has a step-by-step guide, a test button and a delivery log. The web server sends the digest on schedule, so there is no cron to set up; if the machine was off at that time, the digest goes out as soon as it is back during the week.
 
-| Channel | Settings |
-|---|---|
-| Telegram | `TELEGRAM_BOT_TOKEN` (from @BotFather), `STACKSCOUT_TELEGRAM_CHAT_ID` (your user id) |
-| Email | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `STACKSCOUT_EMAIL_TO` |
-| Slack | `STACKSCOUT_SLACK_WEBHOOK_URL` (incoming webhook) |
-| Discord | `STACKSCOUT_DISCORD_WEBHOOK_URL` |
-| Anything else | `STACKSCOUT_WEBHOOK_URL`: the digest as JSON (n8n, Zapier, Make, ntfy…) |
+Secrets are stored in `data/users/<id>/notify.yaml` (owner-only file) and never sent back to the browser. For Docker or several users, the same settings can come from `.env` (`TELEGRAM_BOT_TOKEN`, `SMTP_HOST`…, see `.env.example`); they fill any field left empty in the tab.
 
-The **Sources** tab shows which channels are on and can send the latest digest as a test. Scheduling: Docker runs `main.py schedule` (`STACKSCOUT_DIGEST_DAY`, `STACKSCOUT_DIGEST_TIME`); without Docker, use cron:
-
-```bash
-0 8 * * 1 cd /path/to/stackscout && /path/to/uv run main.py digest >> reports/cron.log 2>&1
-```
+Without the web UI: `uv run main.py schedule` sends on the same schedule, and `uv run main.py digest` sends right now (cron-friendly).
 
 ## Telegram bot
 

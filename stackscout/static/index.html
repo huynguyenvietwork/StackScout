@@ -68,7 +68,7 @@
   .btn.link:hover { color: var(--text); }
   .btn.danger { color: var(--danger); border-color: var(--danger); }
   .btn:disabled { opacity: .55; cursor: default; }
-  textarea, input[type=text] { width: 100%; font: inherit; color: var(--text); background: var(--input); border: 1px solid var(--control);
+  textarea, input[type=text], input[type=password], input[type=email], input[type=time] { width: 100%; font: inherit; color: var(--text); background: var(--input); border: 1px solid var(--control);
                                border-radius: 12px; padding: 12px 14px; resize: vertical; }
   textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
@@ -111,6 +111,33 @@
   .mini { border: 1px solid var(--divider); border-radius: 12px; padding: 14px; }
   .mini p { margin: 6px 0 0; font-size: 14px; color: var(--body); }
   .chip.off { opacity: .5; }
+  .ntsched { align-items: flex-end; gap: 16px; margin-top: 0; }
+  .ntsched select, .ntsched input[type=time] { height: 46px; box-sizing: border-box; padding-top: 0; padding-bottom: 0; }
+  .ntsched .switchrow { height: 46px; }
+  .field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); min-width: 0; }
+  .field input, .field select { font-weight: 400; }
+  .switchrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
+  .switchrow input { width: 20px; height: 20px; accent-color: var(--accent); }
+  .ntstatus { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--soft); font-size: 14px; }
+  .ntstatus.ok { background: var(--ok-bg); color: var(--ok-fg); font-weight: 600; }
+  .ntstatus.warn { background: var(--accent-soft); color: var(--accent-strong); }
+  .nttitle { margin: 8px 4px 0; }
+  .ntcard { padding-top: 16px; padding-bottom: 16px; }
+  .nthead { display: flex; align-items: center; gap: 12px; }
+  .nthead .ico { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex: none; }
+  .ntname { flex: 1; min-width: 0; } .ntname > div { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .ntname small { display: block; margin-top: 2px; }
+  .ntbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--divider); }
+  @media (max-width: 760px) { .ntbody { grid-template-columns: minmax(0, 1fr); } }
+  .ntsteps h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .ntsteps ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--body); }
+  .ntsteps code { background: var(--soft); border: 1px solid var(--border); border-radius: 6px; padding: 0 5px; font-size: 13px; }
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .fields .field.wide { grid-column: 1 / -1; }
+  @media (max-width: 520px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+  .payload { margin-top: 12px; font-size: 13px; } .payload pre { background: var(--soft); padding: 10px; border-radius: 10px; overflow-x: auto; font-size: 12px; }
+  .ntlog { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+  .ntlog td { padding: 8px 6px; border-top: 1px solid var(--divider); vertical-align: top; }
+  .ntlog td.ok { color: var(--ok-fg); } .ntlog td.bad { color: var(--danger); overflow-wrap: anywhere; }
   .card.update { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 12px; background: var(--soft); border: 1px solid var(--border); flex-wrap: wrap; }
   .seg button { font: inherit; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
@@ -295,10 +322,10 @@ vi: {
   "conf.high": "cao", "conf.medium": "trung bình", "conf.low": "thấp",
   "nav.compare": "So với stack", "ctab.title": "So với skill hiện tại của bạn", "ctab.hint": "Công nghệ mới tuần này được chia theo skill cùng loại trong hồ sơ và tự so sánh. Bấm ⋯ để so với công cụ khác.", "ctab.progress": "Đang tự so sánh {done}/{total}… (mỗi cái khoảng 1–2 phút, bạn cứ xem trước những cái đã xong)", "ctab.allDone": "Đã so sánh xong {n} công nghệ với stack của bạn", "ctab.queued": "Đang chờ so sánh với {tool}…", "ctab.start": "So sánh với {tool}", "ctab.empty": "Tuần này chưa có công nghệ mới cùng loại với skill nào của bạn.", "ctab.skills": "Chia theo skill", "ctab.allSkills": "Tất cả skill", "ctab.count": "{n} công nghệ mới", "ctab.goto": "Xem so sánh →",
   "mk.button": "So với đối thủ", "mk.ready": "So với {n} đối thủ: {names}", "mk.loading": "Đang tìm 3–5 đối thủ mạnh nhất và bài so sánh… (khoảng 1–2 phút)", "mk.queued": "Đang chờ so sánh với các đối thủ…", "mk.kicker": "So với đối thủ mạnh nhất", "mk.pros": "Hơn {rival}", "mk.cons": "Kém {rival}", "mk.pick": "Nên chọn:", "mk.none": "Chưa tìm được bài so sánh có nguồn. Theo dõi tiếp.", "mk.insufficient": "Chưa đủ dữ liệu (dưới 2 nguồn), theo dõi tiếp.", "mk.open": "Xem so sánh {name} với đối thủ",
-  "prof.privacy": "Chỉ lưu tên công nghệ, công cụ, framework và mức độ. Không lưu tên dự án, repo hay dự án dùng để làm gì.",
-  "notify.title": "Thông báo hằng tuần", "notify.hint": "Bản tin được gửi tự động mỗi tuần qua các kênh bên dưới, theo ngôn ngữ bạn chọn. Kênh được cấu hình trong file .env (xem README).", "notify.none": "Chưa cấu hình kênh nào. Thêm TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL hoặc STACKSCOUT_WEBHOOK_URL vào .env rồi khởi động lại.", "notify.test": "Gửi thử bản tin mới nhất", "notify.sending": "Đang gửi…", "notify.sent": "Đã gửi qua {list}", "notify.partial": "Có kênh gửi lỗi: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "prof.privacy": "Chỉ lưu tên công nghệ, công cụ, framework và mức độ. Không lưu tên dự án, repo hay dự án dùng để làm gì.", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
   "demo.banner": "Bản demo: dữ liệu mẫu của một lập trình viên giả định, chỉ xem.", "demo.install": "Cài StackScout →", "demo.waitlist": "Muốn bản online? Đăng ký chờ →", "demo.readonly": "Bản demo chỉ xem. Cài StackScout để chạy với stack của bạn.",
-  "upd.title": "Cập nhật hồ sơ", "upd.import": "Nhập từ code / CV"
+  "upd.title": "Cập nhật hồ sơ", "upd.import": "Nhập từ code / CV",
+  "nav.notify": "Thông báo", "nt.schedTitle": "Lịch gửi bản tin", "nt.schedHint": "Mỗi tuần, đúng giờ này, StackScout tự chạy radar, so sánh với stack của bạn rồi gửi bản tin qua các kênh đang bật bên dưới.", "nt.auto": "Tự gửi mỗi tuần", "nt.day": "Ngày", "nt.time": "Giờ", "nt.saved": "Đã lưu lịch gửi", "nt.next": "Lần gửi tới: {when} ({tz})", "nt.noChannel": "Chưa có kênh nào được bật. Thiết lập ít nhất một kênh bên dưới để nhận bản tin.", "nt.off": "Đang tắt tự gửi. Bạn vẫn có thể gửi tay bằng nút bên dưới.", "nt.serverNote": "Máy chạy StackScout (lệnh web hoặc Docker) cần đang bật vào giờ này. Nếu máy tắt, bản tin sẽ được gửi ngay khi máy bật lại trong tuần.", "nt.sendNow": "Gửi bản tin mới nhất ngay", "nt.sending": "Đang gửi…", "nt.sentNow": "Đã gửi qua {list}", "nt.partial": "Có kênh gửi lỗi: {list}", "nt.channelsTitle": "Kênh nhận thông báo", "nt.channelsHint": "Bật bao nhiêu kênh cũng được. Mật khẩu và token chỉ lưu trên máy của bạn và không bao giờ hiện lại trên trang.", "nt.st.on": "đang bật", "nt.st.off": "đã thiết lập, đang tắt", "nt.st.none": "chưa thiết lập", "nt.toggle": "Bật/tắt {ch}", "nt.needSetup": "Thiết lập trước rồi mới bật được", "nt.setup": "Thiết lập", "nt.hide": "Thu gọn", "nt.howto": "Cách thiết lập", "nt.saveCh": "Lưu", "nt.savedCh": "Đã lưu {ch}", "nt.test": "Lưu và gửi thử", "nt.testOk": "Đã gửi tin thử qua {ch}. Kiểm tra xem bạn đã nhận được chưa.", "nt.secretSet": "Đã lưu ({hint}). Để trống nếu không đổi", "nt.fromEnv": "Đang lấy từ file .env", "nt.findChat": "Tìm chat ID", "nt.pickChat": "Chọn đoạn chat:", "nt.noChats": "Chưa thấy tin nhắn nào. Mở bot trong Telegram, bấm Start (hoặc gửi một tin), rồi bấm lại.", "nt.preset": "Mẫu nhanh:", "nt.p.gmail": "Gmail", "nt.p.outlook": "Outlook / Microsoft 365", "nt.p.sendgrid": "SendGrid", "nt.sec.starttls": "STARTTLS (cổng 587)", "nt.sec.ssl": "SSL/TLS (cổng 465)", "nt.sec.none": "Không mã hoá", "nt.payload": "Dữ liệu gửi đi (JSON)", "nt.f.token": "Bot token", "nt.f.chat_id": "Chat ID", "nt.f.host": "Máy chủ SMTP", "nt.f.port": "Cổng", "nt.f.security": "Bảo mật", "nt.f.user": "Tên đăng nhập", "nt.f.password": "Mật khẩu (App Password)", "nt.f.sender": "Người gửi", "nt.f.to": "Gửi tới email", "nt.f.url": "Webhook URL", "nt.f.header": "Header xác thực (tuỳ chọn)", "nt.desc.telegram": "Nhận bản tin trong chat riêng hoặc một nhóm Telegram.", "nt.desc.email": "Email HTML gọn gàng, đọc được trên mọi ứng dụng mail.", "nt.desc.slack": "Đăng bản tin vào một kênh Slack của team.", "nt.desc.discord": "Đăng bản tin vào một kênh Discord.", "nt.desc.webhook": "Gửi JSON tới n8n, Zapier, Make hoặc dịch vụ của bạn.", "nt.telegram.steps": "Trong Telegram, mở @BotFather (https://t.me/BotFather) và gửi `/newbot`.\nĐặt tên cho bot, BotFather sẽ trả về một token dạng `123456789:AA…`. Dán vào ô Bot token.\nMở bot vừa tạo và bấm Start. Muốn nhận trong nhóm: thêm bot vào nhóm rồi gửi một tin bất kỳ.\nBấm \"Tìm chat ID\" và chọn đoạn chat của bạn.\nBấm \"Lưu và gửi thử\": bạn sẽ nhận một tin xác nhận.", "nt.email.steps": "Chọn mẫu nhanh cho nhà cung cấp email của bạn, hoặc tự nhập máy chủ SMTP.\nGmail: bật xác minh 2 bước rồi tạo App Password tại https://myaccount.google.com/apppasswords. Dùng mật khẩu 16 ký tự đó, không dùng mật khẩu Gmail.\nOutlook / Microsoft 365: dùng email và mật khẩu (hoặc App Password nếu bật xác minh 2 bước); quản trị viên cần cho phép SMTP AUTH.\nNhập email nhận bản tin, rồi bấm \"Lưu và gửi thử\".", "nt.slack.steps": "Mở https://api.slack.com/apps và bấm Create New App → From scratch, chọn workspace.\nVào Incoming Webhooks, bật Activate Incoming Webhooks.\nBấm Add New Webhook to Workspace, chọn kênh sẽ nhận bản tin.\nCopy Webhook URL (bắt đầu bằng `https://hooks.slack.com/`) và dán vào bên dưới.", "nt.discord.steps": "Mở Discord, vào Server Settings → Integrations → Webhooks (cần quyền Manage Webhooks).\nBấm New Webhook, đặt tên và chọn kênh sẽ nhận bản tin.\nBấm Copy Webhook URL và dán vào bên dưới.", "nt.webhook.steps": "Tạo một URL nhận POST JSON, ví dụ Webhook node của n8n, Catch Hook của Zapier hoặc Custom webhook của Make.\nDán URL vào bên dưới. Nếu dịch vụ cần xác thực, thêm header dạng `Authorization: Bearer <token>`.\nMỗi tuần StackScout gửi một POST với nội dung như mẫu bên dưới.", "nt.logTitle": "Nhật ký gửi", "nt.logEmpty": "Chưa gửi lần nào.", "nt.k.digest": "Tự động", "nt.k.manual": "Gửi tay", "nt.k.test": "Gửi thử", "nt.ok": "đã gửi"
 },
 en: {
   "app.tagline": "New tech, matched to your stack.",
@@ -380,10 +407,10 @@ en: {
   "conf.high": "high", "conf.medium": "medium", "conf.low": "low",
   "nav.compare": "Vs. my stack", "ctab.title": "Compared with your current skills", "ctab.hint": "This week's new technologies, grouped by the skill of the same kind in your profile and compared automatically. Use ⋯ to compare with another tool.", "ctab.progress": "Comparing automatically {done}/{total}… (about 1–2 minutes each; finished ones are ready to read)", "ctab.allDone": "Compared {n} technologies with your stack", "ctab.queued": "Waiting to compare with {tool}…", "ctab.start": "Compare with {tool}", "ctab.empty": "No new technology this week matches any of your skills.", "ctab.skills": "By skill", "ctab.allSkills": "All skills", "ctab.count": "{n} new", "ctab.goto": "See comparisons →",
   "mk.button": "Compare with rivals", "mk.ready": "Vs. {n} rivals: {names}", "mk.loading": "Finding the 3–5 strongest rivals and comparisons… (about 1–2 minutes)", "mk.queued": "Waiting to compare with rivals…", "mk.kicker": "Vs. the strongest rivals", "mk.pros": "Better than {rival}", "mk.cons": "Worse than {rival}", "mk.pick": "Which to pick:", "mk.none": "No sourced comparison found yet. Keep watching.", "mk.insufficient": "Not enough data (fewer than 2 sources), keep watching.", "mk.open": "Compare {name} with its rivals",
-  "prof.privacy": "Only technology, tool and framework names and your level are stored. No project or repo names, nor what they are for.",
-  "notify.title": "Weekly notifications", "notify.hint": "The digest goes out every week on the channels below, in your language. Channels are configured in the .env file (see the README).", "notify.none": "No channel configured yet. Add TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL or STACKSCOUT_WEBHOOK_URL to .env and restart.", "notify.test": "Send the latest digest now", "notify.sending": "Sending…", "notify.sent": "Sent on {list}", "notify.partial": "Some channels failed: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "prof.privacy": "Only technology, tool and framework names and your level are stored. No project or repo names, nor what they are for.", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
   "demo.banner": "Demo: sample data for a made-up developer, read-only.", "demo.install": "Install StackScout →", "demo.waitlist": "Want it hosted? Join the waitlist →", "demo.readonly": "This demo is read-only. Install StackScout to run it on your stack.",
-  "upd.title": "Update your profile", "upd.import": "Import from code / CV"
+  "upd.title": "Update your profile", "upd.import": "Import from code / CV",
+  "nav.notify": "Notifications", "nt.schedTitle": "Delivery schedule", "nt.schedHint": "Every week at this time, StackScout runs the radar, compares with your stack and sends the digest on the channels turned on below.", "nt.auto": "Send every week", "nt.day": "Day", "nt.time": "Time", "nt.saved": "Schedule saved", "nt.next": "Next digest: {when} ({tz})", "nt.noChannel": "No channel is on yet. Set up at least one channel below to receive the digest.", "nt.off": "Weekly sending is off. You can still send it by hand below.", "nt.serverNote": "The machine running StackScout (web or Docker) must be on at that time. If it was off, the digest goes out as soon as it is back during the week.", "nt.sendNow": "Send the latest digest now", "nt.sending": "Sending…", "nt.sentNow": "Sent on {list}", "nt.partial": "Some channels failed: {list}", "nt.channelsTitle": "Channels", "nt.channelsHint": "Turn on as many as you like. Passwords and tokens stay on your machine and are never shown on the page again.", "nt.st.on": "on", "nt.st.off": "set up, off", "nt.st.none": "not set up", "nt.toggle": "Turn {ch} on or off", "nt.needSetup": "Set it up first", "nt.setup": "Set up", "nt.hide": "Close", "nt.howto": "How to set it up", "nt.saveCh": "Save", "nt.savedCh": "{ch} saved", "nt.test": "Save and send a test", "nt.testOk": "Test message sent on {ch}. Check that it arrived.", "nt.secretSet": "Saved ({hint}). Leave empty to keep it", "nt.fromEnv": "Taken from the .env file", "nt.findChat": "Find chat ID", "nt.pickChat": "Pick the chat:", "nt.noChats": "No message yet. Open the bot in Telegram, press Start (or send a message), then try again.", "nt.preset": "Presets:", "nt.p.gmail": "Gmail", "nt.p.outlook": "Outlook / Microsoft 365", "nt.p.sendgrid": "SendGrid", "nt.sec.starttls": "STARTTLS (port 587)", "nt.sec.ssl": "SSL/TLS (port 465)", "nt.sec.none": "None", "nt.payload": "What is sent (JSON)", "nt.f.token": "Bot token", "nt.f.chat_id": "Chat ID", "nt.f.host": "SMTP server", "nt.f.port": "Port", "nt.f.security": "Security", "nt.f.user": "Username", "nt.f.password": "Password (app password)", "nt.f.sender": "From", "nt.f.to": "Send to", "nt.f.url": "Webhook URL", "nt.f.header": "Auth header (optional)", "nt.desc.telegram": "Get the digest in a private chat or a Telegram group.", "nt.desc.email": "A clean HTML email that reads well in any mail app.", "nt.desc.slack": "Post the digest to a channel in your Slack workspace.", "nt.desc.discord": "Post the digest to a Discord channel.", "nt.desc.webhook": "Send JSON to n8n, Zapier, Make or your own service.", "nt.telegram.steps": "In Telegram, open @BotFather (https://t.me/BotFather) and send `/newbot`.\nName your bot; BotFather replies with a token like `123456789:AA…`. Paste it into Bot token.\nOpen your new bot and press Start. For a group: add the bot to the group and send any message.\nClick \"Find chat ID\" and pick your chat.\nClick \"Save and send a test\": a confirmation message arrives.", "nt.email.steps": "Pick the preset for your email provider, or type your SMTP server.\nGmail: turn on 2-Step Verification, then create an app password at https://myaccount.google.com/apppasswords. Use that 16-character password, not your Gmail password.\nOutlook / Microsoft 365: your email and password (or an app password with 2-step verification); an admin may need to allow SMTP AUTH.\nEnter the address that should receive the digest, then click \"Save and send a test\".", "nt.slack.steps": "Open https://api.slack.com/apps and click Create New App → From scratch, then pick your workspace.\nGo to Incoming Webhooks and turn on Activate Incoming Webhooks.\nClick Add New Webhook to Workspace and pick the channel for the digest.\nCopy the Webhook URL (it starts with `https://hooks.slack.com/`) and paste it below.", "nt.discord.steps": "In Discord, open Server Settings → Integrations → Webhooks (you need the Manage Webhooks permission).\nClick New Webhook, name it and pick the channel for the digest.\nClick Copy Webhook URL and paste it below.", "nt.webhook.steps": "Create a URL that accepts a JSON POST: an n8n Webhook node, a Zapier Catch Hook or a Make custom webhook.\nPaste it below. If it needs authentication, add a header like `Authorization: Bearer <token>`.\nEvery week StackScout sends one POST shaped like the sample below.", "nt.logTitle": "Delivery log", "nt.logEmpty": "Nothing sent yet.", "nt.k.digest": "Scheduled", "nt.k.manual": "By hand", "nt.k.test": "Test", "nt.ok": "sent"
 },
 zh: {
   "app.tagline": "新技术，对照你的技术栈。",
@@ -463,10 +490,10 @@ zh: {
   "conf.high": "高", "conf.medium": "中", "conf.low": "低",
   "nav.compare": "对比技术栈", "ctab.title": "与你当前技能的对比", "ctab.hint": "本周新技术按你档案中同类技能分组，并自动对比。点击 ⋯ 可与其他工具对比。", "ctab.progress": "正在自动对比 {done}/{total}…（每项约 1–2 分钟，已完成的可以先看）", "ctab.allDone": "已完成 {n} 项技术与你技术栈的对比", "ctab.queued": "等待与 {tool} 对比…", "ctab.start": "与 {tool} 对比", "ctab.empty": "本周没有与你任何技能同类的新技术。", "ctab.skills": "按技能", "ctab.allSkills": "全部技能", "ctab.count": "{n} 项新技术", "ctab.goto": "查看对比 →",
   "mk.button": "与竞品对比", "mk.ready": "与 {n} 个竞品对比：{names}", "mk.loading": "正在查找 3–5 个最强竞品及对比文章…（约 1–2 分钟）", "mk.queued": "等待与竞品对比…", "mk.kicker": "与最强竞品对比", "mk.pros": "优于 {rival}", "mk.cons": "不如 {rival}", "mk.pick": "怎么选：", "mk.none": "暂未找到有来源的对比。继续关注。", "mk.insufficient": "数据不足（少于 2 个来源），继续关注。", "mk.open": "查看 {name} 与竞品的对比",
-  "prof.privacy": "只保存技术、工具、框架名称和熟练程度。不保存项目名、仓库名，也不保存项目用途。",
-  "notify.title": "每周通知", "notify.hint": "简报每周通过以下渠道自动发送，使用你选择的语言。渠道在 .env 文件中配置（见 README）。", "notify.none": "尚未配置任何渠道。请在 .env 中添加 TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL 或 STACKSCOUT_WEBHOOK_URL 后重启。", "notify.test": "立即发送最新简报", "notify.sending": "正在发送…", "notify.sent": "已通过 {list} 发送", "notify.partial": "部分渠道发送失败：{list}", "ch.telegram": "Telegram", "ch.email": "邮件", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "prof.privacy": "只保存技术、工具、框架名称和熟练程度。不保存项目名、仓库名，也不保存项目用途。", "ch.telegram": "Telegram", "ch.email": "邮件", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
   "demo.banner": "演示：虚构开发者的示例数据，只读。", "demo.install": "安装 StackScout →", "demo.waitlist": "想要在线版？加入等候名单 →", "demo.readonly": "演示为只读。安装 StackScout 以用于你的技术栈。",
-  "upd.title": "更新档案", "upd.import": "从代码 / 简历导入"
+  "upd.title": "更新档案", "upd.import": "从代码 / 简历导入",
+  "nav.notify": "通知", "nt.schedTitle": "发送时间", "nt.schedHint": "每周到这个时间，StackScout 会运行雷达、与你的技术栈对比，然后通过下方已开启的渠道发送简报。", "nt.auto": "每周自动发送", "nt.day": "星期", "nt.time": "时间", "nt.saved": "已保存发送时间", "nt.next": "下次发送：{when}（{tz}）", "nt.noChannel": "还没有开启任何渠道。请在下方至少设置一个渠道来接收简报。", "nt.off": "已关闭每周自动发送。你仍可以用下方按钮手动发送。", "nt.serverNote": "运行 StackScout 的机器（web 或 Docker）需要在这个时间开着。如果当时关机，开机后会在本周内立即补发。", "nt.sendNow": "立即发送最新简报", "nt.sending": "正在发送…", "nt.sentNow": "已通过 {list} 发送", "nt.partial": "部分渠道发送失败：{list}", "nt.channelsTitle": "通知渠道", "nt.channelsHint": "可以开启任意多个渠道。密码和令牌只保存在你的机器上，不会再显示在页面上。", "nt.st.on": "已开启", "nt.st.off": "已设置，已关闭", "nt.st.none": "未设置", "nt.toggle": "开启/关闭 {ch}", "nt.needSetup": "请先完成设置", "nt.setup": "设置", "nt.hide": "收起", "nt.howto": "设置方法", "nt.saveCh": "保存", "nt.savedCh": "已保存 {ch}", "nt.test": "保存并发送测试", "nt.testOk": "已通过 {ch} 发送测试消息，请确认是否收到。", "nt.secretSet": "已保存（{hint}）。不修改请留空", "nt.fromEnv": "取自 .env 文件", "nt.findChat": "查找 Chat ID", "nt.pickChat": "选择对话：", "nt.noChats": "还没有消息。请在 Telegram 打开机器人并点击 Start（或发送一条消息），然后重试。", "nt.preset": "快速设置：", "nt.p.gmail": "Gmail", "nt.p.outlook": "Outlook / Microsoft 365", "nt.p.sendgrid": "SendGrid", "nt.sec.starttls": "STARTTLS（端口 587）", "nt.sec.ssl": "SSL/TLS（端口 465）", "nt.sec.none": "不加密", "nt.payload": "发送内容（JSON）", "nt.f.token": "机器人令牌", "nt.f.chat_id": "Chat ID", "nt.f.host": "SMTP 服务器", "nt.f.port": "端口", "nt.f.security": "安全", "nt.f.user": "用户名", "nt.f.password": "密码（应用专用密码）", "nt.f.sender": "发件人", "nt.f.to": "收件邮箱", "nt.f.url": "Webhook URL", "nt.f.header": "认证请求头（可选）", "nt.desc.telegram": "在私聊或 Telegram 群组中接收简报。", "nt.desc.email": "排版整洁的 HTML 邮件，任何邮件应用都能阅读。", "nt.desc.slack": "把简报发到 Slack 工作区的某个频道。", "nt.desc.discord": "把简报发到 Discord 频道。", "nt.desc.webhook": "以 JSON 发送到 n8n、Zapier、Make 或你自己的服务。", "nt.telegram.steps": "在 Telegram 中打开 @BotFather（https://t.me/BotFather），发送 `/newbot`。\n给机器人起名，BotFather 会回复形如 `123456789:AA…` 的令牌，粘贴到“机器人令牌”。\n打开新机器人并点击 Start。若要在群组接收：把机器人加入群组并发送任意消息。\n点击“查找 Chat ID”并选择你的对话。\n点击“保存并发送测试”，你会收到一条确认消息。", "nt.email.steps": "选择你的邮箱服务商的快速设置，或自行填写 SMTP 服务器。\nGmail：开启两步验证，然后在 https://myaccount.google.com/apppasswords 创建应用专用密码。请使用这个 16 位密码，而不是 Gmail 密码。\nOutlook / Microsoft 365：使用邮箱和密码（开启两步验证时使用应用密码）；管理员可能需要允许 SMTP AUTH。\n填写接收简报的邮箱，然后点击“保存并发送测试”。", "nt.slack.steps": "打开 https://api.slack.com/apps，点击 Create New App → From scratch，选择工作区。\n进入 Incoming Webhooks，开启 Activate Incoming Webhooks。\n点击 Add New Webhook to Workspace，选择接收简报的频道。\n复制 Webhook URL（以 `https://hooks.slack.com/` 开头）并粘贴到下方。", "nt.discord.steps": "在 Discord 打开 服务器设置 → 整合 → Webhooks（需要“管理 Webhooks”权限）。\n点击“新建 Webhook”，命名并选择接收简报的频道。\n点击“复制 Webhook URL”，粘贴到下方。", "nt.webhook.steps": "准备一个接收 JSON POST 的 URL，例如 n8n 的 Webhook 节点、Zapier 的 Catch Hook 或 Make 的自定义 webhook。\n粘贴到下方。如需认证，可添加形如 `Authorization: Bearer <token>` 的请求头。\nStackScout 每周发送一次 POST，内容格式见下方示例。", "nt.logTitle": "发送记录", "nt.logEmpty": "还没有发送过。", "nt.k.digest": "定时", "nt.k.manual": "手动", "nt.k.test": "测试", "nt.ok": "已发送"
 },
 ja: {
   "app.tagline": "新しい技術を、あなたのスタックと照らし合わせて。",
@@ -548,10 +575,10 @@ ja: {
   "conf.high": "高", "conf.medium": "中", "conf.low": "低",
   "nav.compare": "スタックと比較", "ctab.title": "今のスキルとの比較", "ctab.hint": "今週の新しい技術を、プロフィール内の同種のスキルごとに分けて自動で比較します。⋯ で別のツールとも比較できます。", "ctab.progress": "自動比較中 {done}/{total}…（1 件約 1〜2 分。終わったものから読めます）", "ctab.allDone": "{n} 件の技術をスタックと比較しました", "ctab.queued": "{tool} との比較を待機中…", "ctab.start": "{tool} と比較", "ctab.empty": "今週はあなたのスキルと同種の新しい技術はありません。", "ctab.skills": "スキル別", "ctab.allSkills": "すべてのスキル", "ctab.count": "新技術 {n} 件", "ctab.goto": "比較を見る →",
   "mk.button": "競合と比較", "mk.ready": "競合 {n} 件と比較：{names}", "mk.loading": "最も強い競合 3〜5 件と比較記事を探しています…（約 1〜2 分）", "mk.queued": "競合との比較を待機中…", "mk.kicker": "最も強い競合との比較", "mk.pros": "{rival} より優れる点", "mk.cons": "{rival} より劣る点", "mk.pick": "選び方：", "mk.none": "出典のある比較がまだ見つかりません。引き続き注目。", "mk.insufficient": "データ不足（出典 2 件未満）。引き続き注目。", "mk.open": "{name} を競合と比較",
-  "prof.privacy": "保存するのは技術・ツール・フレームワーク名と習熟度だけです。プロジェクト名やリポジトリ名、用途は保存しません。",
-  "notify.title": "毎週の通知", "notify.hint": "ダイジェストは毎週、選んだ言語で下のチャネルに自動送信されます。チャネルは .env ファイルで設定します（README 参照）。", "notify.none": "チャネルが未設定です。.env に TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL、STACKSCOUT_WEBHOOK_URL のいずれかを追加して再起動してください。", "notify.test": "最新のダイジェストを今すぐ送信", "notify.sending": "送信中…", "notify.sent": "{list} に送信しました", "notify.partial": "一部のチャネルで失敗しました：{list}", "ch.telegram": "Telegram", "ch.email": "メール", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "prof.privacy": "保存するのは技術・ツール・フレームワーク名と習熟度だけです。プロジェクト名やリポジトリ名、用途は保存しません。", "ch.telegram": "Telegram", "ch.email": "メール", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
   "demo.banner": "デモ：架空の開発者のサンプルデータ（閲覧のみ）。", "demo.install": "StackScout をインストール →", "demo.waitlist": "ホスト版が欲しい？ウェイトリストへ →", "demo.readonly": "このデモは閲覧専用です。あなたのスタックで使うには StackScout をインストールしてください。",
-  "upd.title": "プロフィールを更新", "upd.import": "コード / 履歴書から取り込む"
+  "upd.title": "プロフィールを更新", "upd.import": "コード / 履歴書から取り込む",
+  "nav.notify": "通知", "nt.schedTitle": "配信スケジュール", "nt.schedHint": "毎週この時間に StackScout がレーダーを実行し、あなたのスタックと比較して、下で有効にしたチャネルへダイジェストを送ります。", "nt.auto": "毎週自動で送る", "nt.day": "曜日", "nt.time": "時刻", "nt.saved": "スケジュールを保存しました", "nt.next": "次回の配信：{when}（{tz}）", "nt.noChannel": "有効なチャネルがありません。ダイジェストを受け取るには、下で少なくとも 1 つ設定してください。", "nt.off": "毎週の自動配信はオフです。下のボタンから手動で送れます。", "nt.serverNote": "StackScout を動かすマシン（web または Docker）がその時刻に起動している必要があります。停止していた場合は、その週のうちに起動した時点で送信されます。", "nt.sendNow": "最新のダイジェストを今すぐ送る", "nt.sending": "送信中…", "nt.sentNow": "{list} に送信しました", "nt.partial": "一部のチャネルで失敗しました：{list}", "nt.channelsTitle": "通知チャネル", "nt.channelsHint": "いくつでも有効にできます。パスワードやトークンはあなたのマシンにのみ保存され、ページに再表示されることはありません。", "nt.st.on": "オン", "nt.st.off": "設定済み・オフ", "nt.st.none": "未設定", "nt.toggle": "{ch} のオン／オフ", "nt.needSetup": "先に設定してください", "nt.setup": "設定", "nt.hide": "閉じる", "nt.howto": "設定方法", "nt.saveCh": "保存", "nt.savedCh": "{ch} を保存しました", "nt.test": "保存してテスト送信", "nt.testOk": "{ch} にテストメッセージを送りました。届いたか確認してください。", "nt.secretSet": "保存済み（{hint}）。変更しない場合は空欄のまま", "nt.fromEnv": ".env ファイルの値を使用中", "nt.findChat": "チャット ID を探す", "nt.pickChat": "チャットを選択：", "nt.noChats": "まだメッセージがありません。Telegram でボットを開いて Start を押す（またはメッセージを送る）と表示されます。", "nt.preset": "プリセット：", "nt.p.gmail": "Gmail", "nt.p.outlook": "Outlook / Microsoft 365", "nt.p.sendgrid": "SendGrid", "nt.sec.starttls": "STARTTLS（ポート 587）", "nt.sec.ssl": "SSL/TLS（ポート 465）", "nt.sec.none": "暗号化なし", "nt.payload": "送信内容（JSON）", "nt.f.token": "ボットトークン", "nt.f.chat_id": "チャット ID", "nt.f.host": "SMTP サーバー", "nt.f.port": "ポート", "nt.f.security": "セキュリティ", "nt.f.user": "ユーザー名", "nt.f.password": "パスワード（アプリパスワード）", "nt.f.sender": "差出人", "nt.f.to": "送信先メール", "nt.f.url": "Webhook URL", "nt.f.header": "認証ヘッダー（任意）", "nt.desc.telegram": "個人チャットや Telegram グループでダイジェストを受け取ります。", "nt.desc.email": "どのメールアプリでも読みやすい HTML メールです。", "nt.desc.slack": "Slack ワークスペースのチャンネルに投稿します。", "nt.desc.discord": "Discord のチャンネルに投稿します。", "nt.desc.webhook": "n8n、Zapier、Make や独自のサービスへ JSON を送ります。", "nt.telegram.steps": "Telegram で @BotFather（https://t.me/BotFather）を開き、`/newbot` を送ります。\nボット名を決めると、`123456789:AA…` のようなトークンが届きます。ボットトークン欄に貼り付けます。\n作成したボットを開いて Start を押します。グループで受け取る場合は、ボットをグループに追加して何かメッセージを送ります。\n「チャット ID を探す」を押して、チャットを選びます。\n「保存してテスト送信」を押すと確認メッセージが届きます。", "nt.email.steps": "メールプロバイダーのプリセットを選ぶか、SMTP サーバーを入力します。\nGmail：2 段階認証を有効にし、https://myaccount.google.com/apppasswords でアプリパスワードを作成します。Gmail のパスワードではなく、その 16 文字のパスワードを使います。\nOutlook / Microsoft 365：メールアドレスとパスワード（2 段階認証時はアプリパスワード）。管理者が SMTP AUTH を許可する必要がある場合があります。\nダイジェストを受け取るアドレスを入力し、「保存してテスト送信」を押します。", "nt.slack.steps": "https://api.slack.com/apps を開き、Create New App → From scratch でワークスペースを選びます。\nIncoming Webhooks で Activate Incoming Webhooks をオンにします。\nAdd New Webhook to Workspace を押し、ダイジェストを送るチャンネルを選びます。\nWebhook URL（`https://hooks.slack.com/` で始まる）をコピーして下に貼り付けます。", "nt.discord.steps": "Discord で サーバー設定 → 連携サービス → ウェブフック を開きます（ウェブフックの管理権限が必要）。\n新しいウェブフックを作成し、名前と送信先チャンネルを選びます。\nウェブフック URL をコピーして下に貼り付けます。", "nt.webhook.steps": "JSON の POST を受け取れる URL を用意します（n8n の Webhook ノード、Zapier の Catch Hook、Make のカスタム Webhook など）。\n下に貼り付けます。認証が必要なら `Authorization: Bearer <token>` のようなヘッダーを追加します。\nStackScout は毎週 1 回、下のサンプルの形で POST します。", "nt.logTitle": "配信履歴", "nt.logEmpty": "まだ送信していません。", "nt.k.digest": "定期", "nt.k.manual": "手動", "nt.k.test": "テスト", "nt.ok": "送信済み"
 },
 ko: {
   "app.tagline": "새로운 기술, 당신의 스택과 비교해서.",
@@ -633,10 +660,10 @@ ko: {
   "conf.high": "높음", "conf.medium": "보통", "conf.low": "낮음",
   "nav.compare": "스택과 비교", "ctab.title": "현재 스킬과의 비교", "ctab.hint": "이번 주 새 기술을 프로필의 같은 종류 스킬별로 나누어 자동으로 비교합니다. ⋯ 를 눌러 다른 도구와도 비교할 수 있습니다.", "ctab.progress": "자동 비교 중 {done}/{total}… (항목당 약 1~2분, 끝난 것부터 볼 수 있습니다)", "ctab.allDone": "기술 {n}개를 내 스택과 비교했습니다", "ctab.queued": "{tool}와(과) 비교 대기 중…", "ctab.start": "{tool}와(과) 비교", "ctab.empty": "이번 주에는 내 스킬과 같은 종류의 새 기술이 없습니다.", "ctab.skills": "스킬별", "ctab.allSkills": "모든 스킬", "ctab.count": "새 기술 {n}개", "ctab.goto": "비교 보기 →",
   "mk.button": "경쟁 제품과 비교", "mk.ready": "경쟁 제품 {n}개와 비교: {names}", "mk.loading": "가장 강한 경쟁 제품 3~5개와 비교 자료를 찾는 중… (약 1~2분)", "mk.queued": "경쟁 제품과 비교 대기 중…", "mk.kicker": "가장 강한 경쟁 제품과 비교", "mk.pros": "{rival}보다 나은 점", "mk.cons": "{rival}보다 부족한 점", "mk.pick": "선택 기준:", "mk.none": "출처가 있는 비교를 아직 찾지 못했습니다. 계속 지켜보세요.", "mk.insufficient": "데이터 부족(출처 2개 미만), 계속 지켜보세요.", "mk.open": "{name}을(를) 경쟁 제품과 비교",
-  "prof.privacy": "기술·도구·프레임워크 이름과 숙련도만 저장합니다. 프로젝트·저장소 이름이나 용도는 저장하지 않습니다.",
-  "notify.title": "주간 알림", "notify.hint": "다이제스트는 매주 선택한 언어로 아래 채널에 자동 발송됩니다. 채널은 .env 파일에서 설정합니다(README 참고).", "notify.none": "설정된 채널이 없습니다. .env에 TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL 또는 STACKSCOUT_WEBHOOK_URL을 추가하고 다시 시작하세요.", "notify.test": "최신 다이제스트 지금 보내기", "notify.sending": "보내는 중…", "notify.sent": "{list}(으)로 보냈습니다", "notify.partial": "일부 채널 전송 실패: {list}", "ch.telegram": "Telegram", "ch.email": "이메일", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "prof.privacy": "기술·도구·프레임워크 이름과 숙련도만 저장합니다. 프로젝트·저장소 이름이나 용도는 저장하지 않습니다.", "ch.telegram": "Telegram", "ch.email": "이메일", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
   "demo.banner": "데모: 가상의 개발자 샘플 데이터(읽기 전용).", "demo.install": "StackScout 설치 →", "demo.waitlist": "호스팅 버전이 필요하신가요? 대기자 등록 →", "demo.readonly": "이 데모는 읽기 전용입니다. 내 스택에서 쓰려면 StackScout를 설치하세요.",
-  "upd.title": "프로필 업데이트", "upd.import": "코드 / 이력서에서 가져오기"
+  "upd.title": "프로필 업데이트", "upd.import": "코드 / 이력서에서 가져오기",
+  "nav.notify": "알림", "nt.schedTitle": "발송 일정", "nt.schedHint": "매주 이 시간에 StackScout가 레이더를 실행하고 내 스택과 비교한 뒤, 아래에서 켠 채널로 다이제스트를 보냅니다.", "nt.auto": "매주 자동 발송", "nt.day": "요일", "nt.time": "시간", "nt.saved": "일정을 저장했습니다", "nt.next": "다음 발송: {when} ({tz})", "nt.noChannel": "켜진 채널이 없습니다. 다이제스트를 받으려면 아래에서 채널을 하나 이상 설정하세요.", "nt.off": "매주 자동 발송이 꺼져 있습니다. 아래 버튼으로 직접 보낼 수 있습니다.", "nt.serverNote": "StackScout를 실행하는 컴퓨터(web 또는 Docker)가 그 시간에 켜져 있어야 합니다. 꺼져 있었다면 그 주에 다시 켜지는 즉시 발송됩니다.", "nt.sendNow": "최신 다이제스트 지금 보내기", "nt.sending": "보내는 중…", "nt.sentNow": "{list}(으)로 보냈습니다", "nt.partial": "일부 채널 전송 실패: {list}", "nt.channelsTitle": "알림 채널", "nt.channelsHint": "원하는 만큼 켤 수 있습니다. 비밀번호와 토큰은 내 컴퓨터에만 저장되며 페이지에 다시 표시되지 않습니다.", "nt.st.on": "켜짐", "nt.st.off": "설정됨, 꺼짐", "nt.st.none": "설정 안 됨", "nt.toggle": "{ch} 켜기/끄기", "nt.needSetup": "먼저 설정하세요", "nt.setup": "설정", "nt.hide": "접기", "nt.howto": "설정 방법", "nt.saveCh": "저장", "nt.savedCh": "{ch} 저장됨", "nt.test": "저장하고 테스트 보내기", "nt.testOk": "{ch}(으)로 테스트 메시지를 보냈습니다. 도착했는지 확인하세요.", "nt.secretSet": "저장됨({hint}). 바꾸지 않으려면 비워 두세요", "nt.fromEnv": ".env 파일 값을 사용 중", "nt.findChat": "채팅 ID 찾기", "nt.pickChat": "채팅 선택:", "nt.noChats": "아직 메시지가 없습니다. 텔레그램에서 봇을 열고 Start를 누르거나 메시지를 보낸 뒤 다시 시도하세요.", "nt.preset": "빠른 설정:", "nt.p.gmail": "Gmail", "nt.p.outlook": "Outlook / Microsoft 365", "nt.p.sendgrid": "SendGrid", "nt.sec.starttls": "STARTTLS (포트 587)", "nt.sec.ssl": "SSL/TLS (포트 465)", "nt.sec.none": "암호화 안 함", "nt.payload": "보내는 내용 (JSON)", "nt.f.token": "봇 토큰", "nt.f.chat_id": "채팅 ID", "nt.f.host": "SMTP 서버", "nt.f.port": "포트", "nt.f.security": "보안", "nt.f.user": "사용자 이름", "nt.f.password": "비밀번호(앱 비밀번호)", "nt.f.sender": "보내는 사람", "nt.f.to": "받는 이메일", "nt.f.url": "Webhook URL", "nt.f.header": "인증 헤더(선택)", "nt.desc.telegram": "개인 채팅이나 텔레그램 그룹에서 다이제스트를 받습니다.", "nt.desc.email": "어떤 메일 앱에서도 잘 보이는 HTML 이메일입니다.", "nt.desc.slack": "Slack 워크스페이스의 채널에 게시합니다.", "nt.desc.discord": "Discord 채널에 게시합니다.", "nt.desc.webhook": "n8n, Zapier, Make 또는 내 서비스로 JSON을 보냅니다.", "nt.telegram.steps": "텔레그램에서 @BotFather(https://t.me/BotFather)를 열고 `/newbot`을 보냅니다.\n봇 이름을 정하면 `123456789:AA…` 형태의 토큰을 받습니다. 봇 토큰 칸에 붙여 넣으세요.\n새 봇을 열고 Start를 누릅니다. 그룹에서 받으려면 봇을 그룹에 추가하고 아무 메시지나 보내세요.\n‘채팅 ID 찾기’를 누르고 내 채팅을 선택합니다.\n‘저장하고 테스트 보내기’를 누르면 확인 메시지가 옵니다.", "nt.email.steps": "이메일 서비스의 빠른 설정을 고르거나 SMTP 서버를 직접 입력합니다.\nGmail: 2단계 인증을 켠 뒤 https://myaccount.google.com/apppasswords 에서 앱 비밀번호를 만드세요. Gmail 비밀번호가 아니라 16자리 앱 비밀번호를 사용합니다.\nOutlook / Microsoft 365: 이메일과 비밀번호(2단계 인증 시 앱 비밀번호). 관리자가 SMTP AUTH를 허용해야 할 수 있습니다.\n다이제스트를 받을 주소를 입력하고 ‘저장하고 테스트 보내기’를 누릅니다.", "nt.slack.steps": "https://api.slack.com/apps 를 열고 Create New App → From scratch로 워크스페이스를 선택합니다.\nIncoming Webhooks에서 Activate Incoming Webhooks를 켭니다.\nAdd New Webhook to Workspace를 누르고 다이제스트를 받을 채널을 고릅니다.\nWebhook URL(`https://hooks.slack.com/`으로 시작)을 복사해 아래에 붙여 넣습니다.", "nt.discord.steps": "Discord에서 서버 설정 → 연동 → 웹후크를 엽니다(웹후크 관리 권한 필요).\n새 웹후크를 만들고 이름과 받을 채널을 고릅니다.\n웹후크 URL 복사를 누르고 아래에 붙여 넣습니다.", "nt.webhook.steps": "JSON POST를 받을 URL을 준비합니다(n8n Webhook 노드, Zapier Catch Hook, Make 사용자 정의 웹후크 등).\n아래에 붙여 넣습니다. 인증이 필요하면 `Authorization: Bearer <token>` 같은 헤더를 추가하세요.\nStackScout는 매주 한 번 아래 예시 형태로 POST를 보냅니다.", "nt.logTitle": "발송 기록", "nt.logEmpty": "아직 보낸 적이 없습니다.", "nt.k.digest": "예약", "nt.k.manual": "직접", "nt.k.test": "테스트", "nt.ok": "보냄"
 }
 };
 
@@ -653,7 +680,7 @@ const state = {
   lang: "vi", theme: store.get("ss-theme") || (prefersDark() ? "dark" : "light"),
   meta: null, profile: null, view: "loading", tab: "radar", step: 0, answers: emptyAnswers(),
   draft: null, editing: false, busy: null, addPreview: null, importPreview: null,
-  confirmReset: false, confirmSourceReset: false, sources: null, notify: null,
+  confirmReset: false, confirmSourceReset: false, sources: null, notifyCfg: null, notifyOpen: null, chats: null,
   radar: null, reports: null, report: null, pollTimer: null, filter: "all",
   compares: {}, menuOpen: null, drawer: null, auto: null, autoTimer: null, skillFilter: "all", market: {},
 };
@@ -704,13 +731,32 @@ class ApiError extends Error {}
 // Demo build (docs/index.html): the page reads a static snapshot instead of a server.
 const DEMO = window.SS_DEMO || null;
 
+function demoNotify(D) {
+  const secret = hint => ({ set: true, hint });
+  const ch = (enabled, values, complete = true) => ({ enabled, switch: enabled, complete, from_env: [], values });
+  const next = new Date(); next.setDate(next.getDate() + ((8 - next.getDay()) % 7 || 7)); next.setHours(8, 0, 0, 0);
+  const at = d => new Date(Date.now() - d * 864e5).toISOString();
+  return {
+    schedule: { enabled: true, day: "mon", time: "08:00" }, next: next.toISOString(), tz: "UTC+07:00", has_report: true,
+    channels: {
+      telegram: ch(true, { token: secret("••••Qx2k"), chat_id: "123456789" }),
+      email: ch(true, { host: "smtp.gmail.com", port: "587", security: "starttls", user: "dev@example.com", password: secret("••••wxyz"), sender: "StackScout <dev@example.com>", to: "dev@example.com" }),
+      slack: ch(false, { url: secret("••••a1B2") }),
+      discord: ch(false, { url: { set: false, hint: "" } }, false),
+      webhook: ch(false, { url: { set: false, hint: "" }, header: { set: false, hint: "" } }, false),
+    },
+    log: [{ at: at(3), kind: "digest", channel: "telegram", ok: true }, { at: at(3), kind: "digest", channel: "email", ok: true },
+          { at: at(5), kind: "test", channel: "slack", ok: true }, { at: at(10), kind: "digest", channel: "telegram", ok: true }],
+  };
+}
+
 function demoApi(method, path, body) {
   const D = DEMO, p = path.split("?")[0];
   const routes = {
     "/api/meta": D.meta, "/api/profile": { profile: D.profile }, "/api/settings": { language: "en", chosen: false },
     "/api/radar/status": { running: false, step: "", error: null, week: D.report.week }, "/api/reports": { weeks: [D.report.week] },
     [`/api/reports/${D.report.week}`]: D.report, "/api/compare": { comparisons: D.comparisons }, "/api/market": { market: D.market },
-    "/api/sources": D.sources, "/api/notify": { channels: ["email", "slack", "discord"], all: ["telegram", "email", "slack", "discord", "webhook"] },
+    "/api/sources": D.sources, "/api/notify": demoNotify(D),
   };
   if (method === "GET" && p in routes) return structuredClone(routes[p]);
   if (p === "/api/compare/auto") return { running: false, week: D.report.week, total: 0, done: 0, active: [], failed: {} };
@@ -811,6 +857,7 @@ function headerView() {
         tab("radar", t("nav.radar"), () => { if (!state.reports) loadReports(); }),
         tab("compare", t("nav.compare"), () => { if (!state.reports) loadReports(); else ensureAuto(); }),
         tab("sources", t("nav.sources"), () => { if (!state.sources) loadSources(); }),
+        tab("notify", t("nav.notify"), () => { if (!state.notifyCfg) loadNotify(); }),
         tab("profile", t("nav.profile")),
       ],
       langSel, themeBtn))];
@@ -1097,34 +1144,161 @@ function sourcesTab() {
       h("p", { class: "hint" }, `${t("src.onCount", { n: on.length })} ${t("src.onHint")}`),
       on.length ? on.map(row) : h("p", { class: "muted" }, t("src.none"))),
     off.length > 0 && h("div", { class: "card" }, h("h2", {}, t("src.offTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.offHint")), off.map(row)),
-    notifyCard(),
   ];
 }
 
-// Channels are set in .env (no secret goes through the page); here they are listed and tested.
-async function loadNotify() { try { state.notify = await api("GET", "/api/notify"); } catch { state.notify = { channels: [], all: [] }; } render(); }
+// ---------------------------------------------------------------- notifications tab
+// Channels are set up here and stored on the server; secrets never come back
+// to the page (only "set" and their last 4 characters).
 
-function notifyCard() {
-  if (!state.notify) { loadNotify(); return h("div", { class: "card" }, loading(t("common.loading"))); }
-  const { channels, all } = state.notify;
-  const test = async () => {
-    state.busy = "notify"; render();
-    try {
-      const { results } = await api("POST", "/api/notify/test");
-      const failed = Object.entries(results).filter(([, e]) => e);
-      toast(failed.length ? t("notify.partial", { list: failed.map(([c, e]) => `${t("ch." + c)}: ${e}`).join("; ") })
-        : t("notify.sent", { list: Object.keys(results).map(c => t("ch." + c)).join(", ") }), { error: failed.length > 0 });
-    } catch (e) { toast(e.message, { error: true }); }
-    state.busy = null; render();
-  };
-  return h("div", { class: "card" }, h("h2", {}, t("notify.title")),
-    h("p", { class: "hint", style: "margin-top:4px" }, t("notify.hint")),
-    h("div", { class: "chips", style: "margin:10px 0" }, all.map(c => h("span", { class: "chip" + (channels.includes(c) ? "" : " off") },
-      channels.includes(c) ? "✓ " : "", t("ch." + c)))),
-    channels.length
-      ? (state.busy === "notify" ? loading(t("notify.sending"))
-        : h("button", { class: "btn", onclick: test, disabled: !(state.reports || []).length }, t("notify.test")))
-      : h("p", { class: "muted", style: "margin:0;font-size:13px" }, t("notify.none")));
+const NT_CHANNELS = ["telegram", "email", "slack", "discord", "webhook"];
+const NT_FIELDS = {
+  telegram: [["token", "password", "123456789:AA..."], ["chat_id", "text", "123456789"]],
+  email: [["host", "text", "smtp.gmail.com"], ["port", "text", "587"], ["security", "select"], ["user", "text", "you@gmail.com"],
+          ["password", "password", ""], ["sender", "text", "StackScout <you@gmail.com>"], ["to", "email", "you@example.com"]],
+  slack: [["url", "password", "https://hooks.slack.com/services/..."]],
+  discord: [["url", "password", "https://discord.com/api/webhooks/..."]],
+  webhook: [["url", "password", "https://n8n.example.com/webhook/..."], ["header", "password", "Authorization: Bearer ..."]],
+};
+const NT_ICON = {
+  telegram: '<path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/>',
+  email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  slack: '<rect x="4" y="10" width="7" height="3" rx="1.5"/><rect x="13" y="11" width="7" height="3" rx="1.5"/><rect x="10" y="4" width="3" height="7" rx="1.5"/><rect x="11" y="13" width="3" height="7" rx="1.5"/>',
+  discord: '<path d="M7 7c3-1.5 7-1.5 10 0l2 9c-2 2-4 2.5-5 2.5l-1-2h-2l-1 2c-1 0-3-.5-5-2.5z"/><circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="12.5" r="1"/>',
+  webhook: '<circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><circle cx="12" cy="6" r="2.5"/><path d="M8.5 17h7M10.8 8.2 7 15M13.2 8.2 17 15"/>',
+};
+const EMAIL_PRESETS = { gmail: ["smtp.gmail.com", "587", "starttls"], outlook: ["smtp.office365.com", "587", "starttls"],
+  sendgrid: ["smtp.sendgrid.net", "587", "starttls"] };
+const NT_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+async function loadNotify() {
+  try { state.notifyCfg = await api("GET", "/api/notify"); } catch (e) { toast(e.message, { error: true }); return; }
+  render();
+}
+// Day and date names come from the browser in the page's language.
+const weekdayName = d => new Intl.DateTimeFormat(state.lang, { weekday: "long" }).format(new Date(2026, 10, 16 + NT_DAYS.indexOf(d)));
+const whenText = iso => new Intl.DateTimeFormat(state.lang, { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+// Plain text with URLs and `code` turned into links and code spans.
+const rich = text => text.split(/(https?:\/\/[^\s)]+|`[^`]+`)/g).map(part =>
+  /^https?:\/\//.test(part) ? ext(part, part.replace(/^https?:\/\//, "")) : /^`.*`$/.test(part) ? h("code", {}, part.slice(1, -1)) : part);
+
+function scheduleCard(N) {
+  const s = N.schedule, anyOn = NT_CHANNELS.some(c => N.channels[c].enabled);
+  const on = h("input", { type: "checkbox", "aria-label": t("nt.auto") }); on.checked = s.enabled;
+  const day = h("select", { "aria-label": t("nt.day") }, NT_DAYS.map(d => h("option", { value: d }, weekdayName(d))));
+  day.value = s.day;
+  const time = h("input", { type: "time", value: s.time, "aria-label": t("nt.time"), style: "width:auto" });
+  const save = () => run(null, async () => {
+    state.notifyCfg = await api("PUT", "/api/notify", { schedule: { enabled: on.checked, day: day.value, time: time.value || s.time } });
+    toast(t("nt.saved"));
+  });
+  for (const el of [on, day, time]) el.addEventListener("change", save);
+  const status = !anyOn ? h("p", { class: "ntstatus warn" }, t("nt.noChannel"))
+    : !s.enabled ? h("p", { class: "ntstatus" }, t("nt.off"))
+    : N.next ? h("p", { class: "ntstatus ok" }, svg('<path d="M5 12l5 5L20 7"/>', 16), t("nt.next", { when: whenText(N.next), tz: N.tz })) : null;
+  const sendNow = () => run("ntsend", async () => {
+    const res = await api("POST", "/api/notify/send"); state.notifyCfg = res;
+    const failed = Object.entries(res.results).filter(([, e]) => e);
+    toast(failed.length ? t("nt.partial", { list: failed.map(([c, e]) => `${t("ch." + c)}: ${e}`).join("; ") })
+      : t("nt.sentNow", { list: Object.keys(res.results).map(c => t("ch." + c)).join(", ") }), { error: failed.length > 0 });
+  });
+  return h("div", { class: "card update" },
+    h("h2", {}, t("nt.schedTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("nt.schedHint")),
+    h("div", { class: "row ntsched" },
+      h("label", { class: "switchrow" }, on, h("span", {}, t("nt.auto"))),
+      h("label", { class: "field" }, h("span", {}, t("nt.day")), day),
+      h("label", { class: "field" }, h("span", {}, t("nt.time")), time)),
+    status,
+    h("p", { class: "muted", style: "font-size:13px;margin:8px 0 0" }, t("nt.serverNote")),
+    h("div", { class: "row", style: "margin-top:12px" },
+      state.busy === "ntsend" ? loading(t("nt.sending"))
+        : h("button", { class: "btn", disabled: !anyOn || !N.has_report, onclick: sendNow }, svg('<path d="M4 12l16-8-6 16-3-7z"/>', 16), t("nt.sendNow"))));
+}
+
+function channelCard(ch, C) {
+  const open = state.notifyOpen === ch;
+  const pill = C.enabled ? h("span", { class: "tag official" }, t("nt.st.on"))
+    : C.complete ? h("span", { class: "tag" }, t("nt.st.off")) : h("span", { class: "tag" }, t("nt.st.none"));
+  const sw = h("input", { type: "checkbox", "aria-label": t("nt.toggle", { ch: t("ch." + ch) }), disabled: !C.complete });
+  sw.checked = C.enabled;
+  sw.addEventListener("change", () => run(null, async () => {
+    state.notifyCfg = await api("PUT", "/api/notify", { channels: { [ch]: { enabled: sw.checked } } });
+  }));
+  const head = h("div", { class: "nthead" },
+    h("span", { class: "ico" }, svg(NT_ICON[ch], 20)),
+    h("div", { class: "ntname" }, h("div", {}, h("b", {}, t("ch." + ch)), pill), h("small", { class: "muted" }, t(`nt.desc.${ch}`))),
+    h("label", { class: "switchrow", title: C.complete ? "" : t("nt.needSetup") }, sw),
+    h("button", { class: "btn sm" + (open ? "" : " primary"), "aria-expanded": String(open),
+      onclick: () => { state.notifyOpen = open ? null : ch; state.chats = null; render(); } }, open ? t("nt.hide") : t("nt.setup")));
+  if (!open) return h("div", { class: "card ntcard" }, head);
+
+  const inputs = {};
+  const fields = NT_FIELDS[ch].map(([f, type, ph]) => {
+    const v = C.values[f], env = C.from_env.includes(f);
+    let input;
+    if (type === "select") {
+      input = h("select", {}, ["starttls", "ssl", "none"].map(o => h("option", { value: o }, t("nt.sec." + o))));
+      input.value = v || "starttls";
+    } else {
+      input = h("input", { type, autocomplete: "off", spellcheck: "false",
+        placeholder: (v && typeof v === "object" && v.set) ? t("nt.secretSet", { hint: v.hint }) : (ph || "") });
+      if (typeof v === "string") input.value = v;
+    }
+    if (env) input.disabled = true;
+    inputs[f] = input;
+    return h("label", { class: "field" + (type === "password" || type === "email" || f === "sender" ? " wide" : "") },
+      h("span", {}, t("nt.f." + f)), input, env && h("small", { class: "muted", style: "font-weight:400" }, t("nt.fromEnv")));
+  });
+  const values = () => Object.fromEntries(Object.entries(inputs).filter(([, el]) => !el.disabled).map(([f, el]) => [f, el.value.trim()]));
+  const save = async () => { state.notifyCfg = await api("PUT", "/api/notify", { channels: { [ch]: { ...values(), enabled: true } } }); };
+  const presets = ch === "email" && h("div", { class: "row", style: "margin:0 0 10px" }, h("span", { class: "muted", style: "font-size:13px" }, t("nt.preset")),
+    Object.entries(EMAIL_PRESETS).map(([name, [host, port, sec]]) => h("button", { class: "btn sm", onclick: () => {
+      inputs.host.value = host; inputs.port.value = port; inputs.security.value = sec;
+    } }, t("nt.p." + name))));
+  const chatList = h("div");
+  const findChat = ch === "telegram" && h("div", { style: "margin-top:10px" },
+    h("button", { class: "btn sm", onclick: () => run(null, async () => {
+      const { chats } = await api("POST", "/api/notify/telegram/chats", { token: inputs.token.disabled ? "" : inputs.token.value.trim() });
+      // Filled in place: a re-render would empty the token field the person just pasted.
+      chatList.replaceChildren(chats.length
+        ? h("div", { class: "row", style: "margin-top:8px" }, h("span", { class: "muted", style: "font-size:13px" }, t("nt.pickChat")),
+            chats.map(c => h("button", { class: "btn sm", onclick: () => { inputs.chat_id.value = c.id; } }, `${c.name} · ${c.id}`)))
+        : h("p", { class: "muted", style: "font-size:13px;margin:8px 0 0" }, t("nt.noChats")));
+    }) }, svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>', 15), t("nt.findChat")), chatList);
+  const payload = ch === "webhook" && h("details", { class: "payload" }, h("summary", {}, t("nt.payload")),
+    h("pre", {}, '{\n  "source": "stackscout",\n  "lang": "en",\n  "week": "2026-W47",\n  "subject": "StackScout — Week 47, 2026",\n  "sections": [\n    { "title": "...", "groups": [\n      { "items": [ { "name": "...", "summary": "...",\n          "link": { "url": "...", "label": "..." }, "verdicts": ["..."] } ] } ] }\n  ],\n  "themes": [ { "title": "...", "summary": "...", "links": [...] } ]\n}'));
+  return h("div", { class: "card ntcard open" }, head,
+    h("div", { class: "ntbody" },
+      h("div", { class: "ntsteps" }, h("h3", {}, t("nt.howto")),
+        h("ol", {}, t(`nt.${ch}.steps`).split("\n").map(step => h("li", {}, rich(step))))),
+      h("div", { class: "ntform" }, presets, h("div", { class: "fields" }, fields), findChat, payload,
+        h("div", { class: "row", style: "margin-top:14px" }, h("span", { class: "spacer" }),
+          h("button", { class: "btn", onclick: () => run(null, async () => { await save(); toast(t("nt.savedCh", { ch: t("ch." + ch) })); }) }, t("nt.saveCh")),
+          state.busy === "nttest" ? loading(t("nt.sending"))
+            : h("button", { class: "btn primary", onclick: () => run("nttest", async () => {
+                await save(); state.notifyCfg = await api("POST", `/api/notify/test/${ch}`); toast(t("nt.testOk", { ch: t("ch." + ch) }));
+              }) }, t("nt.test"))))));
+}
+
+function logCard(N) {
+  const kinds = { digest: t("nt.k.digest"), manual: t("nt.k.manual"), test: t("nt.k.test") };
+  const fmt = iso => new Intl.DateTimeFormat(state.lang, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+  return h("div", { class: "card" }, h("h2", {}, t("nt.logTitle")),
+    N.log.length ? h("table", { class: "ntlog" }, h("tbody", {}, N.log.map(e => h("tr", {},
+      h("td", {}, fmt(e.at)), h("td", {}, kinds[e.kind] || e.kind), h("td", {}, NT_CHANNELS.includes(e.channel) ? t("ch." + e.channel) : e.channel),
+      h("td", { class: e.ok ? "ok" : "bad" }, e.ok ? "✓ " + t("nt.ok") : "✗ " + (e.error || ""))))))
+      : h("p", { class: "muted", style: "margin:4px 0 0" }, t("nt.logEmpty")));
+}
+
+function notifyTab() {
+  if (!state.notifyCfg) { loadNotify(); return [h("div", { class: "card" }, loading(t("common.loading")))]; }
+  const N = state.notifyCfg;
+  return [
+    scheduleCard(N),
+    h("div", { class: "nttitle" }, h("h2", {}, t("nt.channelsTitle")), h("p", { class: "hint", style: "margin:4px 0 0" }, t("nt.channelsHint"))),
+    NT_CHANNELS.map(ch => channelCard(ch, N.channels[ch])),
+    logCard(N),
+  ];
 }
 
 // ---------------------------------------------------------------- radar tab
@@ -1664,6 +1838,7 @@ function render() {
   else if (state.view === "review") body = h("main", { class: "content single" }, reviewView());
   else if (state.tab === "radar") body = radarTab();
   else if (state.tab === "compare") body = compareTab();
+  else if (state.tab === "notify") body = h("main", { class: "content single" }, notifyTab());
   else body = h("main", { class: "content single" }, state.tab === "sources" ? sourcesTab() : profileTab());
   document.getElementById("app").replaceChildren(...headerView().filter(Boolean), body, ...(state.drawer ? drawerView() : []));
   document.body.style.overflow = state.drawer ? "hidden" : "";

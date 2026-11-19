@@ -92,6 +92,21 @@ Dưới mỗi tin: kết luận so với công cụ của bạn, hoặc các đ�
 <tr>
 <td width="29%" valign="top">
 
+### 🔔 Thông báo, cài trong vài phút
+
+Một tab riêng: chọn ngày và giờ gửi, rồi bật kênh muốn nhận.
+
+- hướng dẫn từng bước cho mỗi kênh (BotFather, App Password của Gmail, webhook Slack và Discord…)
+- mẫu sẵn cho Gmail, Outlook, SendGrid; nút **Tìm chat ID** cho Telegram
+- **Lưu và gửi thử**, kèm nhật ký gửi
+- mật khẩu và token chỉ lưu trên máy bạn, không hiện lại
+
+</td>
+<td width="71%" valign="top"><a href="docs/assets/notifications.png"><img src="docs/assets/notifications.png" alt="Tab Thông báo"></a></td>
+</tr>
+<tr>
+<td width="29%" valign="top">
+
 ### 👤 Hồ sơ gõ tự nhiên
 
 Cứ gõ những gì bạn dùng, sai chính tả cũng được (*"c#, entity framwork, postgres, k8s"*), hoặc tạo từ code hay CV bằng prompt có sẵn.

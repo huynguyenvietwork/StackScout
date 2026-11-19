@@ -1,4 +1,5 @@
-# docker compose up -d            -> web UI on http://127.0.0.1:8000 + weekly digest
+# docker compose up -d            -> web UI on http://127.0.0.1:8000; it also sends the weekly digest
+#                                    on the schedule set in the Notifications tab
 # docker compose --profile bot up -d   -> also the Telegram bot
 services:
   web:
@@ -6,13 +7,6 @@ services:
     env_file: .env
     # The web UI has no login: it is published on this machine only.
     ports: ["127.0.0.1:8000:8000"]
-    volumes: ["./data:/app/data", "./reports:/app/reports"]
-    restart: unless-stopped
-
-  scheduler:
-    build: .
-    env_file: .env
-    command: ["uv", "run", "--no-sync", "main.py", "schedule"]
     volumes: ["./data:/app/data", "./reports:/app/reports"]
     restart: unless-stopped
 

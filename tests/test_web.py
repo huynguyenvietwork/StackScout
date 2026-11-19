@@ -221,17 +221,51 @@ def test_auto_compare_endpoints(client, monkeypatch):
 
 
 def test_notify_endpoints(client, monkeypatch):
-    for name in ("TELEGRAM_BOT_TOKEN", "STACKSCOUT_TELEGRAM_CHAT_ID", "SMTP_HOST", "STACKSCOUT_EMAIL_TO",
-                 "STACKSCOUT_SLACK_WEBHOOK_URL", "STACKSCOUT_DISCORD_WEBHOOK_URL", "STACKSCOUT_WEBHOOK_URL"):
-        monkeypatch.delenv(name, raising=False)
-    assert client.get("/api/notify").json()["channels"] == []
-    assert client.post("/api/notify/test").status_code == 422  # nothing configured
-    monkeypatch.setenv("STACKSCOUT_SLACK_WEBHOOK_URL", "https://hooks.slack.test/x")
-    assert client.get("/api/notify").json()["channels"] == ["slack"]
-    assert client.post("/api/notify/test").status_code == 404  # no digest yet
+    view = client.get("/api/notify").json()
+    assert view["schedule"] == {"enabled": True, "day": "mon", "time": "08:00"}
+    assert not any(c["enabled"] for c in view["channels"].values()) and view["next"] is None  # nothing set up
+    assert view["tz"].startswith("UTC")
+
+    bad = client.put("/api/notify", json={"channels": {"slack": {"url": "https://evil.test/x"}}})
+    assert bad.status_code == 422 and "hooks.slack.com" in bad.json()["detail"]
+    storage.save_settings("web", {"language": "vi"})
+    assert "phải bắt đầu" in client.put("/api/notify", json={"channels": {"slack": {"url": "x"}}}).json()["detail"]
+    storage.save_settings("web", {"language": "en"})
+    saved = client.put("/api/notify", json={
+        "schedule": {"day": "fri", "time": "17:30"},
+        "channels": {"slack": {"enabled": True, "url": "https://hooks.slack.com/services/T0/B0/secret123456"},
+                     "email": {"enabled": True, "host": "smtp.test", "to": "me@example.test", "password": "hunter2-very-secret"}}}).json()
+    assert saved["schedule"]["day"] == "fri" and saved["next"]  # a channel is on: there is a next delivery
+    assert saved["channels"]["slack"]["values"]["url"] == {"set": True, "hint": "••••3456"}
+    assert "hunter2" not in str(saved) and "secret123456" not in str(saved)  # secrets never go back to the page
+    path = storage.user_dir("web") / "notify.yaml"
+    assert oct(path.stat().st_mode & 0o777) == "0o600"
+
+    # An empty secret keeps the stored one; null clears it.
+    client.put("/api/notify", json={"channels": {"email": {"password": ""}}})
+    assert web.notify.resolve("web", "email")["config"]["password"] == "hunter2-very-secret"
+    client.put("/api/notify", json={"channels": {"email": {"password": None}}})
+    assert web.notify.resolve("web", "email")["config"]["password"] == ""
+
+    sent = []
+    monkeypatch.setattr(web.notify, "send_test", lambda u, c, l: sent.append((c, l)))
+    log = client.post("/api/notify/test/slack").json()["log"]
+    assert sent == [("slack", "en")] and log[0]["channel"] == "slack" and log[0]["ok"]
+
+    def broken(u, c, l):
+        raise web.notify.NotifyError("Slack refused the message: 404")
+    monkeypatch.setattr(web.notify, "send_test", broken)
+    res = client.post("/api/notify/test/slack")
+    assert res.status_code == 422 and "404" in res.json()["detail"]
+    assert client.get("/api/notify").json()["log"][0]["ok"] is False
+
+    assert client.post("/api/notify/send").status_code == 404  # no digest yet
     monkeypatch.setattr(web.digest, "list_reports", lambda uid: ["2026-W47"])
     monkeypatch.setattr(web.digest, "load_report", lambda uid, week: {"week": week})
-    sent = {}
-    monkeypatch.setattr(web.notify, "send_digest", lambda uid, report, **kw: sent.update(kw) or {"slack": None})
-    assert client.post("/api/notify/test").json() == {"week": "2026-W47", "results": {"slack": None}}
-    assert sent["lang"] == "en"
+    monkeypatch.setattr(web.notify, "send_digest", lambda uid, report, **kw: {"slack": None, "email": "boom"})
+    out = client.post("/api/notify/send").json()
+    assert out["results"] == {"slack": None, "email": "boom"}
+
+    assert client.post("/api/notify/telegram/chats", json={}).status_code == 422  # no token anywhere
+    monkeypatch.setattr(web.notify, "telegram_chats", lambda token: [{"id": "42", "name": "Me", "type": "private"}])
+    assert client.post("/api/notify/telegram/chats", json={"token": "1:abc"}).json() == {"chats": [{"id": "42", "name": "Me", "type": "private"}]}

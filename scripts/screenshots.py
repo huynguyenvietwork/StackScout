@@ -59,10 +59,14 @@ with sync_playwright() as p:
     save(page.locator(".drawer").screenshot(), "sources-cited.png", width=560)
     page.keyboard.press("Escape")
     # Profile and sources
-    page.locator("nav.topnav .tab").nth(3).click(); page.wait_for_timeout(300); clean()
+    page.locator("nav.topnav .tab").nth(4).click(); page.wait_for_timeout(300); clean()
     save(page.screenshot(), "profile.png")
     page.locator("nav.topnav .tab").nth(2).click(); page.wait_for_timeout(400); clean()
     save(page.screenshot(), "sources.png")
+    # Notifications tab with the email channel open
+    page.locator("nav.topnav .tab").nth(3).click(); page.wait_for_selector(".ntcard"); page.wait_for_timeout(300)
+    page.locator(".ntcard").nth(1).locator(".nthead button").click(); page.wait_for_timeout(300); clean()
+    save(page.screenshot(full_page=True, clip={"x": 0, "y": 0, "width": 1280, "height": 1300}), "notifications.png")
     # Dark theme in Japanese, light in Vietnamese
     page.locator("nav.topnav .tab").first.click(); page.locator("aside .filters button").first.click()
     page.locator("nav.topnav select").select_option("ja"); page.locator("header .iconbtn").click(); page.wait_for_timeout(300); clean()

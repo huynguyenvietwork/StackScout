@@ -15,6 +15,7 @@ import logging
 import os
 import threading
 import time
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -22,7 +23,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel, Field
 
-from . import config, digest, i18n, notify, sources, storage
+from . import config, digest, i18n, notify, scheduler, sources, storage
 from . import profile as prof
 from .ai import AIError
 from .sources import SourceError
@@ -89,6 +90,15 @@ class WeekIn(BaseModel):
 class MarketIn(BaseModel):
     week: str = Field(..., pattern=r"^\d{4}-W\d{2}$")
     name: str = Field(..., min_length=1, max_length=200)
+
+
+class NotifyIn(BaseModel):
+    schedule: dict | None = None
+    channels: dict | None = None
+
+
+class TokenIn(BaseModel):
+    token: str = Field("", max_length=200)
 
 
 class SourceToggle(BaseModel):
@@ -401,13 +411,44 @@ def create_app(user_id: str | None = None) -> FastAPI:
             raise fail(502, "ai.failed") from exc
         return {"key": body.name.casefold(), "comparison": result}
 
-    # ---- notifications: channels come from .env; the page only shows them and sends a test
-    @app.get("/api/notify")
-    def notify_channels() -> dict:
-        return {"channels": notify.configured(uid), "all": list(notify.CHANNELS)}
+    # ---- notifications tab: schedule, channels, tests, delivery log
+    def notify_view() -> dict:
+        now = datetime.now().astimezone()
+        nxt = scheduler.next_delivery(uid, now)
+        offset = now.strftime("%z")
+        state = notify.load_state(uid)
+        return {**notify.public_settings(uid), "next": nxt.isoformat(timespec="minutes") if nxt else None,
+                "now": now.isoformat(timespec="minutes"), "tz": f"UTC{offset[:3]}:{offset[3:]}",
+                "log": state["log"], "has_report": bool(digest.list_reports(uid))}
 
-    @app.post("/api/notify/test")
-    def notify_test() -> dict:
+    @app.get("/api/notify")
+    def get_notify() -> dict:
+        return notify_view()
+
+    @app.put("/api/notify")
+    def put_notify(body: NotifyIn) -> dict:
+        try:
+            notify.save_settings(uid, body.model_dump(exclude_none=False, exclude_unset=True))
+        except ValueError as exc:
+            raise user_error(422, exc) from exc
+        return notify_view()
+
+    @app.post("/api/notify/test/{channel}")
+    def notify_test_channel(channel: str) -> dict:
+        if channel not in notify.CHANNELS:
+            raise HTTPException(status_code=404, detail="Unknown channel")
+        try:
+            notify.send_test(uid, channel, lang())
+            notify.record(uid, "test", {channel: None})
+        except i18n.UserError as exc:
+            raise user_error(422, exc) from exc
+        except notify.NotifyError as exc:
+            notify.record(uid, "test", {channel: str(exc)})
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return notify_view()
+
+    @app.post("/api/notify/send")
+    def notify_send_now() -> dict:
         if not notify.configured(uid):
             raise fail(422, "notify.not_configured")
         weeks = digest.list_reports(uid)
@@ -417,7 +458,18 @@ def create_app(user_id: str | None = None) -> FastAPI:
         results = notify.send_digest(uid, digest.load_report(uid, week), lang=lang(),
                                      comparisons=digest.cached_comparisons(uid, week),
                                      market=digest.cached_market(uid, week))
-        return {"week": week, "results": results}
+        notify.record(uid, "manual", results, week=week)
+        return {**notify_view(), "results": results}
+
+    @app.post("/api/notify/telegram/chats")
+    def notify_telegram_chats(body: TokenIn) -> dict:
+        token = body.token.strip() or notify.resolve(uid, "telegram")["config"].get("token")
+        if not token:
+            raise fail(422, "notify.need_token")
+        try:
+            return {"chats": notify.telegram_chats(token)}
+        except notify.NotifyError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     @app.get("/api/reports")
     def reports() -> dict:
