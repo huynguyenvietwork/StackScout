@@ -1,0 +1,15 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Personal data: profiles, source lists, dedupe state, weekly reports
+data/*
+!data/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# OS / editor noise
+.DS_Store
+*.log

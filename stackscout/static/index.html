@@ -1,0 +1,1671 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StackScout</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232456D6' stroke-width='2'><circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='5'/><path d='M12 12l6-6'/></svg>">
+<style>
+  :root, :root[data-theme="light"] {
+    --bg: #F4F5F7; --surface: #FFFFFF; --soft: #F7F9FC; --border: #E3E6EB; --divider: #EEF0F3;
+    --text: #14171C; --body: #3A414C; --muted: #5B6472; --link: #2456D6;
+    --accent: #2456D6; --accent-strong: #1D48B5; --accent-soft: #EAF0FE; --on-accent: #FFFFFF;
+    --control: #D5DAE1; --input: #FFFFFF; --danger: #B42318;
+    --ok-bg: #E4F4EA; --ok-fg: #1C6B3A; --pro: #1C6B3A; --con: #9A3412;
+    --adopt-bg: #E4F4EA; --adopt-fg: #1C6B3A; --trial-bg: #FFF1D6; --trial-fg: #8A5A00;
+    --watch-bg: #E3ECFF; --watch-fg: #1D48B5; --ignore-bg: #EEF0F3; --ignore-fg: #3A414C;
+    --shadow: 0 1px 2px rgba(16,24,40,.06);
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1116; --surface: #161B22; --soft: #1C232D; --border: #262D37; --divider: #222A35;
+    --text: #E6EAF0; --body: #C3CBD6; --muted: #9AA4B2; --link: #8AB0FF;
+    --accent: #6E9BFF; --accent-strong: #A9C2FF; --accent-soft: #1A2440; --on-accent: #0E1116;
+    --control: #333C48; --input: #0E1116; --danger: #FF8A80;
+    --ok-bg: #12301F; --ok-fg: #6FD49A; --pro: #6FD49A; --con: #FF9B85;
+    --adopt-bg: #12301F; --adopt-fg: #6FD49A; --trial-bg: #3A2A0C; --trial-fg: #F5C25B;
+    --watch-bg: #1E2A4A; --watch-fg: #A9C2FF; --ignore-bg: #222A35; --ignore-fg: #C3CBD6;
+    --shadow: none;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans CJK SC", "Noto Sans JP", "Noto Sans KR", sans-serif; }
+  a { color: var(--link); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; display: flex; flex-direction: column; gap: 22px; }
+  header.top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--accent); }
+  .brand b { font-size: 20px; color: var(--text); }
+  .tagline { color: var(--muted); font-size: 14px; }
+  .topnav { margin-left: auto; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+  .topnav .tab { font: inherit; font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 10px; border: 1px solid transparent;
+                 background: none; color: var(--muted); cursor: pointer; }
+  .topnav .tab[aria-current="page"] { background: var(--surface); color: var(--text); font-weight: 600; border-color: var(--border); }
+  .iconbtn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+             display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  select { font: inherit; font-size: 14px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--control); background: var(--input); color: var(--text); }
+  .layout { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  aside.side { flex: 1 1 240px; max-width: 280px; display: flex; flex-direction: column; gap: 16px; }
+  main.content { flex: 999 1 560px; min-width: 0; max-width: 860px; display: flex; flex-direction: column; gap: 20px; }
+  main.single { flex: 1 1 100%; max-width: 860px; margin: 0 auto; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px; box-shadow: var(--shadow); }
+  .card.tight { padding: 16px; }
+  .card h2 { font-size: 18px; margin: 0; }
+  .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 20px 0 10px; font-weight: 700; }
+  .card h3:first-child { margin-top: 0; }
+  .sechead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .sechead .ico { width: 32px; height: 32px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex: none; }
+  .sechead .note { margin-left: auto; font-size: 13px; color: var(--muted); }
+  .hint { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+  .kicker { margin: 0 0 6px; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+  h1.page { margin: 0; font-size: 32px; line-height: 1.15; letter-spacing: -.02em; }
+  .muted { color: var(--muted); }
+  button { font: inherit; }
+  .btn { font-weight: 600; font-size: 14px; padding: 11px 16px; border-radius: 12px; border: 1px solid var(--control); background: var(--surface); color: var(--text); cursor: pointer; }
+  .btn.sm { font-size: 13px; padding: 9px 12px; border-radius: 10px; white-space: nowrap; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.link { border-color: transparent; background: none; color: var(--muted); font-weight: 500; padding-left: 6px; padding-right: 6px; }
+  .btn.link:hover { color: var(--text); }
+  .btn.danger { color: var(--danger); border-color: var(--danger); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  textarea, input[type=text] { width: 100%; font: inherit; color: var(--text); background: var(--input); border: 1px solid var(--control);
+                               border-radius: 12px; padding: 12px 14px; resize: vertical; }
+  textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .row .spacer { flex: 1; }
+  .filters { display: flex; flex-direction: column; gap: 2px; }
+  .filters button { font-size: 14px; text-align: left; padding: 11px 12px; border-radius: 10px; border: 0; background: none; color: var(--text);
+                    display: flex; justify-content: space-between; gap: 8px; cursor: pointer; }
+  .filters button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+  .filters .count { font-size: 13px; color: var(--muted); }
+  .filters button[aria-pressed="true"] .count { color: var(--accent-strong); }
+  .sidelabel { margin: 0 0 8px 4px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 5px 10px; border-radius: 999px; background: var(--soft); border: 1px solid var(--border); }
+  .chip .x { border: none; background: none; padding: 0 4px; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
+  .chip .x:hover { color: var(--danger); }
+  .lvl { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 1px 7px; background: var(--accent-soft); color: var(--accent-strong); }
+  .lvl.advanced { background: var(--ok-bg); color: var(--ok-fg); }
+  .lvl.beginner { background: var(--trial-bg); color: var(--trial-fg); }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); border: 1px solid var(--border); }
+  .tag.official { background: var(--ok-bg); color: var(--ok-fg); border-color: transparent; font-weight: 600; }
+  article.item { padding: 16px 0; border-top: 1px solid var(--divider); display: flex; flex-direction: column; gap: 12px; }
+  article.item:first-of-type { border-top: 0; padding-top: 4px; }
+  .itemrow { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+  .itemmain { flex: 1 1 340px; min-width: 0; }
+  .itemtitle { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .itemtitle strong { font-size: 16px; }
+  .itemtext { margin: 4px 0 0; color: var(--body); font-size: 15px; }
+  .result { background: var(--soft); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .result p { margin: 0; font-size: 14px; }
+  .resulthead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rec { margin-left: auto; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
+  .rec.adopt { background: var(--adopt-bg); color: var(--adopt-fg); } .rec.trial { background: var(--trial-bg); color: var(--trial-fg); }
+  .rec.watch, .rec.insufficient { background: var(--watch-bg); color: var(--watch-fg); } .rec.ignore { background: var(--ignore-bg); color: var(--ignore-fg); }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: 1fr; } h1.page { font-size: 26px; } .card { padding: 18px; } }
+  .colhead { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .pro { color: var(--pro); } .con { color: var(--con); }
+  .refs a { font-size: 12px; margin-left: 2px; text-decoration: none; }
+  .mini { border: 1px solid var(--divider); border-radius: 12px; padding: 14px; }
+  .mini p { margin: 6px 0 0; font-size: 14px; color: var(--body); }
+  .chip.off { opacity: .5; }
+  .demobar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; justify-content: center; padding: 10px 16px;
+    margin: -8px 0 12px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-strong); font-size: 14px; font-weight: 600; }
+  .demobar a { color: var(--link); }
+  .ovgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 900px) { .ovgrid { grid-template-columns: minmax(0, 1fr); } }
+  .ovcard { display: flex; flex-direction: column; margin: 0; }
+  .ovcard .sechead { flex-wrap: nowrap; align-items: flex-start; }
+  .ovcard .sechead h2 { font-size: 17px; flex: 1; min-width: 0; padding-top: 5px; }
+  .ovcard .sechead .note { padding-top: 7px; }
+  .ovcard .sechead .note { font-weight: 600; }
+  .ovlist { list-style: none; margin: 0 0 12px; padding: 0; flex: 1; }
+  .ovlist li { padding: 8px 0; border-top: 1px solid var(--divider); font-size: 14px; line-height: 1.45; color: var(--text); overflow-wrap: anywhere; }
+  .ovlist li:first-child { border-top: 0; }
+  .ovlist li.more { color: var(--muted); }
+  .ovcard > .btn { align-self: flex-start; }
+  .theme { padding: 12px 0; border-top: 1px solid var(--divider); }
+  .theme:first-of-type { border-top: 0; }
+  .theme p { margin: 4px 0 0; font-size: 14px; color: var(--body); }
+  .group { display: grid; grid-template-columns: 170px 1fr; gap: 6px 14px; padding: 8px 0; border-top: 1px solid var(--divider); }
+  .group:first-of-type { border-top: 0; }
+  .group .label { color: var(--muted); font-size: 14px; padding-top: 5px; }
+  @media (max-width: 560px) { .group { grid-template-columns: 1fr; } }
+  .src { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--divider); }
+  .src:first-of-type { border-top: 0; }
+  .src .info { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .src .info small { flex-basis: 100%; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .src.off .info { opacity: .55; }
+  .src input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex: none; }
+  .progress { height: 4px; background: var(--divider); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--accent); transition: width .25s; }
+  .callout { background: var(--accent-soft); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; color: var(--text); }
+  .loading { display: flex; align-items: center; gap: 12px; color: var(--muted); padding: 8px 0; }
+  .spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; flex: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.5s; } }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px;
+           border-radius: 12px; display: flex; gap: 14px; align-items: center; max-width: calc(100% - 32px); box-shadow: 0 6px 24px rgba(0,0,0,.25); z-index: 10; }
+  .toast.error { background: var(--danger); color: #fff; }
+  .toast button { padding: 4px 8px; background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 8px; cursor: pointer; }
+  kbd { font-size: 12px; color: var(--muted); }
+  .split { position: relative; display: inline-flex; flex: none; }
+  .split > .btn { border-radius: 10px 0 0 10px; }
+  .split > .chev { border-radius: 0 10px 10px 0; border-left: 0; padding: 9px 9px; display: inline-flex; align-items: center; }
+  .split > .solo { border-radius: 10px; border-left: 1px solid var(--control); padding: 9px 11px; }
+  .menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; min-width: 230px; max-height: 300px; overflow: auto;
+          background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.18); padding: 6px; }
+  .menu .menuhead { margin: 6px 10px 6px; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  .menu .menusearch { margin: 0 0 6px; padding: 9px 10px; font-size: 14px; border-radius: 8px; }
+  .menu button { display: flex; justify-content: space-between; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; border: 0; background: none;
+                 color: var(--text); border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .menu button:hover, .menu button:focus-visible { background: var(--accent-soft); outline: none; }
+  .cmpline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: var(--soft);
+             border: 1px solid var(--border); font-size: 14px; color: var(--text); text-align: left; width: 100%; font-family: inherit; }
+  button.cmpline { cursor: pointer; } button.cmpline:hover { border-color: var(--accent); }
+  .cmpline .rec { margin-left: 0; font-size: 12px; padding: 3px 10px; }
+  .cmpline .go { margin-left: auto; color: var(--link); font-weight: 600; white-space: nowrap; }
+  .cmpline.pending { background: var(--accent-soft); color: var(--accent-strong); border-color: transparent; font-weight: 600; }
+  .cmpline.error { color: var(--danger); }
+  .cmpline.queued { color: var(--muted); border-style: dashed; }
+  .backdrop { position: fixed; inset: 0; background: rgba(8,10,14,.45); z-index: 30; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--surface); border-left: 1px solid var(--border);
+            z-index: 31; overflow-y: auto; padding: 22px 24px 40px; display: flex; flex-direction: column; gap: 16px; box-shadow: -12px 0 40px rgba(0,0,0,.22); }
+  @media (max-width: 720px) { .drawer { top: auto; left: 0; width: 100%; max-height: 88vh; border-left: 0; border-top: 1px solid var(--border);
+                                        border-radius: 20px 20px 0 0; padding: 18px 18px 32px; } }
+  .drawerhead { display: flex; align-items: flex-start; gap: 12px; }
+  .drawerhead h2 { font-size: 22px; margin: 0; line-height: 1.25; }
+  .verdict { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-radius: 14px; background: var(--soft); }
+  .verdict .rec { margin-left: 0; font-size: 15px; padding: 8px 14px; }
+  .fitbox { padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--text); font-size: 15px; margin: 0; }
+  .dlist { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--body); }
+  .rival { border: 1px solid var(--divider); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .rival h4 { margin: 0; font-size: 16px; } .rival h4 .muted { font-weight: 500; font-size: 13px; margin-left: 6px; }
+  .rival .side2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .rival h5 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .rival h5.pro { color: var(--success, #16a34a); } .rival h5.con { color: var(--danger); }
+  .rival .fitbox { font-size: 14px; }
+  .titlebtn { all: unset; cursor: pointer; font-weight: 700; font-size: 16px; color: var(--text); border-radius: 4px; }
+  .titlebtn:hover { color: var(--link); text-decoration: underline; } .titlebtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ovlist li button { all: unset; cursor: pointer; } .ovlist li button:hover { color: var(--link); text-decoration: underline; }
+  .ovlist li button:focus-visible { outline: 2px solid var(--accent); }
+  .srcs { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.8; color: var(--muted); }
+  .drawer h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin: 4px 0 0; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"><div class="loading"><div class="spinner"></div>…</div></div>
+
+<script>
+"use strict";
+
+// ---------------------------------------------------------------- i18n
+
+const LANGS = [["vi", "Tiếng Việt"], ["en", "English"], ["zh", "中文"], ["ja", "日本語"], ["ko", "한국어"]];
+
+const I18N = {
+vi: {
+  "app.tagline": "Công nghệ mới, đối chiếu với stack của bạn.",
+  "nav.radar": "Radar tuần", "nav.sources": "Nguồn tin", "nav.profile": "Hồ sơ", "nav.label": "Điều hướng",
+  "theme.toDark": "Chuyển sang giao diện tối", "theme.toLight": "Chuyển sang giao diện sáng", "lang.label": "Ngôn ngữ",
+  "lang.changed": "Đã đổi ngôn ngữ. Nội dung AI viết sẽ theo ngôn ngữ này từ lần chạy radar tới.",
+  "common.loading": "Đang tải…", "common.cancel": "Huỷ", "common.save": "Lưu", "common.add": "Thêm", "common.remove": "Xoá",
+  "common.retry": "Thử lại", "common.undo": "Hoàn tác", "common.back": "← Quay lại", "common.next": "Tiếp →", "common.skip": "Bỏ qua",
+  "common.edit": "Sửa", "common.none": "(chưa có)", "common.enterHint": "Enter để tiếp · Shift+Enter xuống dòng",
+  "err.network": "Không kết nối được tới máy chủ StackScout ({host}). Kiểm tra lệnh `uv run main.py web` còn chạy không.",
+  "err.generic": "Có lỗi xảy ra, thử lại giúp mình nhé.", "err.ai": "AI chưa xử lý được lúc này. Thử lại sau ít phút nhé.",
+  "err.page": "Trang gặp lỗi: {msg}",
+  "wiz.intro": "Mỗi tuần StackScout gửi bạn công nghệ mới đáng chú ý, đối chiếu với những gì bạn đang dùng. Trả lời 4 câu ngắn để mình hiểu bạn (khoảng 2 phút).",
+  "wiz.step": "Câu {n}/4", "wiz.required": "Câu này cần trả lời để mình hiểu bạn nhé.", "wiz.create": "Tạo hồ sơ",
+  "wiz.keepOld": "Huỷ, giữ hồ sơ cũ", "wiz.building": "Đang sắp xếp hồ sơ của bạn… (khoảng 20 giây)",
+  "q.role.title": "Bạn đang làm công việc gì?", "q.role.hint": "Ví dụ: lập trình viên backend, sinh viên CNTT, data analyst, designer…",
+  "q.skills.title": "Bạn hay dùng ngôn ngữ, công nghệ, thư viện, công cụ nào?",
+  "q.skills.hint": "Liệt kê thoải mái, viết tắt hay sai chính tả cũng không sao. Ví dụ: c#, .net, entity framework, postgres, docker, react, excel",
+  "q.project.title": "Bạn đang làm dự án gì?", "q.project.hint": "Chỉ dùng để nhận ra công nghệ bạn dùng, không được lưu lại. Có thể bỏ qua.",
+  "q.interests.title": "Bạn muốn theo dõi thêm chủ đề nào?", "q.interests.hint": "Ví dụ: AI agent, Rust, vector database, DevOps. Có thể bỏ qua.",
+  "review.title": "Mình hiểu hồ sơ của bạn như sau", "review.hint": "Hồ sơ chưa được lưu. Kiểm tra lại rồi xác nhận nhé.",
+  "review.none": "Mình chưa nhận ra công cụ nào bạn dùng", "review.noneHint": "Gõ lại giúp mình danh sách công cụ, công nghệ bạn hay dùng.",
+  "review.failed": "Mình chưa tạo được hồ sơ.", "review.editTitle": "Bạn muốn sửa gì? Cứ gõ tự nhiên",
+  "review.editPlaceholder": "Ví dụ: bỏ Docker, thêm Redis; React mình dùng thành thạo; mình là tech lead",
+  "review.toolsTitle": "Công cụ bạn dùng", "review.noEdit": "Thôi, không sửa", "review.update": "Cập nhật",
+  "review.updating": "Đang cập nhật… (khoảng 15 giây)", "review.restart": "Làm lại từ đầu", "review.edit": "Sửa lại",
+  "review.ok": "Đúng rồi", "review.saving": "Đang lưu…", "review.saved": "Đã lưu hồ sơ! Bản tin hằng tuần sẽ dựa trên hồ sơ này.",
+  "prof.title": "Hồ sơ kỹ năng của bạn", "prof.hint": "Bấm × để xoá một kỹ năng.", "prof.recreate": "Tạo lại hồ sơ",
+  "prof.recreateConfirm": "Làm lại từ đầu?", "prof.role": "Công việc", "prof.skills": "Kỹ năng", "prof.projects": "Dự án",
+  "prof.interests": "Muốn theo dõi", "prof.removed": "Đã xoá {name}", "prof.removeLabel": "Xoá {name}",
+  "person.title": "Công việc & chủ đề theo dõi", "person.hint": "Chủ đề theo dõi giúp radar ưu tiên tin bạn quan tâm. Cách nhau bằng dấu phẩy.",
+  "person.interestsPlaceholder": "Ví dụ: AI agent, Rust, vector database", "person.saved": "Đã lưu",
+  "add.title": "Thêm kỹ năng", "add.hint": "Liệt kê thoải mái, mình sẽ tự chuẩn hoá tên và xếp nhóm.",
+  "add.placeholder": "Ví dụ: redis, kafka, terraform", "add.normalizing": "Đang chuẩn hoá… (khoảng 15 giây)",
+  "add.previewTitle": "Mình sẽ thêm", "add.previewHint": "Kiểm tra lại trước khi lưu vào hồ sơ.", "add.confirm": "Thêm vào hồ sơ",
+  "add.exists": "Các kỹ năng này đã có trong hồ sơ rồi.", "add.done": "Đã thêm {n} kỹ năng",
+  "imp.title": "Nhập hồ sơ từ code hoặc CV (cho dev)",
+  "imp.hint": "Chạy prompt này bằng AI CLI trong thư mục dự án, hoặc dán vào ChatGPT/Claude kèm CV, rồi dán kết quả YAML vào đây. Hồ sơ được gộp thêm, không ghi đè.",
+  "imp.copy": "Chép prompt", "imp.copied": "Đã chép prompt", "imp.copyFail": "Không chép tự động được, prompt đã hiện trong ô bên dưới.",
+  "imp.placeholder": "Dán nội dung YAML ở đây, hoặc chọn file bên dưới…", "imp.file": "Chọn file YAML", "imp.preview": "Xem trước",
+  "imp.reading": "Đang đọc hồ sơ…", "imp.previewTitle": "Xem trước khi gộp",
+  "imp.adds": "Sẽ thêm {n} kỹ năng mới. Kỹ năng đã có được giữ nguyên, chỉ bổ sung thông tin.",
+  "imp.noNew": "Không có kỹ năng mới, chỉ bổ sung thông tin cho kỹ năng đã có.", "imp.merge": "Gộp vào hồ sơ", "imp.merged": "Đã gộp vào hồ sơ",
+  "level.beginner": "mới làm quen", "level.intermediate": "khá", "level.advanced": "thành thạo",
+  "src.title": "Nguồn tin của bạn", "src.onCount": "{n} nguồn đang bật.",
+  "src.onHint": "Kênh chính chủ của Anthropic (Claude), OpenAI (Codex), Google (Gemini) để bắt model mới, các kênh AI nổi tiếng, và blog chính thức của công nghệ trong hồ sơ của bạn. Radar chỉ đọc các nguồn đang bật.",
+  "src.offTitle": "Nguồn khác, đang tắt",
+  "src.offHint": "Tuỳ chọn: nguồn cộng đồng (Hacker News, repo GitHub mới nổi, Lobsters…), kênh tổng hợp rộng hơn, và nguồn chính thức của công nghệ bạn chưa dùng. Tích để bật.",
+  "src.reset": "Khôi phục mặc định", "src.resetConfirm": "Quay về mặc định?", "src.resetDone": "Đã quay về bộ nguồn mặc định theo hồ sơ của bạn",
+  "src.addTitle": "Thêm nguồn", "src.addHint": "Mình sẽ tự tìm RSS của trang. Với link repo GitHub, mình theo dõi các bản phát hành.",
+  "src.addPlaceholder": "Dán link blog, link RSS hoặc repo GitHub…", "src.finding": "Đang tìm RSS…", "src.added": "Đã thêm {name}",
+  "src.removed": "Đã xoá {name}", "src.toggle": "Bật/tắt {name}", "src.none": "Chưa bật nguồn nào.",
+  "src.hnDetail": "Tin từ {n} điểm trở lên", "src.ghDetail": "Repo mới tạo trong tuần, từ {n} sao",
+  "tag.official": "chính thức", "tag.stack": "theo stack", "tag.custom": "bạn thêm", "tag.firstParty": "chính chủ",
+  "kind.youtube": "YouTube", "kind.release": "Bản phát hành", "kind.web": "Trang web", "kind.rss": "RSS", "kind.hn": "Hacker News", "kind.github": "GitHub",
+  "radar.week": "Tuần {w} · {y}", "radar.read": "Đã đọc {items} tin từ {sources} nguồn", "radar.run": "Chạy radar tuần này",
+  "radar.rerun": "Chạy lại radar", "radar.running": "Đang chạy…", "radar.weekSelect": "Chọn tuần",
+  "radar.empty": "Chưa có bản tin nào. Bấm “Chạy radar tuần này” để tạo bản tin đầu tiên (khoảng 2–3 phút).",
+  "radar.ready": "Bản tin tuần này đã sẵn sàng",
+  "radar.aside": "Tab “So với stack” tự so sánh từng công nghệ mới với skill tương ứng của bạn. Mỗi so sánh mất khoảng 1–2 phút và được lưu lại.",
+  "stage.start": "Đang bắt đầu…", "stage.collect": "Đang gom tin 7 ngày qua…", "stage.classify": "Đang phân loại tin bằng AI…",
+  "stage.themes": "Đang tổng hợp ngành…", "stage.done": "Xong.",
+  "filter.title": "Lọc tin", "filter.all": "Tổng quan", "ov.hint": "Tên các tin theo từng loại. Bấm “Xem chi tiết” để đọc đầy đủ.", "filter.ai": "Model & AI mới", "filter.stack": "Cùng loại stack",
+  "filter.updates": "Bản mới của bạn", "filter.other": "Hệ sinh thái khác", "filter.new": "Lĩnh vực mới", "filter.themes": "Tổng hợp tuần",
+  "heading.all": "Radar công nghệ của bạn", "sec.ai": "Model & công cụ AI mới", "sec.aiHint": "Ưu tiên công bố chính chủ",
+  "sec.stack": "Công nghệ mới cùng loại với stack của bạn", "sec.updates": "Công cụ bạn đang dùng có bản mới",
+  "sec.other": "Cùng loại ở hệ sinh thái khác", "sec.new": "Lĩnh vực mới đáng chú ý", "sec.themes": "Tổng hợp tuần",
+  "sec.empty": "Không có gì đáng kể tuần này.",
+  "aigroup.models": "Model mới", "aigroup.coding": "Công cụ AI lập trình", "aigroup.agents": "Agent & framework",
+  "stackbox.title": "Stack của bạn", "other.sameAs": "cùng loại {tool}",
+  "cmp.button": "So với stack", "cmp.against": "so với", "cmp.pick": "Chọn công cụ…", "cmp.run": "So sánh",
+  "cmp.loading": "Đang tìm bài so sánh với {tool}…", "cmp.pros": "Hơn", "cmp.cons": "Kém", "cmp.fit": "Với bạn:",
+  "cmp.new": "Điểm mới:", "cmp.sources": "Nguồn", "cmp.independent": "độc lập", "cmp.indepCount": "{i}/{n} nguồn độc lập",
+  "cmp.confidence": "Độ tin cậy: {c}", "cmp.other": "So với công cụ khác", "cmp.failed": "Chưa so sánh được: {msg}",
+  "cmp.search": "Tìm công cụ…",
+  "cmp.vsTool": "So với {tool}", "cmp.more": "Chọn công cụ khác để so sánh", "cmp.menuTitle": "So với công cụ trong stack", "cmp.summary": "{pros} hơn · {cons} kém · {n} nguồn", "cmp.details": "Xem chi tiết →", "cmp.close": "Đóng", "cmp.ready": "Đã so sánh xong {a} vs {b}", "cmp.view": "Xem", "cmp.vs": "vs {tool}",
+  "cmp.noEvidence": "Chưa đủ nguồn để kết luận. Theo dõi tiếp.",
+  "rec.adopt": "NÊN CHUYỂN", "rec.trial": "THỬ NGHIỆM", "rec.watch": "THEO DÕI", "rec.ignore": "BỎ QUA", "rec.insufficient": "CHƯA ĐỦ DỮ LIỆU",
+  "conf.high": "cao", "conf.medium": "trung bình", "conf.low": "thấp",
+  "nav.compare": "So với stack", "ctab.title": "So với skill hiện tại của bạn", "ctab.hint": "Công nghệ mới tuần này được chia theo skill cùng loại trong hồ sơ và tự so sánh. Bấm ⋯ để so với công cụ khác.", "ctab.progress": "Đang tự so sánh {done}/{total}… (mỗi cái khoảng 1–2 phút, bạn cứ xem trước những cái đã xong)", "ctab.allDone": "Đã so sánh xong {n} công nghệ với stack của bạn", "ctab.queued": "Đang chờ so sánh với {tool}…", "ctab.start": "So sánh với {tool}", "ctab.empty": "Tuần này chưa có công nghệ mới cùng loại với skill nào của bạn.", "ctab.skills": "Chia theo skill", "ctab.allSkills": "Tất cả skill", "ctab.count": "{n} công nghệ mới", "ctab.goto": "Xem so sánh →",
+  "mk.button": "So với đối thủ", "mk.ready": "So với {n} đối thủ: {names}", "mk.loading": "Đang tìm 3–5 đối thủ mạnh nhất và bài so sánh… (khoảng 1–2 phút)", "mk.queued": "Đang chờ so sánh với các đối thủ…", "mk.kicker": "So với đối thủ mạnh nhất", "mk.pros": "Hơn {rival}", "mk.cons": "Kém {rival}", "mk.pick": "Nên chọn:", "mk.none": "Chưa tìm được bài so sánh có nguồn. Theo dõi tiếp.", "mk.insufficient": "Chưa đủ dữ liệu (dưới 2 nguồn), theo dõi tiếp.", "mk.open": "Xem so sánh {name} với đối thủ",
+  "prof.privacy": "Chỉ lưu tên công nghệ, công cụ, framework và mức độ. Không lưu tên dự án, repo hay dự án dùng để làm gì.",
+  "notify.title": "Thông báo hằng tuần", "notify.hint": "Bản tin được gửi tự động mỗi tuần qua các kênh bên dưới, theo ngôn ngữ bạn chọn. Kênh được cấu hình trong file .env (xem README).", "notify.none": "Chưa cấu hình kênh nào. Thêm TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL hoặc STACKSCOUT_WEBHOOK_URL vào .env rồi khởi động lại.", "notify.test": "Gửi thử bản tin mới nhất", "notify.sending": "Đang gửi…", "notify.sent": "Đã gửi qua {list}", "notify.partial": "Có kênh gửi lỗi: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "demo.banner": "Bản demo: dữ liệu mẫu của một lập trình viên giả định, chỉ xem.", "demo.install": "Cài StackScout →", "demo.waitlist": "Muốn bản online? Đăng ký chờ →", "demo.readonly": "Bản demo chỉ xem. Cài StackScout để chạy với stack của bạn."
+},
+en: {
+  "app.tagline": "New tech, matched to your stack.",
+  "nav.radar": "Weekly radar", "nav.sources": "Sources", "nav.profile": "Profile", "nav.label": "Navigation",
+  "theme.toDark": "Switch to dark theme", "theme.toLight": "Switch to light theme", "lang.label": "Language",
+  "lang.changed": "Language changed. AI-written content will use it from the next radar run.",
+  "common.loading": "Loading…", "common.cancel": "Cancel", "common.save": "Save", "common.add": "Add", "common.remove": "Remove",
+  "common.retry": "Retry", "common.undo": "Undo", "common.back": "← Back", "common.next": "Next →", "common.skip": "Skip",
+  "common.edit": "Edit", "common.none": "(none yet)", "common.enterHint": "Enter to continue · Shift+Enter for a new line",
+  "err.network": "Can't reach the StackScout server ({host}). Check that `uv run main.py web` is still running.",
+  "err.generic": "Something went wrong, please try again.", "err.ai": "The AI couldn't process this right now. Try again in a few minutes.",
+  "err.page": "The page hit an error: {msg}",
+  "wiz.intro": "Every week StackScout sends you the new tech worth knowing, compared with what you already use. Answer 4 short questions (about 2 minutes).",
+  "wiz.step": "Question {n}/4", "wiz.required": "Please answer this one so I can understand you.", "wiz.create": "Create profile",
+  "wiz.keepOld": "Cancel, keep my profile", "wiz.building": "Organising your profile… (about 20 seconds)",
+  "q.role.title": "What do you do?", "q.role.hint": "e.g. backend developer, CS student, data analyst, designer…",
+  "q.skills.title": "Which languages, technologies, libraries and tools do you use?",
+  "q.skills.hint": "List them freely, abbreviations and typos are fine. e.g. c#, .net, entity framework, postgres, docker, react, excel",
+  "q.project.title": "What are you working on?", "q.project.hint": "Only used to spot the technologies you use; it is not stored. Optional.",
+  "q.interests.title": "Which topics do you want to follow?", "q.interests.hint": "e.g. AI agents, Rust, vector databases, DevOps. Optional.",
+  "review.title": "Here is how I understood your profile", "review.hint": "Not saved yet. Check it, then confirm.",
+  "review.none": "I couldn't recognise any tools you use", "review.noneHint": "Please list the tools and technologies you use again.",
+  "review.failed": "I couldn't build your profile.", "review.editTitle": "What should I change? Just type it",
+  "review.editPlaceholder": "e.g. remove Docker, add Redis; I'm advanced in React; I'm a tech lead",
+  "review.toolsTitle": "Tools you use", "review.noEdit": "Never mind", "review.update": "Update",
+  "review.updating": "Updating… (about 15 seconds)", "review.restart": "Start over", "review.edit": "Edit",
+  "review.ok": "Looks right", "review.saving": "Saving…", "review.saved": "Profile saved! Your weekly radar will be based on it.",
+  "prof.title": "Your skill profile", "prof.hint": "Click × to remove a skill.", "prof.recreate": "Recreate profile",
+  "prof.recreateConfirm": "Start over?", "prof.role": "Role", "prof.skills": "Skills", "prof.projects": "Projects",
+  "prof.interests": "Following", "prof.removed": "Removed {name}", "prof.removeLabel": "Remove {name}",
+  "person.title": "Role & topics to follow", "person.hint": "Topics help the radar rank what you care about. Separate them with commas.",
+  "person.interestsPlaceholder": "e.g. AI agents, Rust, vector databases", "person.saved": "Saved",
+  "add.title": "Add skills", "add.hint": "List them freely; names are normalised and grouped for you.",
+  "add.placeholder": "e.g. redis, kafka, terraform", "add.normalizing": "Normalising… (about 15 seconds)",
+  "add.previewTitle": "I'll add", "add.previewHint": "Check before saving to your profile.", "add.confirm": "Add to profile",
+  "add.exists": "These skills are already in your profile.", "add.done": "Added {n} skills",
+  "imp.title": "Import a profile from code or a CV (for developers)",
+  "imp.hint": "Run this prompt with an AI CLI in your project folder, or paste it into ChatGPT/Claude with your CV, then paste the YAML result here. It is merged into your profile, never overwrites it.",
+  "imp.copy": "Copy prompt", "imp.copied": "Prompt copied", "imp.copyFail": "Couldn't copy automatically; the prompt is in the box below.",
+  "imp.placeholder": "Paste the YAML here, or choose a file below…", "imp.file": "Choose a YAML file", "imp.preview": "Preview",
+  "imp.reading": "Reading profile…", "imp.previewTitle": "Preview before merging",
+  "imp.adds": "Adds {n} new skills. Existing skills are kept and only enriched.",
+  "imp.noNew": "No new skills; existing ones will only be enriched.", "imp.merge": "Merge into profile", "imp.merged": "Merged into your profile",
+  "level.beginner": "beginner", "level.intermediate": "intermediate", "level.advanced": "advanced",
+  "src.title": "Your sources", "src.onCount": "{n} sources on.",
+  "src.onHint": "First-party channels from Anthropic (Claude), OpenAI (Codex) and Google (Gemini) to catch new models, well-known AI channels, and the official blogs of the technologies in your profile. The radar only reads sources that are on.",
+  "src.offTitle": "Other sources, off",
+  "src.offHint": "Optional: community sources (Hacker News, trending GitHub repos, Lobsters…), broader channels, and official sources for technologies you don't use. Tick to turn on.",
+  "src.reset": "Restore defaults", "src.resetConfirm": "Restore defaults?", "src.resetDone": "Restored the default sources for your profile",
+  "src.addTitle": "Add a source", "src.addHint": "I'll find the page's RSS. For a GitHub repo link I follow its releases.",
+  "src.addPlaceholder": "Paste a blog, RSS or GitHub repo link…", "src.finding": "Looking for RSS…", "src.added": "Added {name}",
+  "src.removed": "Removed {name}", "src.toggle": "Turn {name} on/off", "src.none": "No sources are on.",
+  "src.hnDetail": "Stories with {n}+ points", "src.ghDetail": "Repos created this week with {n}+ stars",
+  "tag.official": "official", "tag.stack": "your stack", "tag.custom": "added by you", "tag.firstParty": "first-party",
+  "kind.youtube": "YouTube", "kind.release": "Releases", "kind.web": "Website", "kind.rss": "RSS", "kind.hn": "Hacker News", "kind.github": "GitHub",
+  "radar.week": "Week {w} · {y}", "radar.read": "Read {items} items from {sources} sources", "radar.run": "Run this week's radar",
+  "radar.rerun": "Run radar again", "radar.running": "Running…", "radar.weekSelect": "Choose week",
+  "radar.empty": "No digest yet. Click “Run this week's radar” to create your first one (about 2–3 minutes).",
+  "radar.ready": "This week's digest is ready",
+  "radar.aside": "The “Vs. my stack” tab compares each new technology with the matching skill in your profile. Each comparison takes about 1–2 minutes and is saved.",
+  "stage.start": "Starting…", "stage.collect": "Collecting the last 7 days…", "stage.classify": "Classifying items with AI…",
+  "stage.themes": "Writing the industry roundup…", "stage.done": "Done.",
+  "filter.title": "Filter", "filter.all": "Overview", "ov.hint": "Headlines by type. Use “See details” to read each one in full.", "filter.ai": "New models & AI", "filter.stack": "Same as your stack",
+  "filter.updates": "Your tools' updates", "filter.other": "Other ecosystems", "filter.new": "New areas", "filter.themes": "Weekly roundup",
+  "heading.all": "Your technology radar", "sec.ai": "New models & AI tools", "sec.aiHint": "First-party announcements first",
+  "sec.stack": "New tech in the same category as your stack", "sec.updates": "New versions of tools you use",
+  "sec.other": "Same category, other ecosystems", "sec.new": "New areas worth a look", "sec.themes": "Weekly roundup",
+  "sec.empty": "Nothing significant this week.",
+  "aigroup.models": "New models", "aigroup.coding": "AI coding tools", "aigroup.agents": "Agents & frameworks",
+  "stackbox.title": "Your stack", "other.sameAs": "same category as {tool}",
+  "cmp.button": "Compare with stack", "cmp.against": "vs", "cmp.pick": "Pick a tool…", "cmp.run": "Compare",
+  "cmp.loading": "Finding comparisons with {tool}…", "cmp.pros": "Better", "cmp.cons": "Worse", "cmp.fit": "For you:",
+  "cmp.new": "What's new:", "cmp.sources": "Sources", "cmp.independent": "independent", "cmp.indepCount": "{i}/{n} independent sources",
+  "cmp.confidence": "Confidence: {c}", "cmp.other": "Compare with another tool", "cmp.failed": "Couldn't compare: {msg}",
+  "cmp.search": "Search tools…",
+  "cmp.vsTool": "Compare with {tool}", "cmp.more": "Compare with another tool", "cmp.menuTitle": "Compare with a tool in your stack", "cmp.summary": "{pros} better · {cons} worse · {n} sources", "cmp.details": "Details →", "cmp.close": "Close", "cmp.ready": "Comparison ready: {a} vs {b}", "cmp.view": "View", "cmp.vs": "vs {tool}",
+  "cmp.noEvidence": "Not enough sources to conclude. Keep watching.",
+  "rec.adopt": "SWITCH", "rec.trial": "TRIAL", "rec.watch": "WATCH", "rec.ignore": "IGNORE", "rec.insufficient": "NOT ENOUGH DATA",
+  "conf.high": "high", "conf.medium": "medium", "conf.low": "low",
+  "nav.compare": "Vs. my stack", "ctab.title": "Compared with your current skills", "ctab.hint": "This week's new technologies, grouped by the skill of the same kind in your profile and compared automatically. Use ⋯ to compare with another tool.", "ctab.progress": "Comparing automatically {done}/{total}… (about 1–2 minutes each; finished ones are ready to read)", "ctab.allDone": "Compared {n} technologies with your stack", "ctab.queued": "Waiting to compare with {tool}…", "ctab.start": "Compare with {tool}", "ctab.empty": "No new technology this week matches any of your skills.", "ctab.skills": "By skill", "ctab.allSkills": "All skills", "ctab.count": "{n} new", "ctab.goto": "See comparisons →",
+  "mk.button": "Compare with rivals", "mk.ready": "Vs. {n} rivals: {names}", "mk.loading": "Finding the 3–5 strongest rivals and comparisons… (about 1–2 minutes)", "mk.queued": "Waiting to compare with rivals…", "mk.kicker": "Vs. the strongest rivals", "mk.pros": "Better than {rival}", "mk.cons": "Worse than {rival}", "mk.pick": "Which to pick:", "mk.none": "No sourced comparison found yet. Keep watching.", "mk.insufficient": "Not enough data (fewer than 2 sources), keep watching.", "mk.open": "Compare {name} with its rivals",
+  "prof.privacy": "Only technology, tool and framework names and your level are stored. No project or repo names, nor what they are for.",
+  "notify.title": "Weekly notifications", "notify.hint": "The digest goes out every week on the channels below, in your language. Channels are configured in the .env file (see the README).", "notify.none": "No channel configured yet. Add TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL or STACKSCOUT_WEBHOOK_URL to .env and restart.", "notify.test": "Send the latest digest now", "notify.sending": "Sending…", "notify.sent": "Sent on {list}", "notify.partial": "Some channels failed: {list}", "ch.telegram": "Telegram", "ch.email": "Email", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "demo.banner": "Demo: sample data for a made-up developer, read-only.", "demo.install": "Install StackScout →", "demo.waitlist": "Want it hosted? Join the waitlist →", "demo.readonly": "This demo is read-only. Install StackScout to run it on your stack."
+},
+zh: {
+  "app.tagline": "新技术，对照你的技术栈。",
+  "nav.radar": "每周雷达", "nav.sources": "信息源", "nav.profile": "个人档案", "nav.label": "导航",
+  "theme.toDark": "切换到深色主题", "theme.toLight": "切换到浅色主题", "lang.label": "语言",
+  "lang.changed": "语言已切换。下次运行雷达时，AI 生成的内容将使用该语言。",
+  "common.loading": "加载中…", "common.cancel": "取消", "common.save": "保存", "common.add": "添加", "common.remove": "删除",
+  "common.retry": "重试", "common.undo": "撤销", "common.back": "← 返回", "common.next": "下一步 →", "common.skip": "跳过",
+  "common.edit": "编辑", "common.none": "（暂无）", "common.enterHint": "回车继续 · Shift+回车换行",
+  "err.network": "无法连接 StackScout 服务器（{host}）。请确认 `uv run main.py web` 仍在运行。",
+  "err.generic": "出错了，请重试。", "err.ai": "AI 暂时无法处理，请几分钟后重试。", "err.page": "页面出错：{msg}",
+  "wiz.intro": "StackScout 每周为你推送值得关注的新技术，并与你正在使用的技术对照。回答 4 个小问题（约 2 分钟）。",
+  "wiz.step": "第 {n}/4 题", "wiz.required": "请回答这一题，以便了解你。", "wiz.create": "创建档案",
+  "wiz.keepOld": "取消，保留原档案", "wiz.building": "正在整理你的档案…（约 20 秒）",
+  "q.role.title": "你从事什么工作？", "q.role.hint": "例如：后端开发、计算机专业学生、数据分析师、设计师…",
+  "q.skills.title": "你常用哪些语言、技术、库和工具？",
+  "q.skills.hint": "随意列出，缩写或拼写错误都没关系。例如：c#, .net, entity framework, postgres, docker, react, excel",
+  "q.project.title": "你正在做什么项目？", "q.project.hint": "仅用于识别你使用的技术，不会被保存。可跳过。",
+  "q.interests.title": "你还想关注哪些主题？", "q.interests.hint": "例如：AI 智能体、Rust、向量数据库、DevOps。可跳过。",
+  "review.title": "我对你档案的理解如下", "review.hint": "尚未保存。请检查后确认。",
+  "review.none": "没有识别出你使用的工具", "review.noneHint": "请重新列出你常用的工具和技术。",
+  "review.failed": "未能生成档案。", "review.editTitle": "需要修改什么？直接输入即可",
+  "review.editPlaceholder": "例如：去掉 Docker，加上 Redis；我精通 React；我是技术负责人",
+  "review.toolsTitle": "你使用的工具", "review.noEdit": "算了，不改", "review.update": "更新",
+  "review.updating": "正在更新…（约 15 秒）", "review.restart": "重新开始", "review.edit": "修改",
+  "review.ok": "没问题", "review.saving": "保存中…", "review.saved": "档案已保存！每周雷达将基于此档案。",
+  "prof.title": "你的技能档案", "prof.hint": "点击 × 删除技能。", "prof.recreate": "重建档案",
+  "prof.recreateConfirm": "确定重新开始？", "prof.role": "职位", "prof.skills": "技能", "prof.projects": "项目",
+  "prof.interests": "关注主题", "prof.removed": "已删除 {name}", "prof.removeLabel": "删除 {name}",
+  "person.title": "职位与关注主题", "person.hint": "关注主题帮助雷达优先展示你关心的内容。用逗号分隔。",
+  "person.interestsPlaceholder": "例如：AI 智能体、Rust、向量数据库", "person.saved": "已保存",
+  "add.title": "添加技能", "add.hint": "随意列出，名称会自动规范化并分组。",
+  "add.placeholder": "例如：redis, kafka, terraform", "add.normalizing": "正在规范化…（约 15 秒）",
+  "add.previewTitle": "将添加", "add.previewHint": "保存前请检查。", "add.confirm": "添加到档案",
+  "add.exists": "这些技能已在档案中。", "add.done": "已添加 {n} 项技能",
+  "imp.title": "从代码或简历导入档案（开发者）",
+  "imp.hint": "在项目目录用 AI CLI 运行此提示词，或连同简历粘贴到 ChatGPT/Claude，然后把 YAML 结果粘贴到这里。导入内容会合并到档案中，不会覆盖。",
+  "imp.copy": "复制提示词", "imp.copied": "已复制提示词", "imp.copyFail": "无法自动复制，提示词已显示在下方输入框中。",
+  "imp.placeholder": "在此粘贴 YAML，或在下方选择文件…", "imp.file": "选择 YAML 文件", "imp.preview": "预览",
+  "imp.reading": "正在读取档案…", "imp.previewTitle": "合并前预览",
+  "imp.adds": "将新增 {n} 项技能。已有技能保持不变，仅补充信息。",
+  "imp.noNew": "没有新技能，只会补充已有技能的信息。", "imp.merge": "合并到档案", "imp.merged": "已合并到档案",
+  "level.beginner": "入门", "level.intermediate": "熟练", "level.advanced": "精通",
+  "src.title": "你的信息源", "src.onCount": "已开启 {n} 个信息源。",
+  "src.onHint": "Anthropic（Claude）、OpenAI（Codex）、Google（Gemini）的官方渠道帮你第一时间获知新模型，另有知名 AI 频道以及你档案中技术的官方博客。雷达只读取已开启的信息源。",
+  "src.offTitle": "其他信息源（已关闭）",
+  "src.offHint": "可选：社区来源（Hacker News、GitHub 热门新仓库、Lobsters…）、更宽泛的频道，以及你未使用技术的官方来源。勾选即可开启。",
+  "src.reset": "恢复默认", "src.resetConfirm": "确定恢复默认？", "src.resetDone": "已按你的档案恢复默认信息源",
+  "src.addTitle": "添加信息源", "src.addHint": "我会自动查找页面的 RSS。若是 GitHub 仓库链接，则跟踪其发布版本。",
+  "src.addPlaceholder": "粘贴博客、RSS 或 GitHub 仓库链接…", "src.finding": "正在查找 RSS…", "src.added": "已添加 {name}",
+  "src.removed": "已删除 {name}", "src.toggle": "开启/关闭 {name}", "src.none": "没有开启任何信息源。",
+  "src.hnDetail": "{n} 分以上的帖子", "src.ghDetail": "本周新建且星标 {n}+ 的仓库",
+  "tag.official": "官方", "tag.stack": "匹配技术栈", "tag.custom": "你添加的", "tag.firstParty": "官方发布",
+  "kind.youtube": "YouTube", "kind.release": "版本发布", "kind.web": "网站", "kind.rss": "RSS", "kind.hn": "Hacker News", "kind.github": "GitHub",
+  "radar.week": "{y} 年第 {w} 周", "radar.read": "已阅读 {sources} 个信息源的 {items} 条内容", "radar.run": "运行本周雷达",
+  "radar.rerun": "重新运行雷达", "radar.running": "运行中…", "radar.weekSelect": "选择周",
+  "radar.empty": "还没有简报。点击“运行本周雷达”生成第一份（约 2–3 分钟）。", "radar.ready": "本周简报已生成",
+  "radar.aside": "“对比技术栈”标签页会把每项新技术与你档案中对应的技能自动对比。每次对比约需 1–2 分钟，结果会被保存。",
+  "stage.start": "正在开始…", "stage.collect": "正在收集最近 7 天的内容…", "stage.classify": "正在用 AI 分类…",
+  "stage.themes": "正在撰写行业综述…", "stage.done": "完成。",
+  "filter.title": "筛选", "filter.all": "概览", "ov.hint": "按类型列出标题。点击“查看详情”阅读完整内容。", "filter.ai": "新模型与 AI", "filter.stack": "同类技术",
+  "filter.updates": "你的工具更新", "filter.other": "其他生态", "filter.new": "新领域", "filter.themes": "本周综述",
+  "heading.all": "你的技术雷达", "sec.ai": "新模型与 AI 工具", "sec.aiHint": "优先展示官方发布",
+  "sec.stack": "与你技术栈同类的新技术", "sec.updates": "你正在使用的工具有新版本",
+  "sec.other": "同类技术，其他生态", "sec.new": "值得关注的新领域", "sec.themes": "本周综述",
+  "sec.empty": "本周没有值得关注的内容。",
+  "aigroup.models": "新模型", "aigroup.coding": "AI 编程工具", "aigroup.agents": "智能体与框架",
+  "stackbox.title": "你的技术栈", "other.sameAs": "与 {tool} 同类",
+  "cmp.button": "对比技术栈", "cmp.against": "对比", "cmp.pick": "选择工具…", "cmp.run": "对比",
+  "cmp.loading": "正在查找与 {tool} 的对比资料…", "cmp.pros": "优势", "cmp.cons": "劣势", "cmp.fit": "对你来说：",
+  "cmp.new": "新变化：", "cmp.sources": "来源", "cmp.independent": "独立", "cmp.indepCount": "{n} 个来源中 {i} 个独立",
+  "cmp.confidence": "可信度：{c}", "cmp.other": "与其他工具对比", "cmp.failed": "对比失败：{msg}",
+  "cmp.search": "搜索工具…",
+  "cmp.vsTool": "对比 {tool}", "cmp.more": "与其他工具对比", "cmp.menuTitle": "与技术栈中的工具对比", "cmp.summary": "{pros} 项优势 · {cons} 项劣势 · {n} 个来源", "cmp.details": "查看详情 →", "cmp.close": "关闭", "cmp.ready": "对比完成：{a} vs {b}", "cmp.view": "查看", "cmp.vs": "对比 {tool}",
+  "cmp.noEvidence": "来源不足，暂无结论。继续关注。",
+  "rec.adopt": "建议迁移", "rec.trial": "试用", "rec.watch": "关注", "rec.ignore": "忽略", "rec.insufficient": "数据不足",
+  "conf.high": "高", "conf.medium": "中", "conf.low": "低",
+  "nav.compare": "对比技术栈", "ctab.title": "与你当前技能的对比", "ctab.hint": "本周新技术按你档案中同类技能分组，并自动对比。点击 ⋯ 可与其他工具对比。", "ctab.progress": "正在自动对比 {done}/{total}…（每项约 1–2 分钟，已完成的可以先看）", "ctab.allDone": "已完成 {n} 项技术与你技术栈的对比", "ctab.queued": "等待与 {tool} 对比…", "ctab.start": "与 {tool} 对比", "ctab.empty": "本周没有与你任何技能同类的新技术。", "ctab.skills": "按技能", "ctab.allSkills": "全部技能", "ctab.count": "{n} 项新技术", "ctab.goto": "查看对比 →",
+  "mk.button": "与竞品对比", "mk.ready": "与 {n} 个竞品对比：{names}", "mk.loading": "正在查找 3–5 个最强竞品及对比文章…（约 1–2 分钟）", "mk.queued": "等待与竞品对比…", "mk.kicker": "与最强竞品对比", "mk.pros": "优于 {rival}", "mk.cons": "不如 {rival}", "mk.pick": "怎么选：", "mk.none": "暂未找到有来源的对比。继续关注。", "mk.insufficient": "数据不足（少于 2 个来源），继续关注。", "mk.open": "查看 {name} 与竞品的对比",
+  "prof.privacy": "只保存技术、工具、框架名称和熟练程度。不保存项目名、仓库名，也不保存项目用途。",
+  "notify.title": "每周通知", "notify.hint": "简报每周通过以下渠道自动发送，使用你选择的语言。渠道在 .env 文件中配置（见 README）。", "notify.none": "尚未配置任何渠道。请在 .env 中添加 TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL 或 STACKSCOUT_WEBHOOK_URL 后重启。", "notify.test": "立即发送最新简报", "notify.sending": "正在发送…", "notify.sent": "已通过 {list} 发送", "notify.partial": "部分渠道发送失败：{list}", "ch.telegram": "Telegram", "ch.email": "邮件", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "demo.banner": "演示：虚构开发者的示例数据，只读。", "demo.install": "安装 StackScout →", "demo.waitlist": "想要在线版？加入等候名单 →", "demo.readonly": "演示为只读。安装 StackScout 以用于你的技术栈。"
+},
+ja: {
+  "app.tagline": "新しい技術を、あなたのスタックと照らし合わせて。",
+  "nav.radar": "週間レーダー", "nav.sources": "ソース", "nav.profile": "プロフィール", "nav.label": "ナビゲーション",
+  "theme.toDark": "ダークテーマに切り替え", "theme.toLight": "ライトテーマに切り替え", "lang.label": "言語",
+  "lang.changed": "言語を変更しました。AI が書く内容は次回のレーダー実行からこの言語になります。",
+  "common.loading": "読み込み中…", "common.cancel": "キャンセル", "common.save": "保存", "common.add": "追加", "common.remove": "削除",
+  "common.retry": "再試行", "common.undo": "元に戻す", "common.back": "← 戻る", "common.next": "次へ →", "common.skip": "スキップ",
+  "common.edit": "編集", "common.none": "（未設定）", "common.enterHint": "Enter で次へ · Shift+Enter で改行",
+  "err.network": "StackScout サーバー（{host}）に接続できません。`uv run main.py web` が動いているか確認してください。",
+  "err.generic": "エラーが発生しました。もう一度お試しください。", "err.ai": "AI が今は処理できませんでした。数分後に再試行してください。",
+  "err.page": "ページでエラーが発生しました：{msg}",
+  "wiz.intro": "StackScout は毎週、注目すべき新技術をあなたが使っているものと比べてお届けします。短い質問に 4 つ答えてください（約 2 分）。",
+  "wiz.step": "質問 {n}/4", "wiz.required": "この質問には回答してください。", "wiz.create": "プロフィールを作成",
+  "wiz.keepOld": "キャンセルして今のプロフィールを保持", "wiz.building": "プロフィールを整理中…（約 20 秒）",
+  "q.role.title": "どんな仕事をしていますか？", "q.role.hint": "例：バックエンド開発者、情報系の学生、データアナリスト、デザイナー…",
+  "q.skills.title": "よく使う言語・技術・ライブラリ・ツールは？",
+  "q.skills.hint": "自由に列挙してください。略語やスペルミスも大丈夫です。例：c#, .net, entity framework, postgres, docker, react, excel",
+  "q.project.title": "どんなプロジェクトに取り組んでいますか？", "q.project.hint": "使っている技術を見つけるためだけに使い、保存しません。省略可。",
+  "q.interests.title": "他にフォローしたいトピックは？", "q.interests.hint": "例：AI エージェント、Rust、ベクトル DB、DevOps。省略可。",
+  "review.title": "プロフィールをこう理解しました", "review.hint": "まだ保存されていません。確認してから確定してください。",
+  "review.none": "使っているツールを認識できませんでした", "review.noneHint": "使っているツールや技術をもう一度入力してください。",
+  "review.failed": "プロフィールを作成できませんでした。", "review.editTitle": "何を直しますか？自由に入力してください",
+  "review.editPlaceholder": "例：Docker を外して Redis を追加；React は得意；テックリードです",
+  "review.toolsTitle": "使っているツール", "review.noEdit": "やめる", "review.update": "更新",
+  "review.updating": "更新中…（約 15 秒）", "review.restart": "最初からやり直す", "review.edit": "修正",
+  "review.ok": "これで OK", "review.saving": "保存中…", "review.saved": "プロフィールを保存しました！週間レーダーはこれに基づきます。",
+  "prof.title": "スキルプロフィール", "prof.hint": "× でスキルを削除します。", "prof.recreate": "プロフィールを作り直す",
+  "prof.recreateConfirm": "最初からやり直しますか？", "prof.role": "職種", "prof.skills": "スキル", "prof.projects": "プロジェクト",
+  "prof.interests": "フォロー中", "prof.removed": "{name} を削除しました", "prof.removeLabel": "{name} を削除",
+  "person.title": "職種とフォローするトピック", "person.hint": "トピックは関心のあるニュースを優先するのに使われます。カンマ区切りで入力。",
+  "person.interestsPlaceholder": "例：AI エージェント、Rust、ベクトル DB", "person.saved": "保存しました",
+  "add.title": "スキルを追加", "add.hint": "自由に列挙してください。名前は自動で正規化・分類されます。",
+  "add.placeholder": "例：redis, kafka, terraform", "add.normalizing": "正規化中…（約 15 秒）",
+  "add.previewTitle": "追加する内容", "add.previewHint": "保存前に確認してください。", "add.confirm": "プロフィールに追加",
+  "add.exists": "これらのスキルは既にプロフィールにあります。", "add.done": "{n} 件のスキルを追加しました",
+  "imp.title": "コードや履歴書からプロフィールを取り込む（開発者向け）",
+  "imp.hint": "プロジェクトのフォルダで AI CLI からこのプロンプトを実行するか、履歴書と一緒に ChatGPT/Claude に貼り付け、結果の YAML をここに貼ってください。既存のプロフィールに統合され、上書きはされません。",
+  "imp.copy": "プロンプトをコピー", "imp.copied": "プロンプトをコピーしました", "imp.copyFail": "自動コピーできませんでした。下の欄にプロンプトを表示しました。",
+  "imp.placeholder": "ここに YAML を貼り付けるか、下でファイルを選択…", "imp.file": "YAML ファイルを選択", "imp.preview": "プレビュー",
+  "imp.reading": "プロフィールを読み込み中…", "imp.previewTitle": "統合前のプレビュー",
+  "imp.adds": "新しいスキルを {n} 件追加します。既存のスキルはそのままで、情報だけ補います。",
+  "imp.noNew": "新しいスキルはありません。既存スキルの情報だけ補います。", "imp.merge": "プロフィールに統合", "imp.merged": "プロフィールに統合しました",
+  "level.beginner": "初心者", "level.intermediate": "中級", "level.advanced": "上級",
+  "src.title": "あなたのソース", "src.onCount": "{n} 件のソースが有効です。",
+  "src.onHint": "新しいモデルをいち早く知るための Anthropic（Claude）・OpenAI（Codex）・Google（Gemini）の公式チャンネル、有名な AI チャンネル、そしてプロフィールの技術の公式ブログ。レーダーは有効なソースだけを読みます。",
+  "src.offTitle": "その他のソース（無効）",
+  "src.offHint": "任意：コミュニティ系（Hacker News、注目の新 GitHub リポジトリ、Lobsters…）、より広いチャンネル、使っていない技術の公式ソース。チェックで有効化。",
+  "src.reset": "デフォルトに戻す", "src.resetConfirm": "デフォルトに戻しますか？", "src.resetDone": "プロフィールに合わせてデフォルトのソースに戻しました",
+  "src.addTitle": "ソースを追加", "src.addHint": "ページの RSS を自動で探します。GitHub リポジトリのリンクならリリースを追跡します。",
+  "src.addPlaceholder": "ブログ、RSS、GitHub リポジトリのリンクを貼り付け…", "src.finding": "RSS を探しています…", "src.added": "{name} を追加しました",
+  "src.removed": "{name} を削除しました", "src.toggle": "{name} のオン/オフ", "src.none": "有効なソースがありません。",
+  "src.hnDetail": "{n} ポイント以上の記事", "src.ghDetail": "今週作成されたスター {n}+ のリポジトリ",
+  "tag.official": "公式", "tag.stack": "スタック一致", "tag.custom": "追加したもの", "tag.firstParty": "公式発表",
+  "kind.youtube": "YouTube", "kind.release": "リリース", "kind.web": "ウェブサイト", "kind.rss": "RSS", "kind.hn": "Hacker News", "kind.github": "GitHub",
+  "radar.week": "{y} 年 第 {w} 週", "radar.read": "{sources} 件のソースから {items} 件を読みました", "radar.run": "今週のレーダーを実行",
+  "radar.rerun": "レーダーを再実行", "radar.running": "実行中…", "radar.weekSelect": "週を選択",
+  "radar.empty": "まだダイジェストがありません。「今週のレーダーを実行」で最初のダイジェストを作成します（約 2〜3 分）。",
+  "radar.ready": "今週のダイジェストができました",
+  "radar.aside": "「スタックと比較」タブでは、新しい技術をプロフィール内の同種のスキルと自動で比較します。比較は 1 件あたり約 1〜2 分で、結果は保存されます。",
+  "stage.start": "開始しています…", "stage.collect": "直近 7 日分を収集中…", "stage.classify": "AI で分類中…",
+  "stage.themes": "業界のまとめを作成中…", "stage.done": "完了。",
+  "filter.title": "フィルター", "filter.all": "概要", "ov.hint": "種類ごとの見出しです。「詳細を見る」で全文を表示します。", "filter.ai": "新モデルと AI", "filter.stack": "スタックと同種",
+  "filter.updates": "使用ツールの更新", "filter.other": "他のエコシステム", "filter.new": "新しい分野", "filter.themes": "週のまとめ",
+  "heading.all": "あなたの技術レーダー", "sec.ai": "新しいモデルと AI ツール", "sec.aiHint": "公式発表を優先",
+  "sec.stack": "あなたのスタックと同じ種類の新技術", "sec.updates": "使っているツールの新バージョン",
+  "sec.other": "同じ種類・別のエコシステム", "sec.new": "注目の新しい分野", "sec.themes": "週のまとめ",
+  "sec.empty": "今週は特にありません。",
+  "aigroup.models": "新しいモデル", "aigroup.coding": "AI コーディングツール", "aigroup.agents": "エージェントとフレームワーク",
+  "stackbox.title": "あなたのスタック", "other.sameAs": "{tool} と同種",
+  "cmp.button": "スタックと比較", "cmp.against": "比較対象", "cmp.pick": "ツールを選択…", "cmp.run": "比較",
+  "cmp.loading": "{tool} との比較記事を探しています…", "cmp.pros": "長所", "cmp.cons": "短所", "cmp.fit": "あなたにとって：",
+  "cmp.new": "新しい点：", "cmp.sources": "出典", "cmp.independent": "独立", "cmp.indepCount": "出典 {n} 件中 {i} 件が独立",
+  "cmp.confidence": "信頼度：{c}", "cmp.other": "別のツールと比較", "cmp.failed": "比較できませんでした：{msg}",
+  "cmp.search": "ツールを検索…",
+  "cmp.vsTool": "{tool} と比較", "cmp.more": "別のツールと比較", "cmp.menuTitle": "スタックのツールと比較", "cmp.summary": "長所 {pros} · 短所 {cons} · 出典 {n}", "cmp.details": "詳細を見る →", "cmp.close": "閉じる", "cmp.ready": "比較が完了しました：{a} vs {b}", "cmp.view": "見る", "cmp.vs": "vs {tool}",
+  "cmp.noEvidence": "出典が足りず結論を出せません。引き続き注目。",
+  "rec.adopt": "移行推奨", "rec.trial": "試用", "rec.watch": "注目", "rec.ignore": "見送り", "rec.insufficient": "データ不足",
+  "conf.high": "高", "conf.medium": "中", "conf.low": "低",
+  "nav.compare": "スタックと比較", "ctab.title": "今のスキルとの比較", "ctab.hint": "今週の新しい技術を、プロフィール内の同種のスキルごとに分けて自動で比較します。⋯ で別のツールとも比較できます。", "ctab.progress": "自動比較中 {done}/{total}…（1 件約 1〜2 分。終わったものから読めます）", "ctab.allDone": "{n} 件の技術をスタックと比較しました", "ctab.queued": "{tool} との比較を待機中…", "ctab.start": "{tool} と比較", "ctab.empty": "今週はあなたのスキルと同種の新しい技術はありません。", "ctab.skills": "スキル別", "ctab.allSkills": "すべてのスキル", "ctab.count": "新技術 {n} 件", "ctab.goto": "比較を見る →",
+  "mk.button": "競合と比較", "mk.ready": "競合 {n} 件と比較：{names}", "mk.loading": "最も強い競合 3〜5 件と比較記事を探しています…（約 1〜2 分）", "mk.queued": "競合との比較を待機中…", "mk.kicker": "最も強い競合との比較", "mk.pros": "{rival} より優れる点", "mk.cons": "{rival} より劣る点", "mk.pick": "選び方：", "mk.none": "出典のある比較がまだ見つかりません。引き続き注目。", "mk.insufficient": "データ不足（出典 2 件未満）。引き続き注目。", "mk.open": "{name} を競合と比較",
+  "prof.privacy": "保存するのは技術・ツール・フレームワーク名と習熟度だけです。プロジェクト名やリポジトリ名、用途は保存しません。",
+  "notify.title": "毎週の通知", "notify.hint": "ダイジェストは毎週、選んだ言語で下のチャネルに自動送信されます。チャネルは .env ファイルで設定します（README 参照）。", "notify.none": "チャネルが未設定です。.env に TELEGRAM_BOT_TOKEN、SMTP_HOST、STACKSCOUT_SLACK_WEBHOOK_URL、STACKSCOUT_DISCORD_WEBHOOK_URL、STACKSCOUT_WEBHOOK_URL のいずれかを追加して再起動してください。", "notify.test": "最新のダイジェストを今すぐ送信", "notify.sending": "送信中…", "notify.sent": "{list} に送信しました", "notify.partial": "一部のチャネルで失敗しました：{list}", "ch.telegram": "Telegram", "ch.email": "メール", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "demo.banner": "デモ：架空の開発者のサンプルデータ（閲覧のみ）。", "demo.install": "StackScout をインストール →", "demo.waitlist": "ホスト版が欲しい？ウェイトリストへ →", "demo.readonly": "このデモは閲覧専用です。あなたのスタックで使うには StackScout をインストールしてください。"
+},
+ko: {
+  "app.tagline": "새로운 기술, 당신의 스택과 비교해서.",
+  "nav.radar": "주간 레이더", "nav.sources": "소스", "nav.profile": "프로필", "nav.label": "탐색",
+  "theme.toDark": "다크 테마로 전환", "theme.toLight": "라이트 테마로 전환", "lang.label": "언어",
+  "lang.changed": "언어가 변경되었습니다. 다음 레이더 실행부터 AI가 작성하는 내용이 이 언어로 나옵니다.",
+  "common.loading": "불러오는 중…", "common.cancel": "취소", "common.save": "저장", "common.add": "추가", "common.remove": "삭제",
+  "common.retry": "다시 시도", "common.undo": "실행 취소", "common.back": "← 뒤로", "common.next": "다음 →", "common.skip": "건너뛰기",
+  "common.edit": "편집", "common.none": "(없음)", "common.enterHint": "Enter로 다음 · Shift+Enter로 줄바꿈",
+  "err.network": "StackScout 서버({host})에 연결할 수 없습니다. `uv run main.py web`이 실행 중인지 확인하세요.",
+  "err.generic": "오류가 발생했습니다. 다시 시도해 주세요.", "err.ai": "AI가 지금은 처리하지 못했습니다. 몇 분 후 다시 시도하세요.",
+  "err.page": "페이지 오류: {msg}",
+  "wiz.intro": "StackScout은 매주 주목할 만한 새 기술을 당신이 쓰는 기술과 비교해 보내드립니다. 짧은 질문 4개에 답해 주세요(약 2분).",
+  "wiz.step": "질문 {n}/4", "wiz.required": "이 질문에는 답해 주세요.", "wiz.create": "프로필 만들기",
+  "wiz.keepOld": "취소하고 기존 프로필 유지", "wiz.building": "프로필을 정리하는 중…(약 20초)",
+  "q.role.title": "어떤 일을 하시나요?", "q.role.hint": "예: 백엔드 개발자, 컴퓨터공학 학생, 데이터 분석가, 디자이너…",
+  "q.skills.title": "자주 쓰는 언어, 기술, 라이브러리, 도구는?",
+  "q.skills.hint": "자유롭게 나열하세요. 약어나 오타도 괜찮습니다. 예: c#, .net, entity framework, postgres, docker, react, excel",
+  "q.project.title": "어떤 프로젝트를 하고 있나요?", "q.project.hint": "사용하는 기술을 찾는 데만 쓰이며 저장되지 않습니다. 건너뛰어도 됩니다.",
+  "q.interests.title": "더 팔로우하고 싶은 주제는?", "q.interests.hint": "예: AI 에이전트, Rust, 벡터 DB, DevOps. 건너뛰어도 됩니다.",
+  "review.title": "프로필을 이렇게 이해했습니다", "review.hint": "아직 저장되지 않았습니다. 확인 후 확정하세요.",
+  "review.none": "사용하는 도구를 인식하지 못했습니다", "review.noneHint": "사용하는 도구와 기술을 다시 입력해 주세요.",
+  "review.failed": "프로필을 만들지 못했습니다.", "review.editTitle": "무엇을 고칠까요? 자유롭게 입력하세요",
+  "review.editPlaceholder": "예: Docker 빼고 Redis 추가; React는 능숙함; 테크 리드입니다",
+  "review.toolsTitle": "사용하는 도구", "review.noEdit": "그만두기", "review.update": "업데이트",
+  "review.updating": "업데이트 중…(약 15초)", "review.restart": "처음부터 다시", "review.edit": "수정",
+  "review.ok": "맞아요", "review.saving": "저장 중…", "review.saved": "프로필이 저장되었습니다! 주간 레이더가 이 프로필을 기준으로 합니다.",
+  "prof.title": "내 스킬 프로필", "prof.hint": "×를 눌러 스킬을 삭제합니다.", "prof.recreate": "프로필 다시 만들기",
+  "prof.recreateConfirm": "처음부터 다시 할까요?", "prof.role": "직무", "prof.skills": "스킬", "prof.projects": "프로젝트",
+  "prof.interests": "팔로우 중", "prof.removed": "{name} 삭제됨", "prof.removeLabel": "{name} 삭제",
+  "person.title": "직무와 팔로우 주제", "person.hint": "주제는 관심 있는 소식을 우선 보여 주는 데 쓰입니다. 쉼표로 구분하세요.",
+  "person.interestsPlaceholder": "예: AI 에이전트, Rust, 벡터 DB", "person.saved": "저장됨",
+  "add.title": "스킬 추가", "add.hint": "자유롭게 나열하세요. 이름은 자동으로 정규화되고 분류됩니다.",
+  "add.placeholder": "예: redis, kafka, terraform", "add.normalizing": "정규화 중…(약 15초)",
+  "add.previewTitle": "추가할 항목", "add.previewHint": "저장하기 전에 확인하세요.", "add.confirm": "프로필에 추가",
+  "add.exists": "이 스킬들은 이미 프로필에 있습니다.", "add.done": "스킬 {n}개 추가됨",
+  "imp.title": "코드나 이력서에서 프로필 가져오기(개발자용)",
+  "imp.hint": "프로젝트 폴더에서 AI CLI로 이 프롬프트를 실행하거나 이력서와 함께 ChatGPT/Claude에 붙여 넣은 뒤, 결과 YAML을 여기에 붙여 넣으세요. 기존 프로필에 병합되며 덮어쓰지 않습니다.",
+  "imp.copy": "프롬프트 복사", "imp.copied": "프롬프트를 복사했습니다", "imp.copyFail": "자동 복사에 실패했습니다. 아래 칸에 프롬프트를 표시했습니다.",
+  "imp.placeholder": "YAML을 여기에 붙여 넣거나 아래에서 파일을 선택하세요…", "imp.file": "YAML 파일 선택", "imp.preview": "미리보기",
+  "imp.reading": "프로필을 읽는 중…", "imp.previewTitle": "병합 전 미리보기",
+  "imp.adds": "새 스킬 {n}개가 추가됩니다. 기존 스킬은 그대로 두고 정보만 보완합니다.",
+  "imp.noNew": "새 스킬은 없고 기존 스킬 정보만 보완합니다.", "imp.merge": "프로필에 병합", "imp.merged": "프로필에 병합했습니다",
+  "level.beginner": "입문", "level.intermediate": "중급", "level.advanced": "숙련",
+  "src.title": "내 소스", "src.onCount": "소스 {n}개 사용 중.",
+  "src.onHint": "새 모델을 가장 먼저 알 수 있는 Anthropic(Claude), OpenAI(Codex), Google(Gemini) 공식 채널, 유명 AI 채널, 그리고 프로필에 있는 기술의 공식 블로그입니다. 레이더는 켜진 소스만 읽습니다.",
+  "src.offTitle": "기타 소스(꺼짐)",
+  "src.offHint": "선택 사항: 커뮤니티 소스(Hacker News, 인기 신규 GitHub 저장소, Lobsters…), 더 넓은 채널, 사용하지 않는 기술의 공식 소스. 체크하면 켜집니다.",
+  "src.reset": "기본값으로 복원", "src.resetConfirm": "기본값으로 복원할까요?", "src.resetDone": "프로필에 맞는 기본 소스로 복원했습니다",
+  "src.addTitle": "소스 추가", "src.addHint": "페이지의 RSS를 자동으로 찾습니다. GitHub 저장소 링크라면 릴리스를 추적합니다.",
+  "src.addPlaceholder": "블로그, RSS, GitHub 저장소 링크 붙여넣기…", "src.finding": "RSS 찾는 중…", "src.added": "{name} 추가됨",
+  "src.removed": "{name} 삭제됨", "src.toggle": "{name} 켜기/끄기", "src.none": "켜진 소스가 없습니다.",
+  "src.hnDetail": "{n}점 이상 글", "src.ghDetail": "이번 주에 생성된 스타 {n}+ 저장소",
+  "tag.official": "공식", "tag.stack": "내 스택", "tag.custom": "직접 추가", "tag.firstParty": "공식 발표",
+  "kind.youtube": "YouTube", "kind.release": "릴리스", "kind.web": "웹사이트", "kind.rss": "RSS", "kind.hn": "Hacker News", "kind.github": "GitHub",
+  "radar.week": "{y}년 {w}주차", "radar.read": "소스 {sources}개에서 {items}건을 읽었습니다", "radar.run": "이번 주 레이더 실행",
+  "radar.rerun": "레이더 다시 실행", "radar.running": "실행 중…", "radar.weekSelect": "주 선택",
+  "radar.empty": "아직 다이제스트가 없습니다. ‘이번 주 레이더 실행’을 눌러 첫 다이제스트를 만드세요(약 2~3분).",
+  "radar.ready": "이번 주 다이제스트가 준비되었습니다",
+  "radar.aside": "‘스택과 비교’ 탭은 새 기술을 프로필의 같은 종류 스킬과 자동으로 비교합니다. 비교 한 번에 약 1~2분이 걸리며 결과는 저장됩니다.",
+  "stage.start": "시작하는 중…", "stage.collect": "최근 7일 소식을 모으는 중…", "stage.classify": "AI로 분류하는 중…",
+  "stage.themes": "업계 요약을 작성하는 중…", "stage.done": "완료.",
+  "filter.title": "필터", "filter.all": "개요", "ov.hint": "유형별 제목입니다. ‘자세히 보기’를 눌러 전체 내용을 확인하세요.", "filter.ai": "새 모델과 AI", "filter.stack": "내 스택과 같은 종류",
+  "filter.updates": "내 도구 업데이트", "filter.other": "다른 생태계", "filter.new": "새 분야", "filter.themes": "주간 요약",
+  "heading.all": "나의 기술 레이더", "sec.ai": "새 모델과 AI 도구", "sec.aiHint": "공식 발표 우선",
+  "sec.stack": "내 스택과 같은 종류의 새 기술", "sec.updates": "사용 중인 도구의 새 버전",
+  "sec.other": "같은 종류, 다른 생태계", "sec.new": "주목할 새 분야", "sec.themes": "주간 요약",
+  "sec.empty": "이번 주에는 특별한 소식이 없습니다.",
+  "aigroup.models": "새 모델", "aigroup.coding": "AI 코딩 도구", "aigroup.agents": "에이전트와 프레임워크",
+  "stackbox.title": "내 스택", "other.sameAs": "{tool}와(과) 같은 종류",
+  "cmp.button": "스택과 비교", "cmp.against": "비교 대상", "cmp.pick": "도구 선택…", "cmp.run": "비교",
+  "cmp.loading": "{tool}와(과)의 비교 자료를 찾는 중…", "cmp.pros": "장점", "cmp.cons": "단점", "cmp.fit": "나에게:",
+  "cmp.new": "새로운 점:", "cmp.sources": "출처", "cmp.independent": "독립", "cmp.indepCount": "출처 {n}개 중 {i}개 독립",
+  "cmp.confidence": "신뢰도: {c}", "cmp.other": "다른 도구와 비교", "cmp.failed": "비교하지 못했습니다: {msg}",
+  "cmp.search": "도구 검색…",
+  "cmp.vsTool": "{tool}와(과) 비교", "cmp.more": "다른 도구와 비교", "cmp.menuTitle": "내 스택의 도구와 비교", "cmp.summary": "장점 {pros} · 단점 {cons} · 출처 {n}", "cmp.details": "자세히 보기 →", "cmp.close": "닫기", "cmp.ready": "비교 완료: {a} vs {b}", "cmp.view": "보기", "cmp.vs": "vs {tool}",
+  "cmp.noEvidence": "출처가 부족해 결론을 내릴 수 없습니다. 계속 지켜보세요.",
+  "rec.adopt": "전환 권장", "rec.trial": "시범 적용", "rec.watch": "주시", "rec.ignore": "무시", "rec.insufficient": "데이터 부족",
+  "conf.high": "높음", "conf.medium": "보통", "conf.low": "낮음",
+  "nav.compare": "스택과 비교", "ctab.title": "현재 스킬과의 비교", "ctab.hint": "이번 주 새 기술을 프로필의 같은 종류 스킬별로 나누어 자동으로 비교합니다. ⋯ 를 눌러 다른 도구와도 비교할 수 있습니다.", "ctab.progress": "자동 비교 중 {done}/{total}… (항목당 약 1~2분, 끝난 것부터 볼 수 있습니다)", "ctab.allDone": "기술 {n}개를 내 스택과 비교했습니다", "ctab.queued": "{tool}와(과) 비교 대기 중…", "ctab.start": "{tool}와(과) 비교", "ctab.empty": "이번 주에는 내 스킬과 같은 종류의 새 기술이 없습니다.", "ctab.skills": "스킬별", "ctab.allSkills": "모든 스킬", "ctab.count": "새 기술 {n}개", "ctab.goto": "비교 보기 →",
+  "mk.button": "경쟁 제품과 비교", "mk.ready": "경쟁 제품 {n}개와 비교: {names}", "mk.loading": "가장 강한 경쟁 제품 3~5개와 비교 자료를 찾는 중… (약 1~2분)", "mk.queued": "경쟁 제품과 비교 대기 중…", "mk.kicker": "가장 강한 경쟁 제품과 비교", "mk.pros": "{rival}보다 나은 점", "mk.cons": "{rival}보다 부족한 점", "mk.pick": "선택 기준:", "mk.none": "출처가 있는 비교를 아직 찾지 못했습니다. 계속 지켜보세요.", "mk.insufficient": "데이터 부족(출처 2개 미만), 계속 지켜보세요.", "mk.open": "{name}을(를) 경쟁 제품과 비교",
+  "prof.privacy": "기술·도구·프레임워크 이름과 숙련도만 저장합니다. 프로젝트·저장소 이름이나 용도는 저장하지 않습니다.",
+  "notify.title": "주간 알림", "notify.hint": "다이제스트는 매주 선택한 언어로 아래 채널에 자동 발송됩니다. 채널은 .env 파일에서 설정합니다(README 참고).", "notify.none": "설정된 채널이 없습니다. .env에 TELEGRAM_BOT_TOKEN, SMTP_HOST, STACKSCOUT_SLACK_WEBHOOK_URL, STACKSCOUT_DISCORD_WEBHOOK_URL 또는 STACKSCOUT_WEBHOOK_URL을 추가하고 다시 시작하세요.", "notify.test": "최신 다이제스트 지금 보내기", "notify.sending": "보내는 중…", "notify.sent": "{list}(으)로 보냈습니다", "notify.partial": "일부 채널 전송 실패: {list}", "ch.telegram": "Telegram", "ch.email": "이메일", "ch.slack": "Slack", "ch.discord": "Discord", "ch.webhook": "Webhook",
+  "demo.banner": "데모: 가상의 개발자 샘플 데이터(읽기 전용).", "demo.install": "StackScout 설치 →", "demo.waitlist": "호스팅 버전이 필요하신가요? 대기자 등록 →", "demo.readonly": "이 데모는 읽기 전용입니다. 내 스택에서 쓰려면 StackScout를 설치하세요."
+}
+};
+
+// ---------------------------------------------------------------- state & utils
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* private mode: not remembered */ } },
+};
+const prefersDark = () => { try { return matchMedia("(prefers-color-scheme: dark)").matches; } catch { return false; } };
+const emptyAnswers = () => ({ role: "", skills: "", project: "", interests: "" });
+
+const state = {
+  lang: "vi", theme: store.get("ss-theme") || (prefersDark() ? "dark" : "light"),
+  meta: null, profile: null, view: "loading", tab: "radar", step: 0, answers: emptyAnswers(),
+  draft: null, editing: false, busy: null, addPreview: null, importPreview: null,
+  confirmReset: false, confirmSourceReset: false, sources: null, notify: null,
+  radar: null, reports: null, report: null, pollTimer: null, filter: "all",
+  compares: {}, menuOpen: null, drawer: null, auto: null, autoTimer: null, skillFilter: "all", market: {},
+};
+
+function t(key, params = {}) {
+  const raw = (I18N[state.lang] && I18N[state.lang][key]) ?? I18N.vi[key] ?? key;
+  return raw.replace(/\{(\w+)\}/g, (_, k) => (params[k] ?? `{${k}}`));
+}
+
+function applyTheme() { document.documentElement.dataset.theme = state.theme; }
+function applyLang() {
+  document.documentElement.lang = state.lang;
+  document.title = `StackScout — ${t("app.tagline")}`;
+}
+
+function h(tag, attrs = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "class") el.className = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of children.flat(Infinity)) if (c != null && c !== false) el.append(c.nodeType ? c : String(c));
+  return el;
+}
+
+function svg(paths, size = 18) {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  for (const [k, v] of Object.entries({ width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
+    "stroke-width": "1.8", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true" })) s.setAttribute(k, v);
+  s.innerHTML = paths;  // static, trusted icon markup only
+  return s;
+}
+const ICON = {
+  radar: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/>',
+  spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  branch: '<circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M6 8v4a4 4 0 0 0 4 4h6"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+};
+
+class ApiError extends Error {}
+
+// Demo build (docs/index.html): the page reads a static snapshot instead of a server.
+const DEMO = window.SS_DEMO || null;
+
+function demoApi(method, path, body) {
+  const D = DEMO, p = path.split("?")[0];
+  const routes = {
+    "/api/meta": D.meta, "/api/profile": { profile: D.profile }, "/api/settings": { language: "en", chosen: false },
+    "/api/radar/status": { running: false, step: "", error: null, week: D.report.week }, "/api/reports": { weeks: [D.report.week] },
+    [`/api/reports/${D.report.week}`]: D.report, "/api/compare": { comparisons: D.comparisons }, "/api/market": { market: D.market },
+    "/api/sources": D.sources, "/api/notify": { channels: ["email", "slack", "discord"], all: ["telegram", "email", "slack", "discord", "webhook"] },
+  };
+  if (method === "GET" && p in routes) return structuredClone(routes[p]);
+  if (p === "/api/compare/auto") return { running: false, week: D.report.week, total: 0, done: 0, active: [], failed: {} };
+  if (method === "PUT" && p === "/api/settings") return body;  // switching language works in the demo
+  if (p === "/api/client-log") return {};
+  throw new ApiError(t("demo.readonly"));
+}
+
+async function api(method, path, body) {
+  if (DEMO) return demoApi(method, path, body);
+  let res;
+  try {
+    res = await fetch(path, { method, headers: body ? { "Content-Type": "application/json" } : {},
+                              body: body ? JSON.stringify(body) : undefined });
+  } catch {
+    throw new ApiError(t("err.network", { host: location.host }));
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 502) throw new ApiError(t("err.ai"));
+    const d = data.detail;
+    const msg = typeof d === "string" ? d : Array.isArray(d) ? d.map(x => x.msg).join("; ") : t("err.generic");
+    throw new ApiError(msg);
+  }
+  return data;
+}
+
+function reportError(message, detail = "") {
+  console.error("[StackScout]", message, detail);
+  if (DEMO) return;
+  fetch("/api/client-log", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: String(message).slice(0, 2000), detail: String(detail).slice(0, 8000) }) }).catch(() => {});
+}
+window.addEventListener("error", e => { reportError(e.message, e.error?.stack || ""); toast(t("err.page", { msg: e.message }), { error: true }); });
+window.addEventListener("unhandledrejection", e => {
+  const msg = e.reason?.message || String(e.reason);
+  reportError(msg, e.reason?.stack); toast(t("err.page", { msg }), { error: true });
+});
+
+let toastTimer;
+function toast(message, { error = false, action } = {}) {
+  document.querySelector(".toast")?.remove();
+  clearTimeout(toastTimer);
+  const el = h("div", { class: "toast" + (error ? " error" : ""), role: "status" }, message,
+    action && h("button", { onclick: () => { el.remove(); action.run(); } }, action.label));
+  document.body.append(el);
+  toastTimer = setTimeout(() => el.remove(), action ? 7000 : 4500);
+}
+
+async function run(label, fn) {
+  state.busy = label; render();
+  try { await fn(); }
+  catch (e) { if (!(e instanceof ApiError)) reportError(e.message, e.stack); toast(e.message, { error: true }); }
+  finally { state.busy = null; render(); }
+}
+
+const loading = text => h("div", { class: "loading" }, h("div", { class: "spinner" }), text);
+const onEnter = (el, fn) => el.addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.shiftKey || e.isComposing || e.keyCode === 229) return;
+  e.preventDefault(); fn();
+});
+const ext = (url, text) => /^https?:\/\//i.test(url || "")
+  ? h("a", { href: url, target: "_blank", rel: "noopener noreferrer" }, text) : h("span", {}, text);
+const catLabel = id => {
+  const c = state.meta?.categories.find(x => x.id === id);
+  return c ? (state.lang === "vi" ? c.labels.vi : c.labels.en) : id;
+};
+const ECO = { dotnet: ".NET", node: "Node.js", python: "Python", jvm: "JVM", go: "Go", rust: "Rust",
+              frontend: "Frontend", mobile: "Mobile", cloud: "Cloud", any: "" };
+const nameKey = s => String(s || "").toLowerCase();
+
+// ---------------------------------------------------------------- header
+
+function headerView() {
+  const langSel = h("select", { "aria-label": t("lang.label") }, LANGS.map(([code, name]) => h("option", { value: code }, name)));
+  langSel.value = state.lang;
+  langSel.addEventListener("change", async () => {
+    state.lang = langSel.value; store.set("ss-lang", state.lang); applyLang(); render();
+    try { await api("PUT", "/api/settings", { language: state.lang }); toast(t("lang.changed")); }
+    catch (e) { toast(e.message, { error: true }); }
+  });
+  const dark = state.theme === "dark";
+  const themeBtn = h("button", { class: "iconbtn", "aria-label": t(dark ? "theme.toLight" : "theme.toDark"),
+    title: t(dark ? "theme.toLight" : "theme.toDark"),
+    onclick: () => { state.theme = dark ? "light" : "dark"; store.set("ss-theme", state.theme); applyTheme(); render(); } },
+    svg(dark ? ICON.sun : ICON.moon, 20));
+  const tab = (id, label, onOpen) => h("button", { class: "tab", "aria-current": state.tab === id ? "page" : null,
+    onclick: () => { state.tab = id; render(); if (onOpen) onOpen(); } }, label);
+  const showNav = state.view === "main";
+  const banner = DEMO && h("div", { class: "demobar" }, h("span", {}, t("demo.banner")),
+    h("a", { href: DEMO.repo, target: "_blank", rel: "noopener" }, t("demo.install")),
+    DEMO.waitlist && h("a", { href: DEMO.waitlist, target: "_blank", rel: "noopener" }, t("demo.waitlist")));
+  return [banner, h("header", { class: "top" },
+    h("div", { class: "brand" }, svg(ICON.radar, 26), h("b", {}, "StackScout")),
+    h("span", { class: "tagline" }, t("app.tagline")),
+    h("nav", { class: "topnav", "aria-label": t("nav.label") },
+      showNav && [
+        tab("radar", t("nav.radar"), () => { if (!state.reports) loadReports(); }),
+        tab("compare", t("nav.compare"), () => { if (!state.reports) loadReports(); else ensureAuto(); }),
+        tab("sources", t("nav.sources"), () => { if (!state.sources) loadSources(); }),
+        tab("profile", t("nav.profile")),
+      ],
+      langSel, themeBtn))];
+}
+
+// ---------------------------------------------------------------- onboarding
+
+const QUESTIONS = [
+  { key: "role", required: true }, { key: "skills", required: true },
+  { key: "project", required: false }, { key: "interests", required: false },
+];
+
+function wizardView() {
+  const q = QUESTIONS[state.step];
+  const last = state.step === QUESTIONS.length - 1;
+  const maxlength = q.key === "skills" || q.key === "project" ? 20000 : 4000;
+  const box = h("textarea", { rows: q.key === "skills" ? 4 : 3, "aria-label": t(`q.${q.key}.title`), "data-autofocus": true, maxlength });
+  box.value = state.answers[q.key];
+  box.addEventListener("input", () => { state.answers[q.key] = box.value; });
+  const next = () => {
+    state.answers[q.key] = box.value.trim();
+    if (q.required && !state.answers[q.key]) { toast(t("wiz.required")); box.focus(); return; }
+    if (last) return makeDraft();
+    state.step++; render();
+  };
+  onEnter(box, next);
+  return h("div", { class: "card" },
+    state.step === 0 && !state.profile && h("div", { class: "callout" }, t("wiz.intro")),
+    h("div", { class: "progress" }, h("div", { style: `width:${(state.step + 1) * 25}%` })),
+    h("p", { class: "kicker" }, t("wiz.step", { n: state.step + 1 })),
+    h("h2", { style: "font-size:22px;margin:0 0 4px" }, t(`q.${q.key}.title`)),
+    h("p", { class: "hint" }, t(`q.${q.key}.hint`)),
+    box,
+    h("div", { class: "row" },
+      state.step > 0 && h("button", { class: "btn", onclick: () => { state.step--; render(); } }, t("common.back")),
+      state.profile && state.step === 0 && h("button", { class: "btn link", onclick: () => { state.view = "main"; render(); } }, t("wiz.keepOld")),
+      h("span", { class: "spacer" }),
+      !q.required && h("button", { class: "btn link", onclick: () => { box.value = ""; next(); } }, t("common.skip")),
+      h("kbd", {}, t("common.enterHint")),
+      h("button", { class: "btn primary", onclick: next }, last ? t("wiz.create") : t("common.next"))));
+}
+
+function makeDraft() {
+  state.view = "review"; state.draft = null; state.editing = false;
+  run(t("wiz.building"), async () => {
+    const { profile } = await api("POST", "/api/profile/draft", state.answers);
+    state.draft = profile;
+    if (!profile.skills.length) state.editing = true;
+  });
+}
+
+function levelBadge(level) { return h("span", { class: "lvl " + level }, t("level." + level)); }
+
+function skillGroups(skills, onRemove) {
+  const groups = state.meta.categories.map(c => ({ ...c, items: skills.filter(s => s.category === c.id) })).filter(g => g.items.length);
+  if (!groups.length) return h("p", { class: "muted" }, t("common.none"));
+  return h("div", {}, groups.map(g => h("div", { class: "group" },
+    h("div", { class: "label" }, catLabel(g.id)),
+    h("div", { class: "chips" }, g.items.map(s => h("span", { class: "chip" },
+      s.name, levelBadge(s.level),
+      onRemove && h("button", { class: "x", "aria-label": t("prof.removeLabel", { name: s.name }), onclick: () => onRemove(s) }, "×")))))));
+}
+
+function profileBody(p, onRemove) {
+  return [
+    h("h3", {}, t("prof.role")), h("p", { style: "margin:0" }, p.person.role || h("span", { class: "muted" }, t("common.none"))),
+    h("h3", {}, t("prof.skills")),
+    h("p", { class: "muted", style: "margin:0 0 8px;font-size:13px" }, t("prof.privacy")),
+    skillGroups(p.skills, onRemove),
+    p.person.interests.length > 0 && [h("h3", {}, t("prof.interests")),
+      h("div", { class: "chips" }, p.person.interests.map(i => h("span", { class: "chip" }, i)))],
+  ];
+}
+
+function reviewView() {
+  if (state.busy) return h("div", { class: "card" }, loading(state.busy));
+  if (!state.draft) return h("div", { class: "card" }, h("p", {}, t("review.failed")),
+    h("div", { class: "row" },
+      h("button", { class: "btn", onclick: () => { state.view = "wizard"; state.step = 3; render(); } }, t("common.back")),
+      h("button", { class: "btn primary", onclick: makeDraft }, t("common.retry"))));
+  const noSkills = !state.draft.skills.length;
+  const box = h("textarea", { rows: 2, "data-autofocus": state.editing, maxlength: noSkills ? 20000 : 4000,
+    placeholder: noSkills ? "python, excel, figma" : t("review.editPlaceholder") });
+  const submit = () => {
+    const correction = box.value.trim();
+    if (!correction) { box.focus(); return; }
+    run(t("review.updating"), async () => {
+      const { profile } = await api("POST", "/api/profile/revise", { draft: state.draft, correction });
+      state.draft = profile; state.editing = !profile.skills.length;
+    });
+  };
+  onEnter(box, submit);
+  const save = () => run(t("review.saving"), async () => {
+    const { profile } = await api("PUT", "/api/profile", { profile: state.draft });
+    state.profile = profile; state.draft = null; state.view = "main"; state.tab = "radar";
+    state.answers = emptyAnswers(); state.step = 0; state.sources = null;
+    toast(t("review.saved"));
+    loadReports();
+  });
+  return h("div", { class: "card" },
+    h("h2", { style: "font-size:22px" }, noSkills ? t("review.none") : t("review.title")),
+    h("p", { class: "hint" }, noSkills ? t("review.noneHint") : t("review.hint")),
+    !noSkills && profileBody(state.draft, null),
+    state.editing
+      ? h("div", {}, h("h3", {}, noSkills ? t("review.toolsTitle") : t("review.editTitle")), box,
+          h("div", { class: "row" },
+            !noSkills && h("button", { class: "btn link", onclick: () => { state.editing = false; render(); } }, t("review.noEdit")),
+            h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: submit }, t("review.update"))))
+      : h("div", { class: "row" },
+          h("button", { class: "btn link", onclick: () => { state.view = "wizard"; state.step = 0; render(); } }, t("review.restart")),
+          h("span", { class: "spacer" }),
+          h("button", { class: "btn", onclick: () => { state.editing = true; render(); } }, t("review.edit")),
+          h("button", { class: "btn primary", onclick: save }, t("review.ok"))));
+}
+
+// ---------------------------------------------------------------- profile tab
+
+function removeSkill(skill) {
+  run(null, async () => {
+    state.profile = (await api("DELETE", "/api/skills/" + encodeURIComponent(skill.name))).profile;
+    toast(t("prof.removed", { name: skill.name }), { action: { label: t("common.undo"), run: () => run(null, async () => {
+      state.profile = (await api("POST", "/api/skills", { skills: [skill] })).profile;
+    }) } });
+  });
+}
+
+function personCard() {
+  const p = state.profile.person;
+  const role = h("input", { type: "text", maxlength: 4000, "aria-label": t("prof.role") }); role.value = p.role;
+  const interests = h("input", { type: "text", maxlength: 4000, "aria-label": t("prof.interests"), placeholder: t("person.interestsPlaceholder") });
+  interests.value = p.interests.join(", ");
+  const save = () => run("person", async () => {
+    const list = interests.value.split(/[,;\n，、]/).map(s => s.trim()).filter(Boolean);
+    state.profile = (await api("PATCH", "/api/profile/person", { role: role.value.trim(), interests: list })).profile;
+    toast(t("person.saved"));
+  });
+  onEnter(role, save); onEnter(interests, save);
+  return h("div", { class: "card" }, h("h2", {}, t("person.title")), h("p", { class: "hint", style: "margin-top:4px" }, t("person.hint")),
+    h("h3", {}, t("prof.role")), role, h("h3", {}, t("prof.interests")), interests,
+    h("div", { class: "row" }, h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: save, disabled: state.busy === "person" }, t("common.save"))));
+}
+
+function addCard() {
+  if (state.busy === "add") return h("div", { class: "card" }, loading(t("add.normalizing")));
+  if (state.addPreview) return h("div", { class: "card" }, h("h2", {}, t("add.previewTitle")),
+    h("p", { class: "hint", style: "margin-top:4px" }, t("add.previewHint")), skillGroups(state.addPreview, null),
+    h("div", { class: "row" }, h("span", { class: "spacer" }),
+      h("button", { class: "btn", onclick: () => { state.addPreview = null; render(); } }, t("common.cancel")),
+      h("button", { class: "btn primary", onclick: () => run("add-save", async () => {
+        state.profile = (await api("POST", "/api/skills", { skills: state.addPreview })).profile;
+        toast(t("add.done", { n: state.addPreview.length })); state.addPreview = null;
+      }) }, t("add.confirm"))));
+  const input = h("input", { type: "text", maxlength: 4000, placeholder: t("add.placeholder"), "aria-label": t("add.title") });
+  const submit = () => {
+    const text = input.value.trim();
+    if (!text) { input.focus(); return; }
+    run("add", async () => {
+      const { skills } = await api("POST", "/api/skills/preview", { text });
+      if (!skills.length) toast(t("add.exists")); else state.addPreview = skills;
+    });
+  };
+  onEnter(input, submit);
+  return h("div", { class: "card" }, h("h2", {}, t("add.title")), h("p", { class: "hint", style: "margin-top:4px" }, t("add.hint")),
+    h("div", { class: "row", style: "margin-top:0" }, h("div", { style: "flex:1;min-width:200px" }, input),
+      h("button", { class: "btn primary", onclick: submit }, t("common.add"))));
+}
+
+function importCard() {
+  if (state.busy === "imp") return h("div", { class: "card" }, loading(t("imp.reading")));
+  if (state.importPreview) {
+    const { profile, added } = state.importPreview;
+    return h("div", { class: "card" }, h("h2", {}, t("imp.previewTitle")),
+      h("p", { class: "hint", style: "margin-top:4px" }, added.length ? t("imp.adds", { n: added.length }) : t("imp.noNew")),
+      added.length > 0 && skillGroups(added, null),
+      h("div", { class: "row" }, h("span", { class: "spacer" }),
+        h("button", { class: "btn", onclick: () => { state.importPreview = null; render(); } }, t("common.cancel")),
+        h("button", { class: "btn primary", onclick: () => run("imp-save", async () => {
+          state.profile = (await api("PUT", "/api/profile", { profile })).profile;
+          state.importPreview = null; toast(t("imp.merged"));
+        }) }, t("imp.merge"))));
+  }
+  const box = h("textarea", { rows: 5, maxlength: 200000, "aria-label": "YAML", placeholder: t("imp.placeholder") });
+  const file = h("input", { type: "file", accept: ".yaml,.yml,.txt", "aria-label": t("imp.file") });
+  file.addEventListener("change", async () => { if (file.files[0]) box.value = await file.files[0].text(); });
+  const copyPrompt = () => run(null, async () => {
+    const { prompt } = await api("GET", "/api/profile/import/prompt");
+    try { await navigator.clipboard.writeText(prompt); toast(t("imp.copied")); }
+    catch { box.value = prompt; toast(t("imp.copyFail")); }
+  });
+  const preview = () => {
+    if (!box.value.trim()) { box.focus(); return; }
+    run("imp", async () => { state.importPreview = await api("POST", "/api/profile/import/preview", { yaml: box.value }); });
+  };
+  return h("div", { class: "card" }, h("h2", {}, t("imp.title")), h("p", { class: "hint", style: "margin-top:4px" }, t("imp.hint")),
+    h("div", { class: "row", style: "margin:0 0 12px" }, h("button", { class: "btn sm", onclick: copyPrompt }, t("imp.copy"))),
+    box, h("div", { class: "row" }, file, h("span", { class: "spacer" }), h("button", { class: "btn primary", onclick: preview }, t("imp.preview"))));
+}
+
+function profileTab() {
+  return [
+    h("div", { class: "card" },
+      h("div", { class: "row", style: "margin:0 0 8px" },
+        h("h2", {}, t("prof.title")), h("span", { class: "spacer" }),
+        state.confirmReset
+          ? [h("button", { class: "btn link", onclick: () => { state.confirmReset = false; render(); } }, t("common.cancel")),
+             h("button", { class: "btn danger", onclick: () => { state.confirmReset = false; state.view = "wizard"; state.step = 0; render(); } }, t("prof.recreateConfirm"))]
+          : h("button", { class: "btn link", onclick: () => { state.confirmReset = true; render(); } }, t("prof.recreate"))),
+      h("p", { class: "hint" }, t("prof.hint")), profileBody(state.profile, removeSkill)),
+    personCard(), addCard(), importCard(),
+  ];
+}
+
+// ---------------------------------------------------------------- sources tab
+
+async function loadSources() { await run(null, async () => { state.sources = await api("GET", "/api/sources"); }); }
+
+function sourceKind(s) {
+  if (/youtube\.com/.test(s.url || "")) return t("kind.youtube");
+  if (/releases\.atom$/.test(s.url || "")) return t("kind.release");
+  return t({ rss: "kind.rss", hackernews: "kind.hn", github_new_repos: "kind.github", sitemap: "kind.web" }[s.type] || "kind.rss");
+}
+
+function sourcesTab() {
+  if (!state.sources) return [h("div", { class: "card" }, loading(t("common.loading")))];
+  const list = state.sources.sources;
+  const set = data => { state.sources = { industry: data.industry, sources: data.sources }; };
+  const row = s => {
+    const box = h("input", { type: "checkbox", "aria-label": t("src.toggle", { name: s.name }) });
+    box.checked = s.enabled !== false;
+    box.addEventListener("change", () => run(null, async () => set(await api("PATCH", `/api/sources/${encodeURIComponent(s.id)}`, { enabled: box.checked }))));
+    const detail = s.type === "sitemap" ? `${new URL(s.url).host} ${(s.paths || [s.path || "/"]).join(" ")}`
+      : s.url || (s.type === "hackernews" ? t("src.hnDetail", { n: s.min_points || 150 }) : t("src.ghDetail", { n: s.min_stars || 200 }));
+    return h("div", { class: "src" + (s.enabled === false ? " off" : "") }, box,
+      h("div", { class: "info" }, h("b", {}, s.name), h("span", { class: "tag" }, sourceKind(s)),
+        s.official && h("span", { class: "tag official" }, t("tag.official")),
+        s.tier === "stack" && s.enabled !== false && !s.user_set && h("span", { class: "tag" }, t("tag.stack")),
+        s.tier === "custom" && h("span", { class: "tag" }, t("tag.custom")),
+        h("small", { title: detail }, detail)),
+      h("button", { class: "btn link", onclick: () => run(null, async () => {
+        set(await api("DELETE", `/api/sources/${encodeURIComponent(s.id)}`)); toast(t("src.removed", { name: s.name }));
+      }) }, t("common.remove")));
+  };
+  const on = list.filter(s => s.enabled !== false), off = list.filter(s => s.enabled === false);
+  const input = h("input", { type: "text", maxlength: 2000, "aria-label": t("src.addTitle"), placeholder: t("src.addPlaceholder") });
+  const add = () => {
+    const url = input.value.trim();
+    if (!url) { input.focus(); return; }
+    run("src", async () => { const res = await api("POST", "/api/sources", { url }); set(res); toast(t("src.added", { name: res.added.name })); });
+  };
+  onEnter(input, add);
+  return [
+    h("div", { class: "card" },
+      h("div", { class: "row", style: "margin:0 0 4px" }, h("h2", {}, t("src.title")), h("span", { class: "spacer" }),
+        state.confirmSourceReset
+          ? [h("button", { class: "btn link", onclick: () => { state.confirmSourceReset = false; render(); } }, t("common.cancel")),
+             h("button", { class: "btn danger", onclick: () => run(null, async () => {
+               state.confirmSourceReset = false; set(await api("POST", "/api/sources/reset")); toast(t("src.resetDone"));
+             }) }, t("src.resetConfirm"))]
+          : h("button", { class: "btn link", onclick: () => { state.confirmSourceReset = true; render(); } }, t("src.reset"))),
+      h("p", { class: "hint" }, `${t("src.onCount", { n: on.length })} ${t("src.onHint")}`),
+      on.length ? on.map(row) : h("p", { class: "muted" }, t("src.none"))),
+    off.length > 0 && h("div", { class: "card" }, h("h2", {}, t("src.offTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.offHint")), off.map(row)),
+    h("div", { class: "card" }, h("h2", {}, t("src.addTitle")), h("p", { class: "hint", style: "margin-top:4px" }, t("src.addHint")),
+      state.busy === "src" ? loading(t("src.finding"))
+        : h("div", { class: "row", style: "margin-top:0" }, h("div", { style: "flex:1;min-width:200px" }, input),
+            h("button", { class: "btn primary", onclick: add }, t("common.add")))),
+    notifyCard(),
+  ];
+}
+
+// Channels are set in .env (no secret goes through the page); here they are listed and tested.
+async function loadNotify() { try { state.notify = await api("GET", "/api/notify"); } catch { state.notify = { channels: [], all: [] }; } render(); }
+
+function notifyCard() {
+  if (!state.notify) { loadNotify(); return h("div", { class: "card" }, loading(t("common.loading"))); }
+  const { channels, all } = state.notify;
+  const test = async () => {
+    state.busy = "notify"; render();
+    try {
+      const { results } = await api("POST", "/api/notify/test");
+      const failed = Object.entries(results).filter(([, e]) => e);
+      toast(failed.length ? t("notify.partial", { list: failed.map(([c, e]) => `${t("ch." + c)}: ${e}`).join("; ") })
+        : t("notify.sent", { list: Object.keys(results).map(c => t("ch." + c)).join(", ") }), { error: failed.length > 0 });
+    } catch (e) { toast(e.message, { error: true }); }
+    state.busy = null; render();
+  };
+  return h("div", { class: "card" }, h("h2", {}, t("notify.title")),
+    h("p", { class: "hint", style: "margin-top:4px" }, t("notify.hint")),
+    h("div", { class: "chips", style: "margin:10px 0" }, all.map(c => h("span", { class: "chip" + (channels.includes(c) ? "" : " off") },
+      channels.includes(c) ? "✓ " : "", t("ch." + c)))),
+    channels.length
+      ? (state.busy === "notify" ? loading(t("notify.sending"))
+        : h("button", { class: "btn", onclick: test, disabled: !(state.reports || []).length }, t("notify.test")))
+      : h("p", { class: "muted", style: "margin:0;font-size:13px" }, t("notify.none")));
+}
+
+// ---------------------------------------------------------------- radar tab
+
+const AI_GROUP_FROM_VI = { "Model mới": "models", "Công cụ AI lập trình": "coding", "Agent & framework": "agents" };
+const sectionLists = rep => ({
+  ai: rep.ai_news || [], stack: rep.stack || rep.compare_more || [], updates: rep.updates || [],
+  other: rep.other_ecosystem || [], new: rep.new_areas || [], themes: rep.themes || [],
+});
+
+async function loadReports(week) {
+  await run(null, async () => {
+    const { weeks } = await api("GET", "/api/reports");
+    state.reports = weeks;
+    const pick = week && weeks.includes(week) ? week : weeks[0];
+    state.report = pick ? await api("GET", `/api/reports/${encodeURIComponent(pick)}`) : null;
+    state.compares = {}; state.market = {};
+    if (state.report) {
+      const { comparisons } = await api("GET", `/api/compare?week=${encodeURIComponent(state.report.week)}`);
+      mergeComparisons(comparisons);
+      mergeMarket((await api("GET", `/api/market?week=${encodeURIComponent(state.report.week)}`)).market);
+    }
+  });
+  ensureAuto();
+}
+
+// Several cached comparisons for one item: show the one against its natural
+// rival, unless the reader picked another tool with ⋯ (that one stays).
+function mergeComparisons(comparisons) {
+  const lists = sectionLists(state.report);
+  const rivalsOf = Object.fromEntries([...lists.ai, ...lists.stack, ...lists.other, ...lists.new]
+    .map(it => [nameKey(it.name), (it.rivals || []).map(nameKey)]));
+  for (const [key, c] of Object.entries(comparisons)) {
+    const [name, against] = key.split("|");
+    const cur = state.compares[name];
+    if (cur?.manual) continue;
+    const isRival = (rivalsOf[name] || []).includes(against);
+    if (!cur || cur.status !== "done" || isRival) state.compares[name] = { status: "done", data: c, against: c.current };
+  }
+}
+
+function mergeMarket(market) {
+  for (const [name, c] of Object.entries(market || {})) {
+    if (state.market[name]?.status !== "done") state.market[name] = { status: "done", data: c };
+  }
+}
+
+// ---- "Model & AI mới": a new model or tool vs its 3-5 strongest rivals.
+// Usually ready (the automatic run does it after the radar); a click on one
+// that is not done yet starts it now (the server never runs it twice).
+async function marketItem(item) {
+  const k = nameKey(item.name);
+  state.market[k] = { status: "loading" }; render();
+  try {
+    const { comparison } = await api("POST", "/api/market", { week: state.report.week, name: item.name });
+    state.market[k] = { status: "done", data: comparison };
+  } catch (e) {
+    state.market[k] = { status: "error", error: e.message };
+  }
+  render();
+}
+
+function marketStatus(item) {
+  const m = state.market[nameKey(item.name)];
+  if (m) return m.status;
+  const a = state.auto, key = "market|" + nameKey(item.name);
+  if (!a || a.week !== state.report?.week) return null;
+  if ((a.active || []).includes(key)) return "active";
+  if ((a.failed || {})[key]) return "failed";
+  return a.running ? "queued" : null;
+}
+
+function openMarket(item) {
+  state.menuOpen = null;
+  state.drawer = { item, kind: "market", opener: document.activeElement };
+  const st = marketStatus(item);
+  if (st !== "done" && st !== "loading" && st !== "active") marketItem(item); else render();
+}
+
+function marketLine(item) {
+  const st = marketStatus(item);
+  if (st === "active" || st === "loading") return h("button", { class: "cmpline pending", onclick: () => openMarket(item) },
+    h("div", { class: "spinner" }), t("mk.loading"));
+  if (st === "queued") return h("button", { class: "cmpline queued", onclick: () => openMarket(item) }, t("mk.queued"));
+  if (st === "done") {
+    const d = state.market[nameKey(item.name)].data;
+    const names = d.rivals.map(r => r.name);
+    return h("button", { class: "cmpline", onclick: () => openMarket(item) },
+      names.length
+        ? [h("strong", {}, t("mk.ready", { n: names.length, names: names.slice(0, 3).join(", ") + (names.length > 3 ? "…" : "") })),
+           h("span", { class: "muted" }, t("cmp.indepCount", { i: d.independent_sources, n: d.sources.length }))]
+        : h("span", { class: "muted" }, t("mk.none")),
+      h("span", { class: "go" }, t("cmp.details")));
+  }
+  return h("button", { class: "cmpline", onclick: () => openMarket(item) }, h("strong", {}, t("mk.button")),
+    st === "failed" || st === "error" ? h("span", { style: "color:var(--danger)" }, t("err.ai")) : null,
+    h("span", { class: "go" }, "→"));
+}
+
+function marketDrawerBody(item) {
+  const m = state.market[nameKey(item.name)];
+  const st = marketStatus(item);
+  if (st === "error") return [h("p", { style: "color:var(--danger);margin:0" }, t("cmp.failed", { msg: m.error })),
+    h("button", { class: "btn sm", style: "align-self:flex-start", onclick: () => marketItem(item) }, t("common.retry"))];
+  if (st !== "done") return loading(t(st === "queued" ? "mk.queued" : "mk.loading"));
+  const d = m.data;
+  const byN = Object.fromEntries((d.sources || []).map(x => [x.n, x]));
+  const refs = ns => h("span", { class: "refs" }, ns.map(n => byN[n] ? ext(byN[n].url, `[${n}]`) : `[${n}]`));
+  const claims = list => h("ul", { class: "dlist" }, list.map(c => h("li", {}, c.text, " ", refs(c.sources))));
+  return [
+    h("div", { class: "verdict" },
+      d.insufficient ? h("span", { class: "rec insufficient" }, t("rec.insufficient")) : null,
+      h("span", { class: "muted", style: "font-size:13px" }, t("cmp.confidence", { c: t("conf." + d.confidence) }), " · ",
+        t("cmp.indepCount", { i: d.independent_sources, n: d.sources.length }))),
+    d.summary && h("p", { style: "margin:0;font-size:14px;color:var(--body)" }, d.summary),
+    d.insufficient && h("p", { class: "muted", style: "margin:0;font-size:13px" }, t("mk.insufficient")),
+    d.rivals.length ? d.rivals.map(r => h("section", { class: "rival" },
+      h("h4", {}, `${item.name} vs ${r.name}`, r.vendor && h("span", { class: "muted" }, r.vendor)),
+      h("div", { class: "side2" },
+        h("div", {}, h("h5", { class: "pro" }, t("mk.pros", { rival: r.name })), r.pros.length ? claims(r.pros) : h("p", { class: "muted", style: "margin:0;font-size:13px" }, "—")),
+        h("div", {}, h("h5", { class: "con" }, t("mk.cons", { rival: r.name })), r.cons.length ? claims(r.cons) : h("p", { class: "muted", style: "margin:0;font-size:13px" }, "—"))),
+      r.verdict && h("p", { class: "fitbox" }, h("b", {}, t("mk.pick") + " "), r.verdict)))
+      : h("p", { class: "muted", style: "margin:0" }, t("mk.none")),
+    (d.sources || []).length > 0 && [h("h3", { class: "muted" }, t("cmp.sources")),
+      h("ol", { class: "srcs" }, d.sources.map(x => h("li", { value: x.n }, ext(x.url, x.title),
+        x.independent && h("span", { class: "tag", style: "margin-left:6px" }, t("cmp.independent")))))],
+  ];
+}
+
+// ---- automatic comparisons ("So với stack" tab): the server compares every
+// new technology with its natural rival in the background; the page polls.
+async function ensureAuto() {
+  if (!state.report) return;
+  try { state.auto = await api("POST", "/api/compare/auto", { week: state.report.week }); } catch { return; }
+  if (state.tab === "compare") render();
+  if (state.auto.running) pollAuto();
+}
+
+function pollAuto() {
+  clearTimeout(state.autoTimer);
+  state.autoTimer = setTimeout(async () => {
+    const week = state.report?.week;
+    try {
+      state.auto = await api("GET", "/api/compare/auto");
+      if (week && state.auto.week === week) {
+        mergeComparisons((await api("GET", `/api/compare?week=${encodeURIComponent(week)}`)).comparisons);
+        mergeMarket((await api("GET", `/api/market?week=${encodeURIComponent(week)}`)).market);
+      }
+    } catch { /* keep polling */ }
+    if (state.auto?.running) pollAuto();
+    else if (state.auto?.total) toast(t("ctab.allDone", { n: state.auto.total - Object.keys(state.auto.failed || {}).length }));
+    // Do not rebuild the page under an open menu (it would drop the search text); an open
+    // drawer is rebuilt only when what it is waiting for has arrived.
+    const waitingDrawer = state.drawer?.kind === "market" && state.market[nameKey(state.drawer.item.name)]?.status === "done"
+      && !state.drawer.shownDone;
+    if (waitingDrawer) state.drawer.shownDone = true;
+    if (!state.menuOpen && (!state.drawer || waitingDrawer)) render();
+  }, 5000);
+}
+
+function autoStatus(item) {
+  const a = state.auto, rival = firstRival(item);
+  if (!a || !rival || a.week !== state.report?.week) return null;
+  const key = nameKey(item.name) + "|" + nameKey(rival);
+  if ((a.active || []).includes(key)) return "active";
+  if ((a.failed || {})[key]) return "failed";
+  return a.running ? "queued" : null;
+}
+
+async function startRadar() {
+  try { state.radar = await api("POST", "/api/radar/run"); } catch (e) { toast(e.message, { error: true }); return; }
+  render(); pollRadar();
+}
+
+function pollRadar() {
+  clearTimeout(state.pollTimer);
+  state.pollTimer = setTimeout(async () => {
+    try { state.radar = await api("GET", "/api/radar/status"); } catch { /* keep polling */ }
+    if (state.radar.running) {
+      const el = document.getElementById("radar-step");
+      if (el) el.textContent = t("stage." + state.radar.step);
+      pollRadar(); return;
+    }
+    if (state.radar.error) toast(state.radar.error, { error: true }); else toast(t("radar.ready"));
+    await loadReports(state.radar.week);
+  }, 3000);
+}
+
+async function compareItem(item, against) {
+  const k = nameKey(item.name);
+  state.compares[k] = { status: "loading", against, manual: true }; render();
+  try {
+    const { comparison } = await api("POST", "/api/compare", { week: state.report.week, name: item.name, against });
+    state.compares[k] = { status: "done", data: comparison, against: comparison.current, manual: true };
+    if (!state.drawer || nameKey(state.drawer.item.name) !== k) {
+      toast(t("cmp.ready", { a: comparison.new, b: comparison.current }), { action: { label: t("cmp.view"), run: () => openDrawer(item) } });
+    }
+  } catch (e) {
+    state.compares[k] = { status: "error", against, error: e.message, manual: true };
+  }
+  render();
+}
+
+function toolOptions(item) {
+  const skills = (state.profile?.skills || []).map(s => s.name);
+  const rivals = (item.rivals || []).filter(r => skills.some(s => nameKey(s) === nameKey(r)));
+  return [...rivals, ...skills.filter(s => !rivals.some(r => nameKey(r) === nameKey(s)))];
+}
+const firstRival = item => toolOptions(item).find(o => (item.rivals || []).some(r => nameKey(r) === nameKey(o)));
+
+function openDrawer(item) {
+  state.menuOpen = null; state.drawer = { item, opener: document.activeElement }; render();
+}
+function closeDrawer() {
+  const opener = state.drawer?.opener;
+  state.drawer = null; render();
+  if (opener && document.contains(opener)) opener.focus();
+}
+
+// The natural rival is compared automatically; "⋯" lets the reader compare
+// with any other tool of the stack.
+function compareButton(item) {
+  const k = nameKey(item.name);
+  const open = state.menuOpen === k;
+  const toggle = e => { e.stopPropagation(); state.menuOpen = open ? null : k; render(); };
+  const chevron = h("button", { class: "btn sm solo", "aria-label": t("cmp.more"), title: t("cmp.more"),
+    "aria-haspopup": "menu", "aria-expanded": String(open), onclick: toggle },
+    svg('<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>', 16));
+  const options = toolOptions(item);
+  const buttons = options.map(o => h("button", { role: "menuitem", "data-name": nameKey(o),
+    onclick: e => { e.stopPropagation(); state.menuOpen = null; compareItem(item, o); } },
+    h("span", {}, o), (item.rivals || []).some(r => nameKey(r) === nameKey(o)) && h("span", { class: "tag" }, t("tag.stack"))));
+  // Long stacks: type to narrow the list (filters in place, no re-render).
+  const search = open && options.length > 10 && h("input", { type: "text", class: "menusearch", placeholder: t("cmp.search"),
+    "aria-label": t("cmp.search"), "data-autofocus": true });
+  if (search) search.addEventListener("input", () => {
+    const q = nameKey(search.value.trim());
+    for (const btn of buttons) btn.style.display = btn.dataset.name.includes(q) ? "" : "none";
+  });
+  const menu = open && h("div", { class: "menu", role: "menu", onclick: e => e.stopPropagation() },
+    h("p", { class: "menuhead" }, t("cmp.menuTitle")), search, buttons);
+  return h("div", { class: "split" }, chevron, menu);
+}
+
+function compareLine(item, c) {
+  if (c.status === "loading") return h("div", { class: "cmpline pending", role: "status" },
+    h("div", { class: "spinner" }), t("cmp.loading", { tool: c.against }));
+  if (c.status === "error") return h("div", { class: "cmpline error", role: "alert" }, t("cmp.failed", { msg: c.error }),
+    h("button", { class: "btn link sm", style: "margin-left:auto", onclick: () => compareItem(item, c.against) }, t("common.retry")));
+  const d = c.data;
+  return h("button", { class: "cmpline", onclick: () => openDrawer(item) },
+    h("span", { class: "rec " + d.recommendation }, t("rec." + d.recommendation)),
+    h("strong", {}, t("cmp.vs", { tool: d.current })),
+    h("span", { class: "muted" }, t("cmp.summary", { pros: d.pros.length, cons: d.cons.length, n: (d.sources || []).length })),
+    h("span", { class: "go" }, t("cmp.details")));
+}
+
+// No comparison on the page yet: show where the automatic one is.
+function autoLine(item) {
+  const tool = firstRival(item);
+  const st = autoStatus(item);
+  if (st === "active") return h("div", { class: "cmpline pending", role: "status" }, h("div", { class: "spinner" }), t("cmp.loading", { tool }));
+  if (st === "queued") return h("div", { class: "cmpline queued" }, t("ctab.queued", { tool }));
+  if (st === "failed") return h("div", { class: "cmpline error", role: "alert" }, t("cmp.failed", { msg: state.auto.failed[nameKey(item.name) + "|" + nameKey(tool)] }),
+    h("button", { class: "btn link sm", style: "margin-left:auto", onclick: () => compareItem(item, tool) }, t("common.retry")));
+  return tool && h("button", { class: "cmpline", onclick: () => compareItem(item, tool) }, h("strong", {}, t("ctab.start", { tool })));
+}
+
+function linksLine(item) {
+  if (!item.links?.length) return null;
+  return [" ", item.links.map((l, i) => [i ? " · " : "", ext(l.url, l.source || "link"),
+    l.official ? h("span", { class: "tag official", style: "margin-left:6px" }, t("tag.firstParty")) : null])];
+}
+
+// compare: only in the "So với stack" tab; the radar feed has no compare controls.
+function itemArticle(item, { compare = false, market = false, extra = "" } = {}) {
+  const c = state.compares[nameKey(item.name)];
+  const version = item.version && !item.name.includes(item.version) ? ` ${item.version}` : "";
+  const canCompare = compare && (state.profile?.skills || []).length > 0;
+  return h("article", { class: "item" },
+    h("div", { class: "itemrow" },
+      h("div", { class: "itemmain" },
+        h("div", { class: "itemtitle" }, market
+          ? h("button", { class: "titlebtn", title: t("mk.open", { name: item.name }), onclick: () => openMarket(item) }, item.name + version)
+          : h("strong", {}, item.name + version),
+          item.category && item.category !== "other" && h("span", { class: "tag" }, catLabel(item.category)),
+          extra && h("span", { class: "muted", style: "font-size:13px" }, extra)),
+        h("p", { class: "itemtext" }, item.summary, linksLine(item))),
+      canCompare && c?.status !== "loading" && compareButton(item)),
+    compare && (c ? compareLine(item, c) : autoLine(item)),
+    market && "category" in item && marketLine(item));
+}
+
+function drawerView() {
+  const item = state.drawer.item;
+  if (state.drawer.kind === "market") return [
+    h("div", { class: "backdrop", onclick: closeDrawer }),
+    h("aside", { class: "drawer", role: "dialog", "aria-modal": "true", "aria-labelledby": "drawer-title" },
+      h("div", { class: "drawerhead" },
+        h("div", { style: "flex:1;min-width:0" }, h("p", { class: "kicker", style: "margin-bottom:4px" }, t("mk.kicker")),
+          h("h2", { id: "drawer-title" }, item.name)),
+        h("button", { class: "iconbtn", "aria-label": t("cmp.close"), "data-autofocus": true, onclick: closeDrawer },
+          svg('<path d="M6 6l12 12M18 6L6 18"/>', 18))),
+      marketDrawerBody(item)),
+  ];
+  const c = state.compares[nameKey(item.name)];
+  const sel = h("select", { "aria-label": t("cmp.other") }, toolOptions(item).map(o => h("option", { value: o }, o)));
+  sel.value = c?.against || firstRival(item) || "";
+  const rerun = h("div", { class: "row", style: "margin:0" }, h("span", { class: "muted", style: "font-size:13px" }, t("cmp.other")), sel,
+    h("button", { class: "btn sm", onclick: () => compareItem(item, sel.value) }, t("cmp.run")));
+  let body;
+  if (!c || c.status === "loading") body = loading(t("cmp.loading", { tool: c?.against || sel.value }));
+  else if (c.status === "error") body = h("p", { style: "color:var(--danger);margin:0" }, t("cmp.failed", { msg: c.error }));
+  else {
+    const d = c.data;
+    const byN = Object.fromEntries((d.sources || []).map(s => [s.n, s]));
+    const refs = ns => h("span", { class: "refs" }, ns.map(n => byN[n] ? ext(byN[n].url, `[${n}]`) : `[${n}]`));
+    const indep = (d.sources || []).filter(s => s.independent).length;
+    body = [
+      h("div", { class: "verdict" }, h("span", { class: "rec " + d.recommendation }, t("rec." + d.recommendation)),
+        h("span", { class: "muted", style: "font-size:13px" }, t("cmp.confidence", { c: t("conf." + d.confidence) }), " · ",
+          t("cmp.indepCount", { i: indep, n: (d.sources || []).length }))),
+      d.fit && h("p", { class: "fitbox" }, h("b", {}, t("cmp.fit") + " "), d.fit),
+      d.what_is_new && h("p", { style: "margin:0;font-size:14px;color:var(--body)" }, h("b", {}, t("cmp.new") + " "), d.what_is_new),
+      (d.pros.length + d.cons.length) > 0
+        ? [h("h3", { class: "pro" }, t("cmp.pros")), h("ul", { class: "dlist" }, d.pros.map(p => h("li", {}, p.text, " ", refs(p.sources)))),
+           h("h3", { class: "con" }, t("cmp.cons")), h("ul", { class: "dlist" }, d.cons.map(p => h("li", {}, p.text, " ", refs(p.sources))))]
+        : h("p", { class: "muted", style: "margin:0" }, t("cmp.noEvidence")),
+      (d.sources || []).length > 0 && [h("h3", { class: "muted" }, t("cmp.sources")),
+        h("ol", { class: "srcs" }, d.sources.map(s => h("li", { value: s.n }, ext(s.url, s.title),
+          s.independent && h("span", { class: "tag", style: "margin-left:6px" }, t("cmp.independent")))))],
+    ];
+  }
+  return [
+    h("div", { class: "backdrop", onclick: closeDrawer }),
+    h("aside", { class: "drawer", role: "dialog", "aria-modal": "true", "aria-labelledby": "drawer-title" },
+      h("div", { class: "drawerhead" },
+        h("div", { style: "flex:1;min-width:0" }, h("p", { class: "kicker", style: "margin-bottom:4px" }, t("cmp.vs", { tool: c?.against || sel.value })),
+          h("h2", { id: "drawer-title" }, item.name)),
+        h("button", { class: "iconbtn", "aria-label": t("cmp.close"), "data-autofocus": true, onclick: closeDrawer },
+          svg('<path d="M6 6l12 12M18 6L6 18"/>', 18))),
+      rerun, body),
+  ];
+}
+
+function section(icon, title, note, body) {
+  return h("section", { class: "card" },
+    h("div", { class: "sechead" }, h("span", { class: "ico" }, svg(icon)), h("h2", {}, title), note && h("span", { class: "note" }, note)),
+    body);
+}
+const emptyNote = () => h("p", { class: "muted", style: "margin:0" }, t("sec.empty"));
+
+// "Tổng quan": one compact card per type with headlines only; "Xem chi tiết"
+// opens that type's own filter.
+const OV_MAX = 6;
+function overviewSections(rep) {
+  const L = sectionLists(rep);
+  // The article's own headline, readable on its own: a bare release tag ("v2.1.327")
+  // becomes "Claude Code 2.1.327", a headline that never names the tool gets it
+  // in front, and a headline already shown for another item falls back to the name.
+  const used = new Set();
+  const title = b => {
+    const name = b.name + (b.version && !b.name.includes(b.version) ? ` ${b.version}` : "");
+    const word = b.name.split(/\s+/)[0].toLowerCase();
+    // Every article the item came from (links keep one per source): the one naming
+    // this version wins, then one naming the tool, then the first link.
+    const heads = [...(b.items || []).map(id => rep.items?.[id]?.title), ...(b.links || []).map(l => l.title)]
+      .filter(Boolean).map(x => x.trim());
+    const ver = (b.version || "").split(/[\s,]+/)[0].toLowerCase();
+    const head = (ver && heads.find(x => x.toLowerCase().includes(ver) && x.toLowerCase().includes(word)))
+      || heads.find(x => x.toLowerCase().includes(word)) || (b.links?.[0]?.title || "").trim();
+    const bare = /^(v?\d[\w.+-]*|release\b[\d\s:.-]*)$/i.test(head);
+    const mentions = head.toLowerCase().includes(word);
+    const out = !head || bare || used.has(head) ? name : mentions ? head : `${name}: ${head}`;
+    used.add(head);
+    return out;
+  };
+  const cards = [
+    ["ai", ICON.spark, t("sec.ai"), L.ai.map(b => ({ text: title(b), item: b }))],
+    ["stack", ICON.layers, t("sec.stack"), L.stack.map(title)],
+    ["updates", ICON.up, t("sec.updates"), L.updates.map(title)],
+    ["other", ICON.branch, t("sec.other"), L.other.map(title)],
+    ["new", ICON.compass, t("sec.new"), L.new.map(title)],
+    ["themes", ICON.radar, t("sec.themes"), L.themes.map(th => th.title)],
+  ];
+  return [
+    h("p", { class: "muted", style: "margin:-4px 0 0" }, t("ov.hint")),
+    h("div", { class: "ovgrid" }, cards.map(([id, icon, name, titles]) => h("section", { class: "card ovcard" },
+      h("div", { class: "sechead" }, h("span", { class: "ico" }, svg(icon)), h("h2", {}, name), h("span", { class: "note" }, titles.length)),
+      titles.length
+        ? h("ul", { class: "ovlist" }, titles.slice(0, OV_MAX).map(x => h("li", {}, typeof x === "string" ? x
+            : "category" in x.item ? h("button", { title: t("mk.open", { name: x.item.name }), onclick: () => openMarket(x.item) }, x.text) : x.text)),
+            titles.length > OV_MAX && h("li", { class: "more" }, `+${titles.length - OV_MAX}`))
+        : h("p", { class: "muted", style: "margin:0 0 12px;flex:1" }, t("sec.empty")),
+      titles.length > 0 && h("button", { class: "btn sm", onclick: () => { state.filter = id; render(); window.scrollTo(0, 0); } }, t("cmp.details"))))),
+  ];
+}
+
+function radarSections(rep) {
+  if (state.filter === "all") return overviewSections(rep);
+  const L = sectionLists(rep);
+  const show = id => state.filter === "all" || state.filter === id;
+  const out = [];
+  if (show("ai") && (L.ai.length || state.filter === "ai")) {
+    const groups = ["models", "coding", "agents"].map(g => [g, L.ai.filter(b => (AI_GROUP_FROM_VI[b.group] || b.group) === g)]).filter(([, m]) => m.length);
+    out.push(section(ICON.spark, t("sec.ai"), t("sec.aiHint"),
+      groups.length ? groups.map(([g, members]) => [h("h3", { style: "margin:14px 0 4px" }, t("aigroup." + g)), members.map(b => itemArticle(b, { market: true }))]) : emptyNote()));
+  }
+  if (show("stack")) out.push(section(ICON.layers, t("sec.stack"),
+    L.stack.length > 0 && h("button", { class: "btn link sm", onclick: () => { state.tab = "compare"; render(); ensureAuto(); } }, t("ctab.goto")),
+    L.stack.length ? L.stack.map(b => itemArticle(b)) : emptyNote()));
+  if (show("updates")) out.push(section(ICON.up, t("sec.updates"), null,
+    L.updates.length ? h("div", { class: "grid3" }, L.updates.map(b => h("div", { class: "mini" },
+      h("strong", {}, b.name + (b.version && !b.name.includes(b.version) ? ` ${b.version}` : "")), h("p", {}, b.summary, linksLine(b))))) : emptyNote()));
+  if (show("other") && (L.other.length || state.filter === "other")) out.push(section(ICON.branch, t("sec.other"), null,
+    L.other.length ? L.other.map(b => itemArticle(b, { extra: [ECO[b.ecosystem] || "", b.rivals?.[0] ? t("other.sameAs", { tool: b.rivals[0] }) : ""].filter(Boolean).join(" · ") })) : emptyNote()));
+  if (show("new")) out.push(section(ICON.compass, t("sec.new"), null,
+    L.new.length ? L.new.map(b => itemArticle(b)) : emptyNote()));
+  if (show("themes")) out.push(h("section", { class: "card" }, h("h2", { style: "margin-bottom:6px" }, t("sec.themes")),
+    L.themes.length ? L.themes.map(th => h("div", { class: "theme" }, h("strong", {}, th.title),
+      h("p", {}, th.summary, " ", th.links.map((l, i) => [i ? " · " : "", ext(l.url, l.source || "link")])))) : emptyNote()));
+  return out;
+}
+
+function radarAside() {
+  const rep = state.report;
+  const L = rep ? sectionLists(rep) : null;
+  const counts = L ? { ai: L.ai.length, stack: L.stack.length, updates: L.updates.length, other: L.other.length, new: L.new.length, themes: L.themes.length } : {};
+  const all = Object.values(counts).reduce((a, b) => a + b, 0);
+  const ids = ["all", "ai", "stack", "updates", "other", "new", "themes"];
+  const skills = state.profile?.skills || [];
+  return h("aside", { class: "side" },
+    h("section", { class: "card tight", "aria-label": t("filter.title") },
+      h("p", { class: "sidelabel" }, t("filter.title")),
+      h("div", { class: "filters" }, ids.map(id => h("button", { "aria-pressed": String(state.filter === id),
+        onclick: () => { state.filter = id; render(); } },
+        h("span", {}, t("filter." + id)), h("span", { class: "count" }, id === "all" ? all : (counts[id] ?? 0)))))),
+    h("section", { class: "card tight", "aria-label": t("stackbox.title") },
+      h("div", { class: "row", style: "margin:0 0 10px" }, h("p", { class: "sidelabel", style: "margin:0 0 0 4px" }, t("stackbox.title")), h("span", { class: "spacer" }),
+        h("button", { class: "btn link sm", onclick: () => { state.tab = "profile"; render(); } }, t("common.edit"))),
+      h("div", { class: "chips" }, skills.slice(0, 10).map(s => h("span", { class: "chip" }, s.name)),
+        skills.length > 10 && h("span", { class: "chip", style: "background:none" }, `+${skills.length - 10}`))),
+    h("p", { class: "muted", style: "margin:0 4px;font-size:13px" }, t("radar.aside")));
+}
+
+function radarTab() {
+  const r = state.radar || {};
+  const rep = state.report;
+  const [y, w] = rep ? rep.week.split("-W") : [];
+  const weekSel = state.reports && state.reports.length > 1 && (() => {
+    const sel = h("select", { "aria-label": t("radar.weekSelect") }, state.reports.map(wk => {
+      const [yy, ww] = wk.split("-W"); return h("option", { value: wk }, t("radar.week", { w: +ww, y: yy }));
+    }));
+    sel.value = rep ? rep.week : state.reports[0];
+    sel.addEventListener("change", () => loadReports(sel.value));
+    return sel;
+  })();
+  const head = h("section", { style: "display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap" },
+    h("div", { style: "flex:1 1 320px" },
+      rep && h("p", { class: "kicker" }, t("radar.week", { w: +w, y })),
+      h("h1", { class: "page" }, state.filter === "all" ? t("heading.all") : t({ ai: "sec.ai", stack: "sec.stack", updates: "sec.updates", other: "sec.other", new: "sec.new", themes: "sec.themes" }[state.filter])),
+      rep && h("p", { class: "muted", style: "margin:8px 0 0" }, t("radar.read", { items: rep.stats.items, sources: rep.stats.sources }))),
+    h("div", { class: "row", style: "margin:0" }, weekSel,
+      h("button", { class: "btn" + (rep ? "" : " primary"), onclick: startRadar, disabled: !!r.running },
+        r.running ? t("radar.running") : rep ? t("radar.rerun") : t("radar.run"))));
+  const status = r.running && h("div", { class: "card tight" }, h("div", { class: "loading" }, h("div", { class: "spinner" }),
+    h("span", { id: "radar-step" }, t("stage." + (r.step || "start")))));
+  let body;
+  if (!state.reports) body = h("div", { class: "card" }, loading(t("common.loading")));
+  else if (!rep) body = h("div", { class: "card" }, h("p", { class: "muted", style: "margin:0" }, t("radar.empty")));
+  else body = radarSections(rep);
+  return h("div", { class: "layout" }, radarAside(), h("main", { class: "content" }, head, status, body));
+}
+
+// ---------------------------------------------------------------- "So với stack" tab
+
+// New technologies grouped by the skill they compete with (their natural rival).
+function compareGroups(rep) {
+  const L = sectionLists(rep);
+  const skills = state.profile?.skills || [];
+  const groups = new Map();
+  // New models are compared with rival models (their own drawer), not with an SDK of the stack.
+  const MODEL_CATS = ["llm-provider-sdk", "local-llm-inference"];
+  for (const item of [...L.stack, ...L.ai].filter(b => !MODEL_CATS.includes(b.category))) {
+    const rival = firstRival(item);
+    if (!rival) continue;
+    const k = nameKey(rival);
+    if (!groups.has(k)) groups.set(k, { key: k, skill: skills.find(s => nameKey(s.name) === k) || { name: rival }, items: [] });
+    groups.get(k).items.push(item);
+  }
+  return [...groups.values()].sort((a, b) => b.items.length - a.items.length);
+}
+
+function compareAside(groups) {
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const button = (id, label, count) => h("button", { "aria-pressed": String(state.skillFilter === id),
+    onclick: () => { state.skillFilter = id; render(); } }, h("span", {}, label), h("span", { class: "count" }, count));
+  return h("aside", { class: "side" },
+    h("section", { class: "card tight", "aria-label": t("ctab.skills") },
+      h("p", { class: "sidelabel" }, t("ctab.skills")),
+      h("div", { class: "filters" }, button("all", t("ctab.allSkills"), total),
+        groups.map(g => button(g.key, g.skill.name, g.items.length)))),
+    h("p", { class: "muted", style: "margin:0 4px;font-size:13px" }, t("ctab.hint")));
+}
+
+function compareTab() {
+  const rep = state.report;
+  if (!state.reports) return h("main", { class: "content single" }, h("div", { class: "card" }, loading(t("common.loading"))));
+  if (!rep) return h("main", { class: "content single" }, h("div", { class: "card" }, h("p", { class: "muted", style: "margin:0" }, t("radar.empty"))));
+  const [y, w] = rep.week.split("-W");
+  const groups = compareGroups(rep);
+  if (!groups.some(g => g.key === state.skillFilter)) state.skillFilter = "all";
+  const shown = groups.filter(g => state.skillFilter === "all" || g.key === state.skillFilter);
+  const a = state.auto;
+  const progress = a?.running && a.week === rep.week && h("div", { class: "card tight" },
+    h("div", { class: "loading" }, h("div", { class: "spinner" }), h("span", {}, t("ctab.progress", { done: a.done, total: a.total }))));
+  const head = h("section", {},
+    h("p", { class: "kicker" }, t("radar.week", { w: +w, y })),
+    h("h1", { class: "page" }, t("ctab.title")));
+  const body = groups.length
+    ? shown.map(g => h("section", { class: "card" },
+        h("div", { class: "sechead" }, h("span", { class: "ico" }, svg(ICON.layers)),
+          h("h2", {}, g.skill.name), g.skill.level && levelBadge(g.skill.level),
+          h("span", { class: "note" }, [g.skill.category && catLabel(g.skill.category), t("ctab.count", { n: g.items.length })].filter(Boolean).join(" · "))),
+        g.items.map(item => itemArticle(item, { compare: true }))))
+    : h("div", { class: "card" }, h("p", { class: "muted", style: "margin:0" }, t("ctab.empty")));
+  return h("div", { class: "layout" }, compareAside(groups), h("main", { class: "content" }, head, progress, body));
+}
+
+// ---------------------------------------------------------------- render
+
+function render() {
+  applyLang();
+  let body;
+  if (state.view === "loading") body = h("div", { class: "card" }, loading(t("common.loading")));
+  else if (state.view === "wizard") body = h("main", { class: "content single" }, wizardView());
+  else if (state.view === "review") body = h("main", { class: "content single" }, reviewView());
+  else if (state.tab === "radar") body = radarTab();
+  else if (state.tab === "compare") body = compareTab();
+  else body = h("main", { class: "content single" }, state.tab === "sources" ? sourcesTab() : profileTab());
+  document.getElementById("app").replaceChildren(...headerView().filter(Boolean), body, ...(state.drawer ? drawerView() : []));
+  document.body.style.overflow = state.drawer ? "hidden" : "";
+  const focusTarget = document.querySelector("[data-autofocus]");
+  if (focusTarget && !focusTarget.contains(document.activeElement)) focusTarget.focus();
+}
+
+document.addEventListener("click", e => {
+  if (state.menuOpen && !e.target.closest(".split")) { state.menuOpen = null; render(); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (state.menuOpen) { state.menuOpen = null; render(); }
+  else if (state.drawer) closeDrawer();
+});
+
+(async function init() {
+  applyTheme();
+  try {
+    const [meta, { profile }, radar, settings] = await Promise.all(
+      [api("GET", "/api/meta"), api("GET", "/api/profile"), api("GET", "/api/radar/status"), api("GET", "/api/settings")]);
+    state.meta = meta; state.profile = profile; state.radar = radar;
+    const saved = store.get("ss-lang");
+    // Never picked: propose the browser's language and remember it on the server,
+    // so AI-written content and the digests use it too.
+    const browser = (navigator.languages || [navigator.language || ""]).map(l => String(l).split("-")[0].toLowerCase())
+      .find(l => meta.languages.includes(l));
+    state.lang = meta.languages.includes(saved) ? saved : settings.chosen ? settings.language : (browser || settings.language);
+    if (!settings.chosen && state.lang !== settings.language) api("PUT", "/api/settings", { language: state.lang }).catch(() => {});
+    state.view = profile ? "main" : "wizard";
+    if (profile) { loadReports(); if (radar.running) pollRadar(); }
+  } catch (e) {
+    toast(e.message, { error: true });
+  }
+  render();
+})();
+</script>
+</body>
+</html>

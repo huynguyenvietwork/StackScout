@@ -1,0 +1,36 @@
+# Fixed taxonomy shared by skill profiles and weekly news classification.
+# Matching (same category + same ecosystem) only works because both sides
+# use exactly these ids. Labels are what users see; ids never are.
+
+categories:
+  - { id: language,               label: "Ngôn ngữ lập trình", label_en: "Programming language" }
+  - { id: runtime,                label: "Runtime", label_en: "Runtime" }
+  - { id: web-backend-framework,  label: "Framework backend", label_en: "Backend framework" }
+  - { id: web-frontend-framework, label: "Framework frontend", label_en: "Frontend framework" }
+  - { id: meta-framework,         label: "Meta-framework", label_en: "Meta-framework" }
+  - { id: orm-data-access,        label: "Truy cập dữ liệu / ORM", label_en: "Data access / ORM" }
+  - { id: database-sql,           label: "CSDL quan hệ", label_en: "SQL database" }
+  - { id: database-nosql,         label: "CSDL NoSQL", label_en: "NoSQL database" }
+  - { id: vector-db,              label: "Vector database", label_en: "Vector database" }
+  - { id: cache,                  label: "Cache", label_en: "Cache" }
+  - { id: message-queue,          label: "Message queue", label_en: "Message queue" }
+  - { id: background-jobs,        label: "Tác vụ nền", label_en: "Background jobs" }
+  - { id: api-tooling,            label: "Công cụ API", label_en: "API tooling" }
+  - { id: auth-identity,          label: "Xác thực / định danh", label_en: "Auth / identity" }
+  - { id: testing,                label: "Kiểm thử", label_en: "Testing" }
+  - { id: build-tooling,          label: "Build tooling", label_en: "Build tooling" }
+  - { id: ci-cd,                  label: "CI/CD", label_en: "CI/CD" }
+  - { id: containers,             label: "Container", label_en: "Containers" }
+  - { id: iac,                    label: "Hạ tầng dạng mã (IaC)", label_en: "Infrastructure as code" }
+  - { id: cloud-platform,         label: "Nền tảng cloud", label_en: "Cloud platform" }
+  - { id: logging-observability,  label: "Log / giám sát", label_en: "Logging / observability" }
+  - { id: llm-provider-sdk,       label: "LLM & SDK", label_en: "LLMs & SDKs" }
+  - { id: agent-framework,        label: "Framework AI agent", label_en: "AI agent framework" }
+  - { id: agent-protocol,         label: "Giao thức agent", label_en: "Agent protocol" }
+  - { id: rag-retrieval,          label: "RAG / truy xuất", label_en: "RAG / retrieval" }
+  - { id: ai-coding-tool,         label: "Công cụ AI lập trình", label_en: "AI coding tool" }
+  - { id: local-llm-inference,    label: "Chạy LLM cục bộ", label_en: "Local LLM inference" }
+  - { id: data-processing,        label: "Xử lý dữ liệu", label_en: "Data processing" }
+  - { id: other,                  label: "Khác", label_en: "Other" }
+
+ecosystems: [dotnet, node, python, jvm, go, rust, frontend, mobile, cloud, any]

@@ -1,0 +1,31 @@
+name: I want the hosted version
+description: Join the waitlist for a hosted StackScout (no install, no API key).
+title: "Hosted waitlist: "
+labels: [hosted-waitlist]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! A hosted version is only worth building if enough people want it, so this issue is the waitlist.
+        A 👍 on an existing waitlist issue counts too. Please do not post anything confidential here: issues are public.
+  - type: dropdown
+    id: who
+    attributes:
+      label: Who would use it?
+      options: [Just me, My team, My company]
+    validations:
+      required: true
+  - type: checkboxes
+    id: channels
+    attributes:
+      label: Where would you read the digest?
+      options:
+        - label: Web
+        - label: Email
+        - label: Telegram
+        - label: Slack
+        - label: Discord
+  - type: textarea
+    id: why
+    attributes:
+      label: Why hosted rather than self-hosted? (optional)

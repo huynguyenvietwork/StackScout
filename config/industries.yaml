@@ -1,0 +1,118 @@
+# Source catalog per industry. Every feed below was checked to be live and
+# updated recently (Nov 2026). When a user starts, the catalog is copied into
+# data/users/<id>/my_sources.yaml and they can toggle, remove or add sources.
+#
+# tier:
+#   core   always on: first-party AI labs (Anthropic, OpenAI, Google) + well-known AI channels
+#   stack  official source of a technology; switched on automatically when the
+#          user's profile matches `match` (ecosystems / categories / keywords
+#          matched as whole words in skill names), otherwise listed but off
+#   extra  authoritative but broad; listed, off by default
+# official: published by the vendor or project itself
+#
+# Source types:
+#   rss              RSS/Atom feed at `url`
+#   hackernews       Algolia HN API, stories with >= min_points in the window
+#   github_new_repos GitHub Search API, repos created in the window, by stars
+#   sitemap          sites without RSS: pages under `paths` in sitemap `url`, real publish date read from each page
+# limit: max items per week from this source (default 15; release feeds use 3)
+#
+# Bump catalog_version when adding sources: existing users get the new
+# entries appended (on/off by the same rules) without losing their choices.
+
+catalog_version: 3
+
+industries:
+  software-ai:
+    label: "Phần mềm & AI"
+    sources:
+      # ---------------------------------------------------------------- core: first-party AI labs
+      # Where new models and AI coding tools are announced first.
+      - { id: anthropic-news, name: "Anthropic: tin tức & nghiên cứu", type: sitemap, url: "https://www.anthropic.com/sitemap.xml", paths: [/news/, /research/], tier: core, official: true }
+      - { id: claude-code-releases, name: Claude Code (bản phát hành), type: rss, url: "https://github.com/anthropics/claude-code/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: openai-news, name: OpenAI News, type: rss, url: "https://openai.com/news/rss.xml", tier: core, official: true }
+      - { id: openai-codex-releases, name: OpenAI Codex (bản phát hành), type: rss, url: "https://github.com/openai/codex/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: gemini-blog, name: Google Gemini Blog, type: rss, url: "https://blog.google/products/gemini/rss/", tier: core, official: true }
+      - { id: google-deepmind, name: Google DeepMind, type: rss, url: "https://deepmind.google/blog/rss.xml", tier: core, official: true }
+      - { id: gemini-cli-releases, name: Gemini CLI (bản phát hành), type: rss, url: "https://github.com/google-gemini/gemini-cli/releases.atom", tier: core, official: true, limit: 3 }
+      - { id: huggingface-blog, name: Hugging Face Blog, type: rss, url: "https://huggingface.co/blog/feed.xml", tier: core, official: true }
+
+      # ---------------------------------------------------------------- core: well-known AI channels
+      - { id: simon-willison, name: Simon Willison, type: rss, url: "https://simonwillison.net/atom/everything/", tier: core }
+      - { id: latent-space, name: Latent Space, type: rss, url: "https://www.latent.space/feed", tier: core }
+      - { id: the-rundown-ai, name: The Rundown AI, type: rss, url: "https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml", tier: core }
+      - { id: tldr-ai, name: TLDR AI, type: rss, url: "https://tldr.tech/api/rss/ai", tier: core }
+      - { id: import-ai, name: Import AI (Jack Clark), type: rss, url: "https://importai.substack.com/feed", tier: core }
+      - { id: yt-two-minute-papers, name: Two Minute Papers (YouTube), type: rss, url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg", tier: core, limit: 5 }
+      - { id: yt-ai-explained, name: AI Explained (YouTube), type: rss, url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw", tier: core, limit: 5 }
+
+      # ---------------------------------------------------------------- stack: AI & dev tools
+      - { id: claude-agent-sdk-releases, name: Claude Agent SDK (bản phát hành), type: rss, url: "https://github.com/anthropics/claude-agent-sdk-python/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [claude agent sdk, anthropic sdk, claude api] } }
+      - { id: github-blog, name: GitHub Blog, type: rss, url: "https://github.blog/feed/", tier: stack, official: true, match: { categories: [ci-cd, ai-coding-tool], keywords: [github, github actions, github copilot] } }
+      - { id: github-changelog, name: GitHub Changelog, type: rss, url: "https://github.blog/changelog/feed/", tier: stack, official: true, match: { categories: [ci-cd, ai-coding-tool], keywords: [github, github actions, github copilot] } }
+      - { id: microsoft-foundry, name: Microsoft Foundry Blog, type: rss, url: "https://devblogs.microsoft.com/foundry/feed/", tier: stack, official: true, match: { keywords: [azure openai, semantic kernel, azure ai, microsoft foundry] } }
+      - { id: aws-ml, name: AWS Machine Learning Blog, type: rss, url: "https://aws.amazon.com/blogs/machine-learning/feed/", tier: stack, official: true, match: { keywords: [sagemaker, bedrock, amazon bedrock] } }
+      - { id: jetbrains, name: JetBrains Blog, type: rss, url: "https://blog.jetbrains.com/feed/", tier: stack, official: true, match: { keywords: [intellij, intellij idea, rider, pycharm, webstorm, jetbrains] } }
+      - { id: visual-studio, name: Visual Studio Blog, type: rss, url: "https://devblogs.microsoft.com/visualstudio/feed/", tier: stack, official: true, match: { keywords: [visual studio] } }
+
+      # ---------------------------------------------------------------- stack: languages & runtimes
+      - { id: dotnet-blog, name: .NET Blog, type: rss, url: "https://devblogs.microsoft.com/dotnet/feed/", tier: stack, official: true, match: { ecosystems: [dotnet] } }
+      - { id: abp-releases, name: ABP Framework (bản phát hành), type: rss, url: "https://github.com/abpframework/abp/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [abp, abp framework] } }
+      - { id: abp-community, name: ABP Community, type: rss, url: "https://abp.io/community/rss", tier: stack, official: true, match: { keywords: [abp, abp framework] } }
+      - { id: nodejs, name: Node.js Blog, type: rss, url: "https://nodejs.org/en/feed/blog.xml", tier: stack, official: true, match: { ecosystems: [node] } }
+      - { id: typescript, name: TypeScript Blog, type: rss, url: "https://devblogs.microsoft.com/typescript/feed/", tier: stack, official: true, match: { keywords: [typescript] } }
+      - { id: deno, name: Deno Blog, type: rss, url: "https://deno.com/feed", tier: stack, official: true, match: { keywords: [deno] } }
+      - { id: bun, name: Bun Blog, type: rss, url: "https://bun.sh/rss.xml", tier: stack, official: true, match: { keywords: [bun] } }
+      - { id: python-insider, name: Python Insider, type: rss, url: "https://blog.python.org/feeds/posts/default?alt=rss", tier: stack, official: true, match: { ecosystems: [python] } }
+      - { id: go-blog, name: The Go Blog, type: rss, url: "https://go.dev/blog/feed.atom", tier: stack, official: true, match: { ecosystems: [go] } }
+      - { id: rust-blog, name: Rust Blog, type: rss, url: "https://blog.rust-lang.org/feed.xml", tier: stack, official: true, match: { ecosystems: [rust] } }
+      - { id: inside-java, name: Inside Java, type: rss, url: "https://inside.java/feed.xml", tier: stack, official: true, match: { ecosystems: [jvm] } }
+      - { id: spring, name: Spring Blog, type: rss, url: "https://spring.io/blog.atom", tier: stack, official: true, match: { keywords: [spring, spring boot, spring framework] } }
+      - { id: kotlin, name: Kotlin Blog, type: rss, url: "https://blog.jetbrains.com/kotlin/feed/", tier: stack, official: true, match: { keywords: [kotlin] } }
+
+      # ---------------------------------------------------------------- stack: frontend & mobile
+      - { id: react, name: React Blog, type: rss, url: "https://react.dev/rss.xml", tier: stack, official: true, match: { keywords: [react, react native] } }
+      - { id: nextjs, name: Next.js Blog, type: rss, url: "https://nextjs.org/feed.xml", tier: stack, official: true, match: { keywords: [next.js, nextjs] } }
+      - { id: vercel, name: Vercel Blog, type: rss, url: "https://vercel.com/atom", tier: stack, official: true, match: { keywords: [vercel] } }
+      - { id: vite, name: Vite Blog, type: rss, url: "https://vite.dev/blog.rss", tier: stack, official: true, match: { keywords: [vite, vitest] } }
+      - { id: tailwind, name: Tailwind CSS Blog, type: rss, url: "https://tailwindcss.com/feeds/feed.xml", tier: stack, official: true, match: { keywords: [tailwind, tailwind css] } }
+      - { id: tanstack-query, name: TanStack Query (bản phát hành), type: rss, url: "https://github.com/TanStack/query/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [tanstack query, react query] } }
+      - { id: android, name: Android Developers Blog, type: rss, url: "https://developer.android.com/static/blog/atom.xml", tier: stack, official: true, match: { keywords: [android, jetpack compose] } }
+      - { id: swift, name: Swift.org Blog, type: rss, url: "https://www.swift.org/atom.xml", tier: stack, official: true, match: { keywords: [swift, swiftui] } }
+      - { id: flutter-releases, name: Flutter (bản phát hành), type: rss, url: "https://github.com/flutter/flutter/releases.atom", tier: stack, limit: 3, official: true, match: { keywords: [flutter, dart] } }
+      - { id: firebase, name: Firebase Blog, type: rss, url: "https://firebase.blog/rss.xml", tier: stack, official: true, match: { keywords: [firebase, firestore] } }
+
+      # ---------------------------------------------------------------- stack: data & infrastructure
+      - { id: postgresql, name: PostgreSQL News, type: rss, url: "https://www.postgresql.org/news.rss", tier: stack, official: true, match: { keywords: [postgresql, postgres, timescaledb, postgis] } }
+      - { id: redis, name: Redis Blog, type: rss, url: "https://redis.io/blog/feed/", tier: stack, official: true, match: { keywords: [redis] } }
+      - { id: confluent, name: Confluent Blog (Kafka), type: rss, url: "https://www.confluent.io/rss.xml", tier: stack, official: true, match: { keywords: [kafka, apache kafka, confluent] } }
+      - { id: mongodb, name: MongoDB Blog, type: rss, url: "https://www.mongodb.com/company/blog/rss", tier: stack, official: true, match: { keywords: [mongodb] } }
+      - { id: kubernetes, name: Kubernetes Blog, type: rss, url: "https://kubernetes.io/feed.xml", tier: stack, official: true, match: { keywords: [kubernetes, k8s] } }
+      - { id: aws-news, name: AWS News Blog, type: rss, url: "https://aws.amazon.com/blogs/aws/feed/", tier: stack, official: true, match: { keywords: [aws, amazon web services] } }
+      - { id: google-cloud, name: Google Cloud Blog, type: rss, url: "https://cloudblog.withgoogle.com/rss/", tier: stack, official: true, match: { keywords: [google cloud, gcp, bigquery, cloud run, gke] } }
+      - { id: azure, name: Azure Blog, type: rss, url: "https://azure.microsoft.com/en-us/blog/feed/", tier: stack, official: true, match: { keywords: [azure] } }
+      - { id: cloudflare, name: Cloudflare Blog, type: rss, url: "https://blog.cloudflare.com/rss/", tier: stack, official: true, match: { keywords: [cloudflare] } }
+      - { id: hashicorp, name: HashiCorp Blog, type: rss, url: "https://www.hashicorp.com/blog/feed.xml", tier: stack, official: true, match: { keywords: [terraform, vault, consul, nomad, packer, hashicorp] } }
+      - { id: grafana, name: Grafana Labs Blog, type: rss, url: "https://grafana.com/blog/index.xml", tier: stack, official: true, match: { keywords: [grafana, prometheus, loki, k6] } }
+      - { id: opentelemetry, name: OpenTelemetry Blog, type: rss, url: "https://opentelemetry.io/blog/index.xml", tier: stack, official: true, match: { categories: [logging-observability] } }
+      - { id: sentry, name: Sentry Blog, type: rss, url: "https://blog.sentry.io/feed.xml", tier: stack, official: true, match: { keywords: [sentry] } }
+
+      # ---------------------------------------------------------------- extra (off by default)
+      # Community signals and broad sources: useful, but not first-party.
+      - { id: hackernews, name: Hacker News, type: hackernews, min_points: 150, tier: extra }
+      - { id: github-new-repos, name: "GitHub: repo mới nổi (cộng đồng)", type: github_new_repos, min_stars: 200, tier: extra }
+      - { id: lobsters, name: Lobsters, type: rss, url: "https://lobste.rs/rss", tier: extra }
+      - { id: infoq, name: InfoQ, type: rss, url: "https://feed.infoq.com/", tier: extra }
+      - { id: pragmatic-engineer, name: The Pragmatic Engineer, type: rss, url: "https://newsletter.pragmaticengineer.com/feed", tier: extra }
+      - { id: martin-fowler, name: Martin Fowler, type: rss, url: "https://martinfowler.com/feed.atom", tier: extra }
+      - { id: bens-bites, name: "Ben's Bites", type: rss, url: "https://www.bensbites.com/feed", tier: extra }
+      - { id: interconnects, name: Interconnects (Nathan Lambert), type: rss, url: "https://www.interconnects.ai/feed", tier: extra }
+      - { id: nvidia-dev, name: NVIDIA Technical Blog, type: rss, url: "https://developer.nvidia.com/blog/feed", tier: extra, official: true }
+      - { id: yt-fireship, name: Fireship (YouTube), type: rss, url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA", tier: extra, limit: 5 }
+      - { id: yt-matthew-berman, name: Matthew Berman (YouTube), type: rss, url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCawZsQWqfGSbCI5yjkdVkTA", tier: extra, limit: 5 }
+      - { id: google-ai-blog, name: Google AI Blog, type: rss, url: "https://blog.google/technology/ai/rss/", tier: extra, official: true }
+      - { id: google-research, name: Google Research, type: rss, url: "https://research.google/blog/rss/", tier: extra, official: true }
+      - { id: meta-engineering, name: Meta Engineering, type: rss, url: "https://engineering.fb.com/feed/", tier: extra, official: true }
+      - { id: thoughtworks, name: Thoughtworks Insights (Tech Radar), type: rss, url: "https://www.thoughtworks.com/rss/insights.xml", tier: extra }
+      - { id: stackoverflow-blog, name: Stack Overflow Blog, type: rss, url: "https://stackoverflow.blog/feed/", tier: extra }
+      - { id: the-new-stack, name: The New Stack, type: rss, url: "https://thenewstack.io/feed/", tier: extra }
