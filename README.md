@@ -20,71 +20,126 @@ Keeping up is a part-time job: new models every week, new libraries, release not
 
 ## Features
 
+<table>
+<tr>
+<td width="50%" valign="top">
+
 ### 📡 Your week at a glance
 
-One page with the headlines of the week, grouped by what they mean for you: new AI models and tools, new tech of the same kind as your stack, updates to tools you already use, other ecosystems, new areas, and a roundup. Click **Details** to read each group in full.
+One page with the week's headlines, grouped by what they mean for you.
 
-<img src="docs/assets/overview.png" alt="Weekly overview: headlines grouped by type" width="100%">
+- New AI models & tools
+- New tech of the same kind as your stack
+- Updates to tools you already use
+- Other ecosystems, new areas, weekly roundup
 
-### 🤖 New AI models, compared with their strongest rivals
+Click **Details** to read a group in full.
 
-Straight from first-party channels (Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…). Click a model and StackScout has already looked up its **3–5 strongest competitors**: what it does better, what it does worse, and which one to pick, with benchmark numbers, prices and a link behind every line.
+</td>
+<td width="50%" valign="top"><a href="docs/assets/overview.png"><img src="docs/assets/overview.png" alt="Weekly overview: headlines grouped by type"></a></td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
-<img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others" width="100%">
+### 🤖 New AI models vs. their strongest rivals
+
+Straight from first-party channels: Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…
+
+Click a model to see its **3–5 strongest competitors**, already researched:
+
+- what it does better, and worse
+- which one to pick, and when
+- benchmark numbers and prices, a link behind every line
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/rivals.png"><img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others"></a></td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
 ### 🧩 Compared with your stack, automatically
 
-Every new technology of the same kind as one of your tools is compared with that tool right after the radar runs, grouped by your skills. Each one gets a verdict, **adopt, trial, watch or skip**, plus what fits you and what doesn't. Use **⋯** to compare it with any other tool in your profile.
+Right after the radar runs, every new technology of the same kind as one of your tools is compared with that tool, grouped by your skills.
 
-<img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict" width="100%">
+- a verdict: **adopt, trial, watch or skip**
+- pros and cons at a glance, details one click away
+- **⋯** compares it with any other tool in your profile
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/vs-stack.png"><img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict"></a></td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
 ### 🔗 Every claim has a source
 
-Each comparison shows the verdict and how confident it is, a short *for you* note based on your stack, what is new, at most 3 pros and 3 cons, and the numbered sources behind them. Rules enforced in code, not left to the AI:
+Each comparison shows the verdict and its confidence, a *for you* note, what is new, at most 3 pros and 3 cons, and the numbered sources.
 
-- a pro or con without a valid link is dropped;
-- fewer than 2 sources means *"not enough data yet"*;
-- independent benchmarks and hands-on reports are preferred and labelled; with no independent source, confidence can't be *high*.
+Enforced in code, not left to the AI:
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/stack-detail.png" alt="SQLite vs PostgreSQL: verdict, fit for you, what is new, pros"></td>
-<td width="50%"><img src="docs/assets/sources-cited.png" alt="Cons and the numbered sources, independent ones labelled"></td>
+- a claim without a valid link is dropped
+- fewer than 2 sources → *"not enough data yet"*
+- independent benchmarks preferred and labelled
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/claims.png"><img src="docs/assets/claims.png" alt="SQLite vs PostgreSQL: verdict, fit, pros, cons and numbered sources"></a></td>
 </tr>
-</table>
+<tr>
+<td width="50%" valign="top">
 
 ### 📬 The digest, where you read
 
-Every week, in your language, on any of: **Telegram, email, Slack, Discord**, or any **webhook** (n8n, Zapier, Make…). Under each item: the verdict against your tool, or the rivals of a new model.
+Every week, in your language, on any of:
 
-<table>
-<tr>
-<td width="50%"><b>Email</b><br><img src="docs/assets/digest-email.png" alt="Weekly digest by email"></td>
-<td width="50%"><b>Telegram</b><br><img src="docs/assets/digest-telegram.png" alt="Weekly digest on Telegram"></td>
+- **Telegram**
+- **Email**
+- **Slack** and **Discord**
+- any **webhook** (n8n, Zapier, Make…)
+
+Under each item: the verdict against your tool, or the rivals of a new model.
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/digests.png"><img src="docs/assets/digests.png" alt="The weekly digest by email and on Telegram"></a></td>
 </tr>
-</table>
+<tr>
+<td width="50%" valign="top">
 
-### 👤 Your profile in your own words, private by design
+### 👤 Your profile, in your own words
 
-Type what you use, typos and all (*"c#, entity framwork, postgres, k8s"*), or generate it from your code or CV with the included prompt. AI turns it into canonical names and levels; you confirm before anything is saved. **Only technology names and levels are stored**: no project names, no employer, nothing about your work.
+Type what you use, typos and all (*"c#, entity framwork, postgres, k8s"*), or generate it from your code or CV with the included prompt.
 
-<img src="docs/assets/profile.png" alt="Skill profile grouped by category, with levels" width="100%">
+- AI normalises names and levels; you confirm before saving
+- **private by design**: only technology names and levels are stored, nothing about your projects or employer
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/profile.png"><img src="docs/assets/profile.png" alt="Skill profile grouped by category, with levels"></a></td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
 ### 📰 Sources that matter, picked for your stack
 
-About 60 curated, live feeds. First-party AI channels are always on, the official blogs and release feeds of *your* technologies switch on by themselves, and community sources (Hacker News, trending GitHub repos, Lobsters…) are one click away. Add any blog, RSS feed or GitHub repo.
+About 60 curated, live feeds.
 
-<img src="docs/assets/sources.png" alt="Source list with first-party and official feeds" width="100%">
+- first-party AI channels: always on
+- official blogs and release feeds of *your* technologies: on automatically
+- community sources (Hacker News, trending GitHub repos, Lobsters…): one click
+- add any blog, RSS feed or GitHub repo
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/sources.png"><img src="docs/assets/sources.png" alt="Source list with first-party and official feeds"></a></td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
 ### 🌏 5 languages, light and dark, on your phone
 
-English, Tiếng Việt, 中文, 日本語, 한국어: the interface, the AI-written summaries and comparisons, the digests and the Telegram bot.
+English, Tiếng Việt, 中文, 日本語, 한국어 for the interface, the AI-written summaries and comparisons, the digests and the Telegram bot.
 
-<table>
-<tr>
-<td width="40%"><img src="docs/assets/dark-ja.png" alt="Dark theme in Japanese"></td>
-<td width="40%"><img src="docs/assets/light-vi.png" alt="Light theme in Vietnamese"></td>
-<td width="20%"><img src="docs/assets/mobile.png" alt="Rival comparison on a phone"></td>
+Light and dark themes; comparisons open as a bottom sheet on phones.
+
+</td>
+<td width="50%" valign="top"><a href="docs/assets/looks.png"><img src="docs/assets/looks.png" alt="Dark theme in Japanese, light theme in Vietnamese, and a phone"></a></td>
 </tr>
 </table>
 

@@ -34,7 +34,7 @@ with sync_playwright() as p:
     page.goto(DEMO.as_uri()); page.evaluate("localStorage.setItem('ss-theme','light')"); page.reload(); page.wait_for_selector(".ovcard")
     page.evaluate("document.querySelector('.demobar')?.remove()")
     def clean():
-        page.evaluate("document.querySelector('.demobar')?.remove()")
+        page.evaluate("document.querySelector('.demobar')?.remove(); document.querySelectorAll('.toast').forEach(e => e.remove())")
 
     save(page.screenshot(), "overview.png")
     # New models & AI: the feed, then the rivals drawer
@@ -93,3 +93,31 @@ with sync_playwright() as p:
                   + msg.replace("<a ", '<a style="color:#6ab3f3" ') + '</div></div>')
     save(e.screenshot(), "digest-telegram.png")
     b.close()
+
+
+# ---- composites: one landscape image per README row (text left, image right)
+def compose(names: list[str], out: str, height: int = 820, gap: int = 24, pad: int = 24):
+    imgs = [Image.open(OUT / n).convert("RGB") for n in names]
+    imgs = [i.resize((round(i.width * height / i.height), height), Image.LANCZOS) for i in imgs]
+    canvas = Image.new("RGB", (sum(i.width for i in imgs) + gap * (len(imgs) - 1) + 2 * pad, height + 2 * pad), (243, 244, 246))
+    x = pad
+    for i in imgs:
+        canvas.paste(i, (x, pad)); x += i.width + gap
+    buf = io.BytesIO(); canvas.save(buf, "PNG"); save(buf.getvalue(), out, width=1400)
+
+
+compose(["stack-detail.png", "sources-cited.png"], "claims.png")
+compose(["digest-email.png", "digest-telegram.png"], "digests.png", height=900)
+# Two desktop shots stacked, the phone beside them: close to square, readable at half width.
+def compose_looks():
+    dark, light, phone = (Image.open(OUT / n).convert("RGB") for n in ("dark-ja.png", "light-vi.png", "mobile.png"))
+    gap, pad = 24, 24
+    col_h = dark.height + gap + light.height
+    phone = phone.resize((round(phone.width * col_h / phone.height), col_h), Image.LANCZOS)
+    canvas = Image.new("RGB", (dark.width + gap + phone.width + 2 * pad, col_h + 2 * pad), (243, 244, 246))
+    canvas.paste(dark, (pad, pad)); canvas.paste(light, (pad, pad + dark.height + gap))
+    canvas.paste(phone, (pad + dark.width + gap, pad))
+    buf = io.BytesIO(); canvas.save(buf, "PNG"); save(buf.getvalue(), "looks.png", width=1400)
+
+
+compose_looks()
