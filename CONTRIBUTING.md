@@ -2,6 +2,27 @@
 
 Thanks for helping! Issues, ideas and pull requests are all welcome.
 
+## Questions, bugs and ideas
+
+- **A question** or an idea you want to talk through: [Discussions](https://github.com/huynguyenvietwork/StackScout/discussions).
+- **A bug**: open an issue with the *Bug report* form. Include the server log lines, with API keys,
+  tokens, webhook URLs and anything personal removed.
+- **A feature request**: the *Feature request* form. Say what you are trying to do, not only the fix you have in mind.
+- **A security problem**: report it privately, see [SECURITY.md](SECURITY.md).
+
+## How a change gets into `main`
+
+`main` is protected: nobody pushes to it directly, the maintainer included.
+
+1. Fork the repository and create a branch from `main` (`fix/…`, `feat/…`, `docs/…`).
+2. Make the change, with a test when it changes behaviour, and run `uv run pytest -q`.
+3. Open a pull request against `main` and fill in the template: what changes and why, and how you tested it.
+4. CI runs two checks, `test` (the test suite) and `docker` (the image builds). For a first-time
+   contributor, a maintainer approves the run first; this is a GitHub safeguard, not a judgement on your PR.
+5. Both checks must be green and the branch up to date with `main` (use **Update branch** on the PR if asked).
+6. A maintainer reviews and **squash-merges** the PR: it lands as one commit titled after the PR,
+   so a clear PR title matters. The branch is deleted after the merge.
+
 ## Run it locally
 
 ```bash
@@ -30,7 +51,8 @@ Tests never call a real AI, feed or messaging service: they replace `ai.complete
 - **Every claim needs a link.** Comparison rules are enforced in code (`compare.finalize`), not trusted to the AI.
 - **Privacy:** a profile stores technology names and levels only. Never add fields that hold
   project names, what someone works on, or anything about their employer.
-- **Secrets stay in `.env`.** Nothing secret goes through the web page or into logs.
+- **Secrets never reach the browser or the logs.** They live in `.env` or in owner-only files under
+  `data/` (set from the Notifications tab), and the API only ever returns whether a secret is set.
 - User-facing text goes in all five languages.
 - Keep changes small and focused; explain the "why" in the PR.
 
