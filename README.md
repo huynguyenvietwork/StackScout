@@ -71,11 +71,11 @@ Click **Details** to read a group in full.
 
 Straight from first-party channels: Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…
 
-Click a model to see its **3–5 strongest competitors**, already researched:
+Click a model to open its own page with its **3–5 strongest competitors**, already researched:
 
-- what it does better, and worse
-- which one to pick, and when
-- benchmark numbers and prices, a link behind every line
+- a table of the rivals at a glance, then one section per rival
+- key numbers side by side (benchmarks, prices, context window…)
+- what it does better and worse, and which one to pick, a link behind every line
 
 </td>
 <td width="71%" valign="top"><a href="docs/assets/rivals.png"><img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others"></a></td>
@@ -88,7 +88,7 @@ Click a model to see its **3–5 strongest competitors**, already researched:
 Right after the radar runs, every new technology of the same kind as one of your tools is compared with that tool, grouped by your skills.
 
 - a verdict: **adopt, trial, watch or skip**
-- pros and cons at a glance, details one click away
+- **Details** opens a full page; Back returns to your place in the list
 - **⋯** compares it with any other tool in your profile
 
 </td>
@@ -99,7 +99,7 @@ Right after the radar runs, every new technology of the same kind as one of your
 
 ### 🔗 Every claim has a source
 
-Each comparison shows the verdict and its confidence, a *for you* note, what is new, at most 3 pros and 3 cons, and the numbered sources.
+Each comparison has its own page: the verdict and its confidence, a *for you* note, what is new, **key numbers side by side**, up to 5 pros and 5 cons, **how hard it is to switch**, and the numbered sources.
 
 Enforced in code, not left to the AI:
 

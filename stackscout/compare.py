@@ -21,8 +21,11 @@ CONFIDENCE = ("low", "medium", "high")
 WEB_TOOLS = "WebSearch,WebFetch"
 TIMEOUT = 480
 MIN_SOURCES = 2
-MAX_CLAIMS = 3          # per side: the newsletter shows the most important points only
-MAX_CLAIM_CHARS = 240
+MAX_CLAIMS = 5          # per side, most important first; the digest shows only the verdict
+MAX_CLAIM_CHARS = 420
+MAX_NUMBERS = 6
+MAX_VALUE_CHARS = 80
+EFFORTS = ("low", "medium", "high")
 
 
 def _cap(text: str, limit: int) -> str:
@@ -73,7 +76,31 @@ def _sources(data: dict) -> tuple[list[dict], dict[int, int]]:
     return sources, renumber
 
 
-def _claims(raw, renumber: dict[int, int]) -> list[dict]:
+def _refs(raw, renumber: dict[int, int]) -> list[int]:
+    refs = set()
+    for r in raw or []:
+        try:
+            if int(r) in renumber:
+                refs.add(renumber[int(r)])
+        except (TypeError, ValueError):
+            pass
+    return sorted(refs)
+
+
+def _numbers(raw, renumber: dict[int, int], keys: tuple[str, str], limit: int = MAX_NUMBERS) -> list[dict]:
+    """Key figures side by side; a row needs a metric, a value and a valid source."""
+    out = []
+    for row in raw or []:
+        if not isinstance(row, dict) or not str(row.get("metric") or "").strip():
+            continue
+        values = {k: _cap(str(row.get(k) or ""), MAX_VALUE_CHARS) for k in keys}
+        refs = _refs(row.get("sources"), renumber)
+        if refs and any(values.values()):
+            out.append({"metric": _cap(str(row["metric"]), 80), **values, "sources": refs})
+    return out[:limit]
+
+
+def _claims(raw, renumber: dict[int, int], limit: int = MAX_CLAIMS) -> list[dict]:
     """Claims that cite at least one valid source; a claim without one is dropped."""
     out = []
     for c in raw or []:
@@ -88,7 +115,17 @@ def _claims(raw, renumber: dict[int, int]) -> list[dict]:
                 pass
         if refs:
             out.append({"text": _cap(str(c["text"]), MAX_CLAIM_CHARS), "sources": sorted(refs)})
-    return out[:MAX_CLAIMS]
+    return out[:limit]
+
+
+def _migration(raw, renumber: dict[int, int]) -> dict | None:
+    if not isinstance(raw, dict):
+        return None
+    effort = str(raw.get("effort") or "").lower()
+    notes = _cap(str(raw.get("notes") or ""), 700)
+    if effort not in EFFORTS or not notes:
+        return None
+    return {"effort": effort, "notes": notes, "sources": _refs(raw.get("sources"), renumber)}
 
 
 def _keep_cited(sources: list[dict], claims: list[dict]) -> list[dict]:
@@ -114,7 +151,9 @@ def finalize(tech: dict, rival: str, data: dict) -> dict:
     """Validate the model's answer against the hard rules of the spec."""
     sources, renumber = _sources(data)
     pros, cons = _claims(data.get("pros"), renumber), _claims(data.get("cons"), renumber)
-    sources = _keep_cited(sources, pros + cons)
+    numbers = _numbers(data.get("numbers"), renumber, ("new", "current"))
+    migration = _migration(data.get("migration"), renumber)
+    sources = _keep_cited(sources, pros + cons + numbers + ([migration] if migration else []))
 
     recommendation = str(data.get("recommendation") or "").lower()
     recommendation = recommendation if recommendation in RECOMMENDATIONS else "watch"
@@ -129,10 +168,12 @@ def finalize(tech: dict, rival: str, data: dict) -> dict:
         "category": tech["category"],
         "category_label": config.categories().get(tech["category"], tech["category"]),
         "ecosystem": tech["ecosystem"],
-        "what_is_new": _cap(str(data.get("what_is_new") or tech.get("summary") or ""), 600),
+        "what_is_new": _cap(str(data.get("what_is_new") or tech.get("summary") or ""), 900),
         "pros": pros,
         "cons": cons,
-        "fit": _cap(str(data.get("fit") or ""), 500),
+        "fit": _cap(str(data.get("fit") or ""), 700),
+        "numbers": numbers,
+        "migration": migration,
         "recommendation": recommendation,
         "confidence": confidence,
         "sources": sources,
@@ -173,17 +214,18 @@ def finalize_market(tech: dict, data: dict) -> dict:
     for r in data.get("rivals") or []:
         if not isinstance(r, dict) or not str(r.get("name") or "").strip():
             continue
-        pros, cons = _claims(r.get("pros"), renumber), _claims(r.get("cons"), renumber)
+        pros, cons = _claims(r.get("pros"), renumber, 4), _claims(r.get("cons"), renumber, 4)
         if pros or cons:
             rivals.append({"name": _cap(str(r["name"]), 80), "vendor": _cap(str(r.get("vendor") or ""), 60),
-                           "pros": pros, "cons": cons, "verdict": _cap(str(r.get("verdict") or ""), 400)})
+                           "pros": pros, "cons": cons, "numbers": _numbers(r.get("numbers"), renumber, ("new", "rival"), 4),
+                           "verdict": _cap(str(r.get("verdict") or ""), 500)})
     rivals = rivals[:MAX_RIVALS]
-    sources = _keep_cited(sources, [c for r in rivals for c in r["pros"] + r["cons"]])
+    sources = _keep_cited(sources, [c for r in rivals for c in r["pros"] + r["cons"] + r["numbers"]])
     return {
         "new": tech["name"],
         "category": tech["category"],
         "category_label": config.categories().get(tech["category"], tech["category"]),
-        "summary": _cap(str(data.get("summary") or tech.get("summary") or ""), 700),
+        "summary": _cap(str(data.get("summary") or tech.get("summary") or ""), 900),
         "rivals": rivals,
         "insufficient": len(sources) < MIN_SOURCES,
         "confidence": _confidence(data.get("confidence"), sources),

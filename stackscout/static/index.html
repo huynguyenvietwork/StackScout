@@ -209,13 +209,36 @@
   .cmpline.pending { background: var(--accent-soft); color: var(--accent-strong); border-color: transparent; font-weight: 600; }
   .cmpline.error { color: var(--danger); }
   .cmpline.queued { color: var(--muted); border-style: dashed; }
-  .backdrop { position: fixed; inset: 0; background: rgba(8,10,14,.45); z-index: 30; }
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--surface); border-left: 1px solid var(--border);
-            z-index: 31; overflow-y: auto; padding: 22px 24px 40px; display: flex; flex-direction: column; gap: 16px; box-shadow: -12px 0 40px rgba(0,0,0,.22); }
-  @media (max-width: 720px) { .drawer { top: auto; left: 0; width: 100%; max-height: 88vh; border-left: 0; border-top: 1px solid var(--border);
-                                        border-radius: 20px 20px 0 0; padding: 18px 18px 32px; } }
-  .drawerhead { display: flex; align-items: flex-start; gap: 12px; }
-  .drawerhead h2 { font-size: 22px; margin: 0; line-height: 1.25; }
+  main.content.detail { flex: 1 1 100%; max-width: 1180px; margin: 0 auto; gap: 18px; }
+  .dtop { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .dhead h1.page { font-size: 34px; } .dhead p { margin: 8px 0 0; font-size: 15px; }
+  .dgrid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  .dmain, .dside { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .dside { position: sticky; top: 16px; }
+  @media (max-width: 980px) { .dgrid { grid-template-columns: minmax(0, 1fr); } .dside { position: static; } }
+  .dh { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; font-weight: 700; }
+  .dh.big { font-size: 20px; text-transform: none; letter-spacing: 0; color: var(--text); }
+  .dh.pro { color: var(--pro); } .dh.con { color: var(--con); }
+  .verdict.big { background: none; padding: 0; } .verdict.big .rec { font-size: 18px; padding: 10px 20px; }
+  .verdictcard .fitbox { margin-top: 14px; font-size: 16px; line-height: 1.6; }
+  .prose { margin: 0; font-size: 16px; line-height: 1.7; color: var(--body); }
+  .dlist.big { font-size: 15px; line-height: 1.65; gap: 12px; }
+  .srcs.big { font-size: 14px; line-height: 1.7; }
+  .pc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .pc.inner { margin: 16px 0 4px; gap: 24px; }
+  @media (max-width: 720px) { .pc { grid-template-columns: minmax(0, 1fr); } }
+  .card.pro { border-top: 3px solid var(--pro); } .card.con { border-top: 3px solid var(--con); }
+  .tablewrap { overflow-x: auto; }
+  .ntable { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ntable th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .ntable td { padding: 10px; border-bottom: 1px solid var(--divider); vertical-align: top; color: var(--body); }
+  .ntable td.metric { font-weight: 600; color: var(--text); } .ntable td.num { font-weight: 700; } .ntable td.pro { color: var(--pro); } .ntable td.con { color: var(--con); }
+  .linkbtn { all: unset; cursor: pointer; color: var(--link); font-weight: 600; } .linkbtn:hover { text-decoration: underline; }
+  .effort { font-size: 13px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+  .effort.low { background: var(--ok-bg); color: var(--ok-fg); } .effort.medium { background: var(--trial-bg); color: var(--trial-fg); }
+  .effort.high { background: var(--accent-soft); color: var(--danger); }
+  .oldnote { margin: 14px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--soft); font-size: 13px; color: var(--muted); }
+  .rivalcard { scroll-margin-top: 16px; }
   .verdict { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-radius: 14px; background: var(--soft); }
   .verdict .rec { margin-left: 0; font-size: 15px; padding: 8px 14px; }
   .fitbox { padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--text); font-size: 15px; margin: 0; }
@@ -231,7 +254,6 @@
   .ovlist li button { all: unset; cursor: pointer; } .ovlist li button:hover { color: var(--link); text-decoration: underline; }
   .ovlist li button:focus-visible { outline: 2px solid var(--accent); }
   .srcs { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.8; color: var(--muted); }
-  .drawer h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin: 4px 0 0; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -338,7 +360,8 @@ vi: {
   "nt.note.daily": "Bản tin hằng ngày chỉ gồm tin mới so với lần gửi trước; ngày nào không có tin mới thì không gửi. Mỗi ngày tốn thêm vài lượt AI.",
   "nt.note.weekly": "Bản tin hằng tuần gồm tin của 7 ngày qua, kèm so sánh với stack và đối thủ.",
   "nt.note.monthly": "Bản tin hằng tháng gom tin của 31 ngày qua thành một bản tổng hợp.",
-  "nt.k.empty": "Không có tin mới"
+  "nt.k.empty": "Không có tin mới",
+  "dt.back": "Quay lại", "dt.vsTitle": "{a} so với {b}", "dt.marketTitle": "{name} so với các đối thủ mạnh nhất", "dt.whatsNew": "Điểm mới", "dt.numbers": "Số liệu chính", "dt.metric": "Chỉ số", "dt.migration": "Chuyển đổi", "dt.effort.low": "Chuyển đổi dễ", "dt.effort.medium": "Chuyển đổi vừa phải", "dt.effort.high": "Chuyển đổi khó", "dt.news": "Tin gốc tuần này", "dt.rivalsTable": "Tổng quan đối thủ", "dt.rival": "Đối thủ", "dt.vendor": "Hãng", "dt.better": "Hơn", "dt.worse": "Kém", "dt.oldFormat": "So sánh này được tạo trước khi có bản chi tiết (số liệu, mức độ chuyển đổi).", "dt.again": "So sánh lại", "dt.refresh": "Cập nhật so sánh", "dt.refreshHint": "Tìm lại bài so sánh mới nhất trên web (khoảng 1–2 phút)."
 },
 en: {
   "app.tagline": "New tech, matched to your stack.",
@@ -433,7 +456,8 @@ en: {
   "nt.note.daily": "A daily digest only has what is new since the last one; on days with nothing new, nothing is sent. Each day costs a few more AI calls.",
   "nt.note.weekly": "A weekly digest covers the last 7 days, with comparisons against your stack and rivals.",
   "nt.note.monthly": "A monthly digest gathers the last 31 days into one roundup.",
-  "nt.k.empty": "Nothing new"
+  "nt.k.empty": "Nothing new",
+  "dt.back": "Back", "dt.vsTitle": "{a} vs {b}", "dt.marketTitle": "{name} vs its strongest rivals", "dt.whatsNew": "What's new", "dt.numbers": "Key numbers", "dt.metric": "Metric", "dt.migration": "Switching", "dt.effort.low": "Easy to switch", "dt.effort.medium": "Moderate switch", "dt.effort.high": "Hard to switch", "dt.news": "This week's news", "dt.rivalsTable": "Rivals at a glance", "dt.rival": "Rival", "dt.vendor": "Vendor", "dt.better": "Better", "dt.worse": "Worse", "dt.oldFormat": "This comparison was made before detailed comparisons (numbers, switching effort).", "dt.again": "Compare again", "dt.refresh": "Refresh the comparison", "dt.refreshHint": "Searches the web again for the latest comparisons (about 1–2 minutes)."
 },
 zh: {
   "app.tagline": "新技术，对照你的技术栈。",
@@ -526,7 +550,8 @@ zh: {
   "nt.note.daily": "每日简报只包含上次发送以来的新内容；没有新内容的日子不发送。每天会多用几次 AI 调用。",
   "nt.note.weekly": "每周简报涵盖过去 7 天，并附上与技术栈和竞品的对比。",
   "nt.note.monthly": "每月简报把过去 31 天的内容汇总成一份。",
-  "nt.k.empty": "没有新内容"
+  "nt.k.empty": "没有新内容",
+  "dt.back": "返回", "dt.vsTitle": "{a} 对比 {b}", "dt.marketTitle": "{name} 对比最强竞品", "dt.whatsNew": "新内容", "dt.numbers": "关键数据", "dt.metric": "指标", "dt.migration": "迁移", "dt.effort.low": "迁移容易", "dt.effort.medium": "迁移难度中等", "dt.effort.high": "迁移困难", "dt.news": "本周原始新闻", "dt.rivalsTable": "竞品一览", "dt.rival": "竞品", "dt.vendor": "厂商", "dt.better": "优于", "dt.worse": "不如", "dt.oldFormat": "该对比生成于详细版（数据、迁移难度）推出之前。", "dt.again": "重新对比", "dt.refresh": "更新对比", "dt.refreshHint": "重新在网上搜索最新的对比（约 1–2 分钟）。"
 },
 ja: {
   "app.tagline": "新しい技術を、あなたのスタックと照らし合わせて。",
@@ -621,7 +646,8 @@ ja: {
   "nt.note.daily": "毎日のダイジェストには前回以降の新着だけが入ります。新着がない日は送りません。毎日、AI 呼び出しが少し増えます。",
   "nt.note.weekly": "毎週のダイジェストは過去 7 日分で、スタックや競合との比較付きです。",
   "nt.note.monthly": "毎月のダイジェストは過去 31 日分を 1 本にまとめます。",
-  "nt.k.empty": "新着なし"
+  "nt.k.empty": "新着なし",
+  "dt.back": "戻る", "dt.vsTitle": "{a} と {b} の比較", "dt.marketTitle": "{name} と最も強い競合の比較", "dt.whatsNew": "新しい点", "dt.numbers": "主な数値", "dt.metric": "指標", "dt.migration": "移行", "dt.effort.low": "移行は容易", "dt.effort.medium": "移行は中程度", "dt.effort.high": "移行は難しい", "dt.news": "今週の元記事", "dt.rivalsTable": "競合の一覧", "dt.rival": "競合", "dt.vendor": "提供元", "dt.better": "優れる点", "dt.worse": "劣る点", "dt.oldFormat": "この比較は詳細版（数値・移行の難しさ）より前に作成されました。", "dt.again": "もう一度比較", "dt.refresh": "比較を更新", "dt.refreshHint": "最新の比較記事を Web で探し直します（約 1〜2 分）。"
 },
 ko: {
   "app.tagline": "새로운 기술, 당신의 스택과 비교해서.",
@@ -716,7 +742,8 @@ ko: {
   "nt.note.daily": "매일 다이제스트에는 지난번 이후 새 소식만 담깁니다. 새 소식이 없는 날은 보내지 않습니다. 매일 AI 호출이 조금 더 듭니다.",
   "nt.note.weekly": "매주 다이제스트는 지난 7일을 다루며 스택·경쟁 제품과의 비교가 함께 들어갑니다.",
   "nt.note.monthly": "매월 다이제스트는 지난 31일을 한 번에 정리합니다.",
-  "nt.k.empty": "새 소식 없음"
+  "nt.k.empty": "새 소식 없음",
+  "dt.back": "뒤로", "dt.vsTitle": "{a} vs {b}", "dt.marketTitle": "{name} vs 가장 강한 경쟁 제품", "dt.whatsNew": "새로운 점", "dt.numbers": "주요 수치", "dt.metric": "지표", "dt.migration": "전환", "dt.effort.low": "전환 쉬움", "dt.effort.medium": "전환 보통", "dt.effort.high": "전환 어려움", "dt.news": "이번 주 원문 소식", "dt.rivalsTable": "경쟁 제품 한눈에 보기", "dt.rival": "경쟁 제품", "dt.vendor": "제조사", "dt.better": "나은 점", "dt.worse": "부족한 점", "dt.oldFormat": "이 비교는 상세 버전(수치, 전환 난이도)이 나오기 전에 만들어졌습니다.", "dt.again": "다시 비교", "dt.refresh": "비교 새로고침", "dt.refreshHint": "최신 비교 자료를 웹에서 다시 찾습니다(약 1~2분)."
 }
 };
 
@@ -735,7 +762,7 @@ const state = {
   draft: null, editing: false, busy: null, addPreview: null, importPreview: null,
   confirmReset: false, confirmSourceReset: false, sources: null, notifyCfg: null, notifyOpen: null, chats: null,
   radar: null, reports: null, report: null, pollTimer: null, filter: "all",
-  compares: {}, menuOpen: null, drawer: null, auto: null, autoTimer: null, skillFilter: "all", market: {},
+  compares: {}, menuOpen: null, detail: null, auto: null, autoTimer: null, skillFilter: "all", market: {},
 };
 
 function t(key, params = {}) {
@@ -897,7 +924,7 @@ function headerView() {
     onclick: () => { state.theme = dark ? "light" : "dark"; store.set("ss-theme", state.theme); applyTheme(); render(); } },
     svg(dark ? ICON.sun : ICON.moon, 20));
   const tab = (id, label, onOpen) => h("button", { class: "tab", "aria-current": state.tab === id ? "page" : null,
-    onclick: () => { state.tab = id; render(); if (onOpen) onOpen(); } }, label);
+    onclick: () => { state.tab = id; state.detail = null; render(); if (onOpen) onOpen(); } }, label);
   const showNav = state.view === "main";
   const banner = DEMO && h("div", { class: "demobar" }, h("span", {}, t("demo.banner")),
     h("a", { href: DEMO.repo, target: "_blank", rel: "noopener" }, t("demo.install")),
@@ -1386,6 +1413,8 @@ async function loadReports(week) {
       mergeMarket((await api("GET", `/api/market?week=${encodeURIComponent(state.report.week)}`)).market);
     }
   });
+  restoreDetailFromHash();
+  if (state.detail) render();
   ensureAuto();
 }
 
@@ -1413,11 +1442,11 @@ function mergeMarket(market) {
 // ---- "Model & AI mới": a new model or tool vs its 3-5 strongest rivals.
 // Usually ready (the automatic run does it after the radar); a click on one
 // that is not done yet starts it now (the server never runs it twice).
-async function marketItem(item) {
+async function marketItem(item, force = false) {
   const k = nameKey(item.name);
   state.market[k] = { status: "loading" }; render();
   try {
-    const { comparison } = await api("POST", "/api/market", { week: state.report.week, name: item.name });
+    const { comparison } = await api("POST", "/api/market", { week: state.report.week, name: item.name, force });
     state.market[k] = { status: "done", data: comparison };
   } catch (e) {
     state.market[k] = { status: "error", error: e.message };
@@ -1436,10 +1465,9 @@ function marketStatus(item) {
 }
 
 function openMarket(item) {
-  state.menuOpen = null;
-  state.drawer = { item, kind: "market", opener: document.activeElement };
+  openDetail("market", item);
   const st = marketStatus(item);
-  if (st !== "done" && st !== "loading" && st !== "active") marketItem(item); else render();
+  if (st !== "done" && st !== "loading" && st !== "active") marketItem(item);
 }
 
 function marketLine(item) {
@@ -1460,36 +1488,6 @@ function marketLine(item) {
   return h("button", { class: "cmpline", onclick: () => openMarket(item) }, h("strong", {}, t("mk.button")),
     st === "failed" || st === "error" ? h("span", { style: "color:var(--danger)" }, t("err.ai")) : null,
     h("span", { class: "go" }, "→"));
-}
-
-function marketDrawerBody(item) {
-  const m = state.market[nameKey(item.name)];
-  const st = marketStatus(item);
-  if (st === "error") return [h("p", { style: "color:var(--danger);margin:0" }, t("cmp.failed", { msg: m.error })),
-    h("button", { class: "btn sm", style: "align-self:flex-start", onclick: () => marketItem(item) }, t("common.retry"))];
-  if (st !== "done") return loading(t(st === "queued" ? "mk.queued" : "mk.loading"));
-  const d = m.data;
-  const byN = Object.fromEntries((d.sources || []).map(x => [x.n, x]));
-  const refs = ns => h("span", { class: "refs" }, ns.map(n => byN[n] ? ext(byN[n].url, `[${n}]`) : `[${n}]`));
-  const claims = list => h("ul", { class: "dlist" }, list.map(c => h("li", {}, c.text, " ", refs(c.sources))));
-  return [
-    h("div", { class: "verdict" },
-      d.insufficient ? h("span", { class: "rec insufficient" }, t("rec.insufficient")) : null,
-      h("span", { class: "muted", style: "font-size:13px" }, t("cmp.confidence", { c: t("conf." + d.confidence) }), " · ",
-        t("cmp.indepCount", { i: d.independent_sources, n: d.sources.length }))),
-    d.summary && h("p", { style: "margin:0;font-size:14px;color:var(--body)" }, d.summary),
-    d.insufficient && h("p", { class: "muted", style: "margin:0;font-size:13px" }, t("mk.insufficient")),
-    d.rivals.length ? d.rivals.map(r => h("section", { class: "rival" },
-      h("h4", {}, `${item.name} vs ${r.name}`, r.vendor && h("span", { class: "muted" }, r.vendor)),
-      h("div", { class: "side2" },
-        h("div", {}, h("h5", { class: "pro" }, t("mk.pros", { rival: r.name })), r.pros.length ? claims(r.pros) : h("p", { class: "muted", style: "margin:0;font-size:13px" }, "—")),
-        h("div", {}, h("h5", { class: "con" }, t("mk.cons", { rival: r.name })), r.cons.length ? claims(r.cons) : h("p", { class: "muted", style: "margin:0;font-size:13px" }, "—"))),
-      r.verdict && h("p", { class: "fitbox" }, h("b", {}, t("mk.pick") + " "), r.verdict)))
-      : h("p", { class: "muted", style: "margin:0" }, t("mk.none")),
-    (d.sources || []).length > 0 && [h("h3", { class: "muted" }, t("cmp.sources")),
-      h("ol", { class: "srcs" }, d.sources.map(x => h("li", { value: x.n }, ext(x.url, x.title),
-        x.independent && h("span", { class: "tag", style: "margin-left:6px" }, t("cmp.independent")))))],
-  ];
 }
 
 // ---- automatic comparisons ("So với stack" tab): the server compares every
@@ -1515,11 +1513,11 @@ function pollAuto() {
     if (state.auto?.running) pollAuto();
     else if (state.auto?.total) toast(t("ctab.allDone", { n: state.auto.total - Object.keys(state.auto.failed || {}).length }));
     // Do not rebuild the page under an open menu (it would drop the search text); an open
-    // drawer is rebuilt only when what it is waiting for has arrived.
-    const waitingDrawer = state.drawer?.kind === "market" && state.market[nameKey(state.drawer.item.name)]?.status === "done"
-      && !state.drawer.shownDone;
-    if (waitingDrawer) state.drawer.shownDone = true;
-    if (!state.menuOpen && (!state.drawer || waitingDrawer)) render();
+    // detail page is rebuilt only when what it is waiting for has arrived (keeps the reader's place).
+    const waiting = state.detail?.kind === "market" && state.market[nameKey(state.detail.item.name)]?.status === "done"
+      && !state.detail.shownDone;
+    if (waiting) state.detail.shownDone = true;
+    if (!state.menuOpen && (!state.detail || waiting)) render();
   }, 5000);
 }
 
@@ -1551,13 +1549,13 @@ function pollRadar() {
   }, 3000);
 }
 
-async function compareItem(item, against) {
+async function compareItem(item, against, force = false) {
   const k = nameKey(item.name);
   state.compares[k] = { status: "loading", against, manual: true }; render();
   try {
-    const { comparison } = await api("POST", "/api/compare", { week: state.report.week, name: item.name, against });
+    const { comparison } = await api("POST", "/api/compare", { week: state.report.week, name: item.name, against, force });
     state.compares[k] = { status: "done", data: comparison, against: comparison.current, manual: true };
-    if (!state.drawer || nameKey(state.drawer.item.name) !== k) {
+    if (!state.detail || nameKey(state.detail.item.name) !== k) {
       toast(t("cmp.ready", { a: comparison.new, b: comparison.current }), { action: { label: t("cmp.view"), run: () => openDrawer(item) } });
     }
   } catch (e) {
@@ -1573,14 +1571,7 @@ function toolOptions(item) {
 }
 const firstRival = item => toolOptions(item).find(o => (item.rivals || []).some(r => nameKey(r) === nameKey(o)));
 
-function openDrawer(item) {
-  state.menuOpen = null; state.drawer = { item, opener: document.activeElement }; render();
-}
-function closeDrawer() {
-  const opener = state.drawer?.opener;
-  state.drawer = null; render();
-  if (opener && document.contains(opener)) opener.focus();
-}
+const openDrawer = item => openDetail("stack", item);
 
 // The natural rival is compared automatically; "⋯" lets the reader compare
 // with any other tool of the stack.
@@ -1654,58 +1645,6 @@ function itemArticle(item, { compare = false, market = false, extra = "" } = {})
       canCompare && c?.status !== "loading" && compareButton(item)),
     compare && (c ? compareLine(item, c) : autoLine(item)),
     market && "category" in item && marketLine(item));
-}
-
-function drawerView() {
-  const item = state.drawer.item;
-  if (state.drawer.kind === "market") return [
-    h("div", { class: "backdrop", onclick: closeDrawer }),
-    h("aside", { class: "drawer", role: "dialog", "aria-modal": "true", "aria-labelledby": "drawer-title" },
-      h("div", { class: "drawerhead" },
-        h("div", { style: "flex:1;min-width:0" }, h("p", { class: "kicker", style: "margin-bottom:4px" }, t("mk.kicker")),
-          h("h2", { id: "drawer-title" }, item.name)),
-        h("button", { class: "iconbtn", "aria-label": t("cmp.close"), "data-autofocus": true, onclick: closeDrawer },
-          svg('<path d="M6 6l12 12M18 6L6 18"/>', 18))),
-      marketDrawerBody(item)),
-  ];
-  const c = state.compares[nameKey(item.name)];
-  const sel = h("select", { "aria-label": t("cmp.other") }, toolOptions(item).map(o => h("option", { value: o }, o)));
-  sel.value = c?.against || firstRival(item) || "";
-  const rerun = h("div", { class: "row", style: "margin:0" }, h("span", { class: "muted", style: "font-size:13px" }, t("cmp.other")), sel,
-    h("button", { class: "btn sm", onclick: () => compareItem(item, sel.value) }, t("cmp.run")));
-  let body;
-  if (!c || c.status === "loading") body = loading(t("cmp.loading", { tool: c?.against || sel.value }));
-  else if (c.status === "error") body = h("p", { style: "color:var(--danger);margin:0" }, t("cmp.failed", { msg: c.error }));
-  else {
-    const d = c.data;
-    const byN = Object.fromEntries((d.sources || []).map(s => [s.n, s]));
-    const refs = ns => h("span", { class: "refs" }, ns.map(n => byN[n] ? ext(byN[n].url, `[${n}]`) : `[${n}]`));
-    const indep = (d.sources || []).filter(s => s.independent).length;
-    body = [
-      h("div", { class: "verdict" }, h("span", { class: "rec " + d.recommendation }, t("rec." + d.recommendation)),
-        h("span", { class: "muted", style: "font-size:13px" }, t("cmp.confidence", { c: t("conf." + d.confidence) }), " · ",
-          t("cmp.indepCount", { i: indep, n: (d.sources || []).length }))),
-      d.fit && h("p", { class: "fitbox" }, h("b", {}, t("cmp.fit") + " "), d.fit),
-      d.what_is_new && h("p", { style: "margin:0;font-size:14px;color:var(--body)" }, h("b", {}, t("cmp.new") + " "), d.what_is_new),
-      (d.pros.length + d.cons.length) > 0
-        ? [h("h3", { class: "pro" }, t("cmp.pros")), h("ul", { class: "dlist" }, d.pros.map(p => h("li", {}, p.text, " ", refs(p.sources)))),
-           h("h3", { class: "con" }, t("cmp.cons")), h("ul", { class: "dlist" }, d.cons.map(p => h("li", {}, p.text, " ", refs(p.sources))))]
-        : h("p", { class: "muted", style: "margin:0" }, t("cmp.noEvidence")),
-      (d.sources || []).length > 0 && [h("h3", { class: "muted" }, t("cmp.sources")),
-        h("ol", { class: "srcs" }, d.sources.map(s => h("li", { value: s.n }, ext(s.url, s.title),
-          s.independent && h("span", { class: "tag", style: "margin-left:6px" }, t("cmp.independent")))))],
-    ];
-  }
-  return [
-    h("div", { class: "backdrop", onclick: closeDrawer }),
-    h("aside", { class: "drawer", role: "dialog", "aria-modal": "true", "aria-labelledby": "drawer-title" },
-      h("div", { class: "drawerhead" },
-        h("div", { style: "flex:1;min-width:0" }, h("p", { class: "kicker", style: "margin-bottom:4px" }, t("cmp.vs", { tool: c?.against || sel.value })),
-          h("h2", { id: "drawer-title" }, item.name)),
-        h("button", { class: "iconbtn", "aria-label": t("cmp.close"), "data-autofocus": true, onclick: closeDrawer },
-          svg('<path d="M6 6l12 12M18 6L6 18"/>', 18))),
-      rerun, body),
-  ];
 }
 
 function section(icon, title, note, body) {
@@ -1892,6 +1831,178 @@ function compareTab() {
   return h("div", { class: "layout" }, compareAside(groups), h("main", { class: "content" }, head, progress, body));
 }
 
+// ---------------------------------------------------------------- full-page details
+// A comparison opens on its own page (browser Back returns to the list, at the
+// same place), wide enough to read: main content on the left, sources on the right.
+
+const MODEL_CATS = ["llm-provider-sdk", "local-llm-inference"];
+
+function findItem(name) {
+  if (!state.report) return null;
+  const L = sectionLists(state.report);
+  return [...L.ai, ...L.stack, ...L.updates, ...L.other, ...L.new].find(b => nameKey(b.name) === nameKey(name)) || null;
+}
+
+function openDetail(kind, item) {
+  state.menuOpen = null;
+  state.detail = { kind, item, scroll: window.scrollY };
+  try { history.pushState({ detail: { kind, name: item.name } }, "", `#${kind}/${encodeURIComponent(item.name)}`); } catch { /* file:// in some browsers */ }
+  render(); window.scrollTo(0, 0);
+}
+// The page restores the list's scroll position itself; the browser's own restore would fight it.
+try { history.scrollRestoration = "manual"; } catch { /* old browsers */ }
+function leaveDetail() {
+  const scroll = state.detail?.scroll || 0;
+  state.detail = null; render();
+  window.scrollTo(0, scroll); requestAnimationFrame(() => window.scrollTo(0, scroll));
+}
+function closeDetail() {
+  if (history.state && history.state.detail) history.back(); else leaveDetail();  // popstate does the rest
+}
+window.addEventListener("popstate", e => {
+  const d = e.state && e.state.detail, item = d && findItem(d.name);
+  if (item) { state.detail = { kind: d.kind, item, scroll: 0 }; render(); window.scrollTo(0, 0); }
+  else if (state.detail) leaveDetail();
+});
+// A shared or reloaded link (#stack/<name> or #market/<name>) opens its page once the report is in.
+function restoreDetailFromHash() {
+  const m = /^#(stack|market)\/(.+)$/.exec(location.hash);
+  const item = m && findItem(decodeURIComponent(m[2]));
+  if (!item) return;
+  state.detail = { kind: m[1], item, scroll: 0 };
+  try { history.replaceState({ detail: { kind: m[1], name: item.name } }, "", location.hash); } catch { /* ignore */ }
+  if (m[1] === "market" && !["done", "loading", "active"].includes(marketStatus(item))) marketItem(item);
+}
+
+function sourceTools(d) {
+  const byN = Object.fromEntries((d.sources || []).map(s => [s.n, s]));
+  return ns => h("span", { class: "refs" }, (ns || []).map(n => byN[n] ? ext(byN[n].url, `[${n}]`) : `[${n}]`));
+}
+const claimList = (list, refs) => list.length
+  ? h("ul", { class: "dlist big" }, list.map(c => h("li", {}, c.text, " ", refs(c.sources))))
+  : h("p", { class: "muted", style: "margin:0" }, "—");
+function numbersTable(rows, cols, refs) {
+  return h("div", { class: "tablewrap" }, h("table", { class: "ntable" },
+    h("thead", {}, h("tr", {}, h("th", {}, t("dt.metric")), cols.map(([, label]) => h("th", {}, label)), h("th", {}, ""))),
+    h("tbody", {}, rows.map(r => h("tr", {}, h("td", { class: "metric" }, r.metric),
+      cols.map(([key]) => h("td", {}, r[key] || "—")), h("td", {}, refs(r.sources)))))));
+}
+function sourcesCard(d) {
+  if (!(d.sources || []).length) return null;
+  return h("section", { class: "card" }, h("h2", { class: "dh" }, t("cmp.sources")),
+    h("ol", { class: "srcs big" }, d.sources.map(s => h("li", { value: s.n }, ext(s.url, s.title),
+      s.independent && h("span", { class: "tag", style: "margin-left:6px" }, t("cmp.independent"))))));
+}
+function newsCard(item) {
+  if (!(item.links || []).length) return null;
+  return h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.news")),
+    item.summary && h("p", { style: "margin:0 0 10px;font-size:14px;color:var(--body)" }, item.summary),
+    h("ul", { class: "dlist" }, item.links.map(l => h("li", {}, ext(l.url, l.title || l.source || l.url),
+      l.source && h("span", { class: "muted" }, ` · ${l.source}`),
+      l.official && h("span", { class: "tag official", style: "margin-left:6px" }, t("tag.firstParty"))))));
+}
+const confidenceLine = d => h("span", { class: "muted", style: "font-size:14px" },
+  t("cmp.confidence", { c: t("conf." + d.confidence) }), " · ",
+  t("cmp.indepCount", { i: (d.sources || []).filter(s => s.independent).length, n: (d.sources || []).length }));
+const oldFormat = again => h("p", { class: "oldnote" }, t("dt.oldFormat"), " ",
+  h("button", { class: "btn link sm", onclick: again }, t("dt.again")));
+
+function stackDetail(item) {
+  const c = state.compares[nameKey(item.name)];
+  const against = c?.against || firstRival(item) || "";
+  const sel = h("select", { "aria-label": t("cmp.other") }, toolOptions(item).map(o => h("option", { value: o }, o)));
+  sel.value = against;
+  const side = [
+    h("section", { class: "card" }, h("h2", { class: "dh" }, t("cmp.other")),
+      h("div", { class: "row", style: "margin:0" }, h("div", { style: "flex:1;min-width:140px" }, sel),
+        h("button", { class: "btn sm", onclick: () => compareItem(item, sel.value) }, t("cmp.run"))),
+      c?.status === "done" && h("button", { class: "btn link sm", style: "margin-top:10px", onclick: () => compareItem(item, against, true) }, t("dt.again"))),
+  ];
+  const head = h("header", { class: "dhead" },
+    h("h1", { class: "page" }, t("dt.vsTitle", { a: item.name, b: against })),
+    h("p", { class: "muted" }, [catLabel(item.category), ECO[item.ecosystem]].filter(Boolean).join(" · ")));
+  let main;
+  if (!c || c.status === "loading") main = [h("section", { class: "card" }, loading(t("cmp.loading", { tool: against })))];
+  else if (c.status === "error") main = [h("section", { class: "card" }, h("p", { style: "color:var(--danger);margin:0 0 10px" }, t("cmp.failed", { msg: c.error })),
+    h("button", { class: "btn sm", onclick: () => compareItem(item, against) }, t("common.retry")))];
+  else {
+    const d = c.data, refs = sourceTools(d);
+    main = [
+      h("section", { class: "card verdictcard" },
+        h("div", { class: "verdict big" }, h("span", { class: "rec " + d.recommendation }, t("rec." + d.recommendation)), confidenceLine(d)),
+        d.fit && h("p", { class: "fitbox" }, h("b", {}, t("cmp.fit") + " "), d.fit),
+        !("numbers" in d) && oldFormat(() => compareItem(item, against, true))),
+      d.what_is_new && h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.whatsNew")), h("p", { class: "prose" }, d.what_is_new)),
+      (d.numbers || []).length > 0 && h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.numbers")),
+        numbersTable(d.numbers, [["new", item.name], ["current", d.current]], refs)),
+      (d.pros.length + d.cons.length) > 0
+        ? h("div", { class: "pc" },
+            h("section", { class: "card pro" }, h("h2", { class: "dh pro" }, t("mk.pros", { rival: d.current })), claimList(d.pros, refs)),
+            h("section", { class: "card con" }, h("h2", { class: "dh con" }, t("mk.cons", { rival: d.current })), claimList(d.cons, refs)))
+        : h("section", { class: "card" }, h("p", { class: "muted", style: "margin:0" }, t("cmp.noEvidence"))),
+      d.migration && h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.migration")),
+        h("p", { style: "margin:0 0 8px" }, h("span", { class: "effort " + d.migration.effort }, t("dt.effort." + d.migration.effort))),
+        h("p", { class: "prose" }, d.migration.notes, " ", refs(d.migration.sources))),
+    ];
+    side.push(sourcesCard(d));
+  }
+  side.push(newsCard(item));
+  return [head, h("div", { class: "dgrid" }, h("div", { class: "dmain" }, main), h("aside", { class: "dside" }, side))];
+}
+
+function marketDetail(item) {
+  const st = marketStatus(item), m = state.market[nameKey(item.name)];
+  const head = h("header", { class: "dhead" },
+    h("h1", { class: "page" }, t("dt.marketTitle", { name: item.name })),
+    h("p", { class: "muted" }, catLabel(item.category)));
+  const side = [];
+  let main;
+  if (st === "error" || st === "failed") main = [h("section", { class: "card" },
+    h("p", { style: "color:var(--danger);margin:0 0 10px" }, t("cmp.failed", { msg: m?.error || t("err.ai") })),
+    h("button", { class: "btn sm", onclick: () => marketItem(item) }, t("common.retry")))];
+  else if (st !== "done") main = [h("section", { class: "card" }, loading(t(st === "queued" ? "mk.queued" : "mk.loading")))];
+  else {
+    const d = m.data, refs = sourceTools(d);
+    const jump = i => () => document.getElementById(`rival-${i}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    main = [
+      h("section", { class: "card verdictcard" },
+        h("div", { class: "verdict big" }, d.insufficient && h("span", { class: "rec insufficient" }, t("rec.insufficient")), confidenceLine(d)),
+        d.summary && h("p", { class: "prose", style: "margin-top:12px" }, d.summary),
+        d.rivals.length > 0 && !d.rivals.some(r => "numbers" in r) && oldFormat(() => marketItem(item, true))),
+      d.rivals.length > 0 && h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.rivalsTable")),
+        h("div", { class: "tablewrap" }, h("table", { class: "ntable" },
+          h("thead", {}, h("tr", {}, h("th", {}, t("dt.rival")), h("th", {}, t("dt.vendor")), h("th", {}, t("dt.better")), h("th", {}, t("dt.worse")), h("th", {}, t("mk.pick")))),
+          h("tbody", {}, d.rivals.map((r, i) => h("tr", {},
+            h("td", { class: "metric" }, h("button", { class: "linkbtn", onclick: jump(i) }, r.name)),
+            h("td", {}, r.vendor || "—"), h("td", { class: "num pro" }, String(r.pros.length)), h("td", { class: "num con" }, String(r.cons.length)),
+            h("td", {}, r.verdict || "—"))))))),
+      d.rivals.length ? d.rivals.map((r, i) => h("section", { class: "card rivalcard", id: `rival-${i}` },
+        h("h2", { class: "dh big" }, t("dt.vsTitle", { a: item.name, b: r.name }), r.vendor && h("span", { class: "muted" }, ` · ${r.vendor}`)),
+        (r.numbers || []).length > 0 && numbersTable(r.numbers, [["new", item.name], ["rival", r.name]], refs),
+        h("div", { class: "pc inner" },
+          h("div", {}, h("h3", { class: "dh pro" }, t("mk.pros", { rival: r.name })), claimList(r.pros, refs)),
+          h("div", {}, h("h3", { class: "dh con" }, t("mk.cons", { rival: r.name })), claimList(r.cons, refs))),
+        r.verdict && h("p", { class: "fitbox" }, h("b", {}, t("mk.pick") + " "), r.verdict)))
+        : h("section", { class: "card" }, h("p", { class: "muted", style: "margin:0" }, t("mk.none"))),
+    ];
+    side.push(h("section", { class: "card" }, h("h2", { class: "dh" }, t("dt.refresh")),
+      h("p", { class: "muted", style: "margin:0 0 10px;font-size:13px" }, t("dt.refreshHint")),
+      h("button", { class: "btn sm", onclick: () => marketItem(item, true) }, t("dt.again"))), sourcesCard(d));
+  }
+  side.push(newsCard(item));
+  return [head, h("div", { class: "dgrid" }, h("div", { class: "dmain" }, main), h("aside", { class: "dside" }, side))];
+}
+
+function detailView() {
+  const { kind, item } = state.detail;
+  const [y, w] = state.report.week.split("-W");
+  return h("main", { class: "content detail" },
+    h("div", { class: "dtop" },
+      h("button", { class: "btn sm", "data-autofocus": true, onclick: closeDetail }, svg('<path d="M15 6l-6 6 6 6"/>', 16), t("dt.back")),
+      h("span", { class: "kicker", style: "margin:0" }, `${t(kind === "market" ? "mk.kicker" : "nav.compare")} · ${t("radar.week", { w: +w, y })}`)),
+    kind === "market" ? marketDetail(item) : stackDetail(item));
+}
+
 // ---------------------------------------------------------------- render
 
 function render() {
@@ -1900,12 +2011,12 @@ function render() {
   if (state.view === "loading") body = h("div", { class: "card" }, loading(t("common.loading")));
   else if (state.view === "wizard") body = h("main", { class: "content single" }, wizardView());
   else if (state.view === "review") body = h("main", { class: "content single" }, reviewView());
+  else if (state.detail && state.report) body = detailView();
   else if (state.tab === "radar") body = radarTab();
   else if (state.tab === "compare") body = compareTab();
   else if (state.tab === "notify") body = h("main", { class: "content single" }, notifyTab());
   else body = h("main", { class: "content single" }, state.tab === "sources" ? sourcesTab() : profileTab());
-  document.getElementById("app").replaceChildren(...headerView().filter(Boolean), body, ...(state.drawer ? drawerView() : []));
-  document.body.style.overflow = state.drawer ? "hidden" : "";
+  document.getElementById("app").replaceChildren(...headerView().filter(Boolean), body);
   const focusTarget = document.querySelector("[data-autofocus]");
   if (focusTarget && !focusTarget.contains(document.activeElement)) focusTarget.focus();
 }
@@ -1916,7 +2027,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (state.menuOpen) { state.menuOpen = null; render(); }
-  else if (state.drawer) closeDrawer();
+  else if (state.detail) closeDetail();
 });
 
 (async function init() {
