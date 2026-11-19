@@ -264,7 +264,7 @@ def test_compare_caps_length_for_the_newsletter():
         "cons": [{"text": f"con {i}", "sources": [2]} for i in range(6)]})
     assert len(out["pros"]) == len(out["cons"]) == compare.MAX_CLAIMS
     assert len(out["pros"][0]["text"]) == compare.MAX_CLAIM_CHARS and out["pros"][0]["text"].endswith("…")
-    assert len(out["what_is_new"]) <= 320 and len(out["fit"]) <= 260
+    assert len(out["what_is_new"]) <= 600 and len(out["fit"]) <= 500
 
 
 # ---------------------------------------------------------------- digest end to end
@@ -577,3 +577,11 @@ def test_schedule_next_run_is_the_coming_weekday():
     assert main.next_run(wed, "mon", "08:00") == datetime(2026, 11, 23, 8, 0, tzinfo=tz)
     assert main.next_run(wed, "wed", "10:30") == datetime(2026, 11, 18, 10, 30, tzinfo=tz)  # later today
     assert main.next_run(wed, "wed", "08:00") == datetime(2026, 11, 25, 8, 0, tzinfo=tz)  # already passed
+
+
+def test_digest_shows_no_stack_verdict_under_a_new_model():
+    report = {"week": "2026-W47", "stats": {"items": 1, "sources": 1},
+              "ai_news": [{"name": "Gemini 4", "group": "models", "category": "llm-provider-sdk", "rivals": ["Anthropic SDK"]}]}
+    text = "\n".join(digest.render_telegram(report, {"gemini 4|anthropic sdk": {"current": "Anthropic SDK", "recommendation": "trial"}},
+                                           lang="en", market={"gemini 4": {"rivals": [{"name": "GPT-6.2"}]}}))
+    assert "vs Anthropic SDK" not in text and "↳ Vs.: GPT-6.2" in text

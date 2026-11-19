@@ -18,18 +18,96 @@ A weekly tech radar that reads the sources that matter, picks what is relevant t
 
 Keeping up is a part-time job: new models every week, new libraries, release notes, benchmarks that disagree. Most newsletters list *everything*. StackScout starts from **your stack** and answers one question per item: *should I care, and how does it compare with what I use today?*
 
-- **New models & AI tools first**, straight from first-party channels (Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…), each compared with its **3–5 strongest competitors**: pros, cons, which one to pick, every claim linked.
-- **Vs. my stack**: every new technology of the same kind as one of your tools is **compared automatically** with that tool: *adopt, trial, watch or skip*, with independent benchmarks preferred over vendor marketing.
-- **Your tools' updates**, other ecosystems, new areas worth a look, and a weekly roundup, in one short digest.
-- **Delivered where you read**: web, Telegram, email, Slack, Discord or any webhook.
-- **5 languages**: English, Tiếng Việt, 中文, 日本語, 한국어 (interface, AI-written content and digests).
-- **Private by design**: your profile is a list of technology names and levels. No project names, no employer, nothing about your work.
+## Features
+
+### 📡 Your week at a glance
+
+One page with the headlines of the week, grouped by what they mean for you: new AI models and tools, new tech of the same kind as your stack, updates to tools you already use, other ecosystems, new areas, and a roundup. Click **Details** to read each group in full.
+
+<img src="docs/assets/overview.png" alt="Weekly overview: headlines grouped by type" width="100%">
+
+### 🤖 New AI models, compared with their strongest rivals
+
+Straight from first-party channels (Anthropic, OpenAI, Google DeepMind, Gemini, Hugging Face…). Click a model and StackScout has already looked up its **3–5 strongest competitors**: what it does better, what it does worse, and which one to pick, with benchmark numbers, prices and a link behind every line.
+
+<img src="docs/assets/rivals.png" alt="GPT-6.2 Astra compared with Claude Fable 5.2, Gemini 4 Carbon and others" width="100%">
+
+### 🧩 Compared with your stack, automatically
+
+Every new technology of the same kind as one of your tools is compared with that tool right after the radar runs, grouped by your skills. Each one gets a verdict, **adopt, trial, watch or skip**, plus what fits you and what doesn't. Use **⋯** to compare it with any other tool in your profile.
+
+<table>
+<tr>
+<td width="62%"><img src="docs/assets/vs-stack.png" alt="New tools grouped by the skill they compete with, each with a verdict"></td>
+<td width="38%"><img src="docs/assets/stack-detail.png" alt="SQLite vs PostgreSQL: verdict, fit, pros and cons"></td>
+</tr>
+</table>
+
+### 🔗 Every claim has a source
+
+Rules enforced in code, not left to the AI:
+
+- a pro or con without a valid link is dropped;
+- fewer than 2 sources means *"not enough data yet"*;
+- independent benchmarks and hands-on reports are preferred, and labelled; with no independent source, confidence can't be *high*.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/sources-cited.png" alt="Numbered sources, independent ones labelled"></td>
+<td width="50%">
+
+**What you see in each comparison**
+
+- the verdict and the confidence, with how many sources are independent
+- a short *for you* note based on your stack
+- what is new, in one or two sentences
+- at most 3 pros and 3 cons, each with its sources `[1]` `[2]`
+- the source list: vendor posts, independent benchmarks, experience reports
+
+</td>
+</tr>
+</table>
+
+### 📬 The digest, where you read
+
+Every week, in your language, on any of: **Telegram, email, Slack, Discord**, or any **webhook** (n8n, Zapier, Make…). Under each item: the verdict against your tool, or the rivals of a new model.
+
+<table>
+<tr>
+<td width="50%"><b>Email</b><br><img src="docs/assets/digest-email.png" alt="Weekly digest by email"></td>
+<td width="50%"><b>Telegram</b><br><img src="docs/assets/digest-telegram.png" alt="Weekly digest on Telegram"></td>
+</tr>
+</table>
+
+### 👤 Your profile in your own words, private by design
+
+Type what you use, typos and all (*"c#, entity framwork, postgres, k8s"*), or generate it from your code or CV with the included prompt. AI turns it into canonical names and levels; you confirm before anything is saved. **Only technology names and levels are stored**: no project names, no employer, nothing about your work.
+
+<img src="docs/assets/profile.png" alt="Skill profile grouped by category, with levels" width="100%">
+
+### 📰 Sources that matter, picked for your stack
+
+About 60 curated, live feeds. First-party AI channels are always on, the official blogs and release feeds of *your* technologies switch on by themselves, and community sources (Hacker News, trending GitHub repos, Lobsters…) are one click away. Add any blog, RSS feed or GitHub repo.
+
+<img src="docs/assets/sources.png" alt="Source list with first-party and official feeds" width="100%">
+
+### 🌏 5 languages, light and dark, on your phone
+
+English, Tiếng Việt, 中文, 日本語, 한국어: the interface, the AI-written summaries and comparisons, the digests and the Telegram bot.
+
+<table>
+<tr>
+<td width="40%"><img src="docs/assets/dark-ja.png" alt="Dark theme in Japanese"></td>
+<td width="40%"><img src="docs/assets/light-vi.png" alt="Light theme in Vietnamese"></td>
+<td width="20%"><img src="docs/assets/mobile.png" alt="Rival comparison on a phone"></td>
+</tr>
+</table>
 
 ## How it works
 
-1. **Profile.** Describe what you use in your own words ("c#, entity framwork, postgres, k8s"), or generate it from your code or CV with the included prompt. AI normalises it to canonical names and a fixed taxonomy; you confirm before anything is saved.
-2. **Sources.** ~60 curated, live feeds (`config/industries.yaml`): first-party AI channels always on; official blogs and release feeds for *your* stack switch on automatically; community sources (Hacker News, trending GitHub repos, Lobsters…) are opt-in. Add any blog, RSS feed or GitHub repo.
-3. **Radar.** Each week's items are classified into the same taxonomy, then **matched in plain Python**:
+1. **Profile**: your technologies and levels, normalised to a fixed taxonomy.
+2. **Collect**: the week's items from your sources (RSS/Atom, release feeds, Hacker News, GitHub, sitemaps), deduplicated across weeks.
+3. **Classify** with AI into the same taxonomy, then **match in plain Python**:
 
    | Match | What you get |
    |---|---|
@@ -39,11 +117,7 @@ Keeping up is a part-time job: new models every week, new libraries, release not
    | New model or AI tool | **Comparison with its strongest competitors** |
    | Category you don't have yet | "Worth a look" |
 
-### Rules enforced in code, not left to the AI
-
-- A pro or con without a valid source link is dropped; fewer than 2 sources means *"not enough data yet"*; no independent source caps confidence at *medium*.
-- Every AI step runs without tools, except comparisons, which get web search and fetch only. Your profile is never put in a search query.
-- Items already reported in an earlier week are skipped.
+4. **Compare** with web search, then enforce the source rules in code; **deliver** on your channels.
 
 ## Quick start
 
@@ -106,6 +180,7 @@ The **Sources** tab shows which channels are on and can send the latest digest a
 
 - Your profile stores **technology names and levels only**. Project names, repos, what they are for and anything about your employer are dropped on save and on import; URLs, emails, IPs, hostnames and secret-looking strings are scrubbed from free text.
 - Secrets (API key, bot token, SMTP password, webhook URLs) live in `.env` and never go through the browser.
+- Every AI step runs without tools, except comparisons, which get web search and fetch only. Your profile is never put in a search query.
 - Data stays on your machine: `data/` (profiles, sources, comparisons) and `reports/` are plain files.
 
 ## Project layout

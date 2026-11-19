@@ -38,7 +38,8 @@ AI_GROUPS = {
 AI_GROUP_ORDER = ("models", "coding", "agents")
 # "llm-provider-sdk" holds both models and SDKs: a new model is never compared
 # with an SDK of the stack, only with rival models (market comparison).
-MODEL_CATEGORIES = frozenset(c for c, g in AI_GROUPS.items() if g == "models")
+MODEL_CATEGORIES = render.MODEL_CATEGORIES
+assert MODEL_CATEGORIES == {c for c, g in AI_GROUPS.items() if g == "models"}
 MAX_THEME_ITEMS = 150
 
 

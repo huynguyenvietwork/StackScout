@@ -13,6 +13,8 @@ from typing import Callable
 from . import i18n
 
 AI_GROUP_ORDER = ("models", "coding", "agents")
+# New models are compared with rival models (market), never with an SDK of the stack.
+MODEL_CATEGORIES = frozenset({"llm-provider-sdk", "local-llm-inference"})
 # Reports written before group codes stored the Vietnamese label.
 AI_GROUP_FROM_VI = {"Model mới": "models", "Công cụ AI lập trình": "coding", "Agent & framework": "agents"}
 ECOSYSTEM_LABEL = {"dotnet": ".NET", "node": "Node.js", "python": "Python", "jvm": "JVM", "go": "Go",
@@ -99,6 +101,8 @@ def _item(b: dict, detail: str = "", verdicts: list[str] | None = None) -> dict:
 
 
 def _stack_verdict(b: dict, comparisons: dict, lang: str) -> list[str]:
+    if b.get("category") in MODEL_CATEGORIES:
+        return []
     for rival in b.get("rivals") or []:
         c = comparisons.get(f"{b['name'].casefold()}|{rival.casefold()}")
         if c:
