@@ -23,4 +23,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t stackscout .
+      # Start it the way the README says, on Linux, and check it can write its data.
+      - name: docker compose up
+        run: |
+          cp .env.example .env
+          echo "ANTHROPIC_API_KEY=sk-ant-ci-placeholder" >> .env
+          docker compose up -d --build --wait --wait-timeout 120
+      - name: doctor inside the container
+        run: docker compose exec -T web uv run --no-sync main.py doctor
+      - name: web UI answers
+        run: curl -fsS http://127.0.0.1:8000/api/meta > /dev/null
+      - name: logs on failure
+        if: failure()
+        run: docker compose logs
+      - name: clean up
+        if: always()
+        run: docker compose down -v
