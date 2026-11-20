@@ -4,6 +4,8 @@ All notable changes to StackScout are listed here. Versions follow [Semantic Ver
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-20
+
 ### Added
 
 - Comparisons open on their own full page (browser Back returns to the same place in the list), with sources and the week's original news beside them; a model's page starts with a table of its rivals.
@@ -53,5 +55,6 @@ First public release. StackScout is designed for personal self-hosting: one loca
 - Notification channels can now be set in the Notifications tab; `.env` values still fill empty fields.
 - `STACKSCOUT_DIGEST_DAY` and `STACKSCOUT_DIGEST_TIME` are replaced by the schedule in the Notifications tab, and the separate `scheduler` service is gone from `docker-compose.yml` (the web service sends on schedule).
 
+[0.2.0]: https://github.com/huynguyenvietwork/StackScout/releases/tag/v0.2.0
 [0.1.1]: https://github.com/huynguyenvietwork/StackScout/releases/tag/v0.1.1
 [0.1.0]: https://github.com/huynguyenvietwork/StackScout/releases/tag/v0.1.0
