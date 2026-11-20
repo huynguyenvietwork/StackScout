@@ -65,8 +65,10 @@ def check_ai(online: bool = False) -> Check:
     if ai.backend() == "api":
         key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
         if not key:
-            return Check("fail", "AI backend", "Anthropic API selected but ANTHROPIC_API_KEY is empty",
-                         "run `uv run main.py setup` in your own terminal, or put the key in .env yourself")
+            fix = ("pass it to the container: `docker run … -e ANTHROPIC_API_KEY …` with the key exported "
+                   "in your shell, or ANTHROPIC_API_KEY=… in .env for docker compose") if in_docker() else \
+                "run `uv run main.py setup` in your own terminal, or put the key in .env yourself"
+            return Check("fail", "AI backend", "Anthropic API selected but ANTHROPIC_API_KEY is empty", fix)
         model = os.environ.get("STACKSCOUT_MODEL") or ai.DEFAULT_MODEL
         if not key.startswith("sk-ant-"):
             return Check("warn", "AI backend", "ANTHROPIC_API_KEY does not look like an Anthropic key (sk-ant-…)",

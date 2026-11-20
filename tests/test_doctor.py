@@ -29,7 +29,10 @@ def test_set_env_replaces_commented_line_appends_new_and_locks_the_file(tmp_path
 
 def test_ai_check_api_key_missing_wrong_shape_and_present(monkeypatch):
     monkeypatch.setenv("STACKSCOUT_AI_BACKEND", "api")
-    assert doctor.check_ai().status == "fail"
+    assert doctor.check_ai().status == "fail" and "setup" in doctor.check_ai().fix
+    monkeypatch.setattr(doctor, "in_docker", lambda: True)
+    assert "-e ANTHROPIC_API_KEY" in doctor.check_ai().fix  # no `uv run` inside the container
+    monkeypatch.setattr(doctor, "in_docker", lambda: False)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "hello")
     assert doctor.check_ai().status == "warn"
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-xyz")
