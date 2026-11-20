@@ -4,6 +4,8 @@
     uv run main.py bot      # run the Telegram bot (long polling)
     uv run main.py digest   # build and send this week's digest (milestones 3-5)
     uv run main.py schedule # send digests on schedule without the web UI
+    uv run main.py setup    # create .env, ask for the API key (hidden), then check
+    uv run main.py doctor   # check this machine can run StackScout
 """
 
 from __future__ import annotations
@@ -95,8 +97,16 @@ def main() -> int:
     dg.add_argument("--user", help="only this user id (default: every profile)")
     dg.add_argument("--no-send", action="store_true", help="build the reports without sending them")
     sub.add_parser("schedule", help="stay running and send each digest on its schedule (without the web UI)")
+    sub.add_parser("setup", help="create .env and enter the API key in the terminal (hidden), then check")
+    doc = sub.add_parser("doctor", help="check this machine can run StackScout, and how to fix what is missing")
+    doc.add_argument("--online", action="store_true", help="also test the API key or the CLI (free for an API key)")
     args = parser.parse_args()
 
+    if args.command in ("setup", "doctor"):
+        logging.getLogger().setLevel(logging.WARNING)  # keep the checklist readable
+        from stackscout import doctor
+
+        return doctor.setup() if args.command == "setup" else doctor.doctor(online=args.online)
     if args.command == "bot":
         return run_bot()
     if args.command == "web":

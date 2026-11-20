@@ -1,19 +1,31 @@
 # docker compose up -d            -> web UI on http://127.0.0.1:8000; it also sends the weekly digest
 #                                    on the schedule set in the Notifications tab
 # docker compose --profile bot up -d   -> also the Telegram bot
+# docker compose run --rm web uv run --no-sync main.py doctor   -> check the setup
+#
+# Profiles and reports live in the named volumes below (created owned by the
+# container user, so they also work on Linux, where a bind-mounted ./data
+# would not be writable). Back them up with:
+#   docker run --rm -v stackscout_data:/d -v "$PWD":/b alpine tar czf /b/stackscout-data.tgz -C /d .
+name: stackscout  # fixed, so the volumes keep their names whatever the folder is called
+
 services:
   web:
     build: .
     env_file: .env
     # The web UI has no login: it is published on this machine only.
     ports: ["127.0.0.1:8000:8000"]
-    volumes: ["./data:/app/data", "./reports:/app/reports"]
+    volumes: ["data:/app/data", "reports:/app/reports"]
     restart: unless-stopped
 
   bot:
     build: .
     env_file: .env
     command: ["uv", "run", "--no-sync", "main.py", "bot"]
-    volumes: ["./data:/app/data", "./reports:/app/reports"]
+    volumes: ["data:/app/data", "reports:/app/reports"]
     restart: unless-stopped
     profiles: ["bot"]
+
+volumes:
+  data:
+  reports:

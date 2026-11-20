@@ -12,14 +12,18 @@ STACKSCOUT_AI_BACKEND=api|cli forces one.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import shlex
 import subprocess
 import tempfile
+import threading
 from pathlib import Path
 
 from .config import PROMPTS_DIR
+
+log = logging.getLogger(__name__)
 
 DEFAULT_CMD = "claude -p --safe-mode --no-session-persistence"
 DEFAULT_TIMEOUT = 240
@@ -33,6 +37,35 @@ WEB_TOOLS = [
 
 class AIError(RuntimeError):
     """The AI CLI failed or returned something we could not use."""
+
+
+# Running totals for the API backend since the process started (logged per call),
+# so the cost of a radar run can be read from the server log.
+USAGE = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "web_searches": 0}
+_usage_lock = threading.Lock()
+
+
+def _count(value) -> int:
+    return value if isinstance(value, int) else 0
+
+
+def _record_usage(response) -> None:
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return
+    tokens_in = _count(getattr(usage, "input_tokens", 0)) + _count(getattr(usage, "cache_read_input_tokens", 0)) \
+        + _count(getattr(usage, "cache_creation_input_tokens", 0))
+    tokens_out = _count(getattr(usage, "output_tokens", 0))
+    searches = _count(getattr(getattr(usage, "server_tool_use", None), "web_search_requests", 0))
+    with _usage_lock:
+        USAGE["calls"] += 1
+        USAGE["input_tokens"] += tokens_in
+        USAGE["output_tokens"] += tokens_out
+        USAGE["web_searches"] += searches
+        totals = dict(USAGE)
+    log.info("api usage: in=%d out=%d searches=%d | total calls=%d in=%d out=%d searches=%d",
+             tokens_in, tokens_out, searches, totals["calls"], totals["input_tokens"],
+             totals["output_tokens"], totals["web_searches"])
 
 
 def render(name: str, **values: str) -> str:
@@ -95,12 +128,14 @@ def _complete_api(prompt: str, *, tools: str, timeout: int) -> str:
     messages: list = [{"role": "user", "content": prompt}]
     try:
         response = client.beta.messages.create(messages=messages, **params)
+        _record_usage(response)
         for _ in range(MAX_CONTINUATIONS):
             if response.stop_reason != "pause_turn":
                 break
             # The server-side search loop paused: send the turn back and it resumes.
             messages = [messages[0], {"role": "assistant", "content": response.content}]
             response = client.beta.messages.create(messages=messages, **params)
+            _record_usage(response)
     except anthropic.AuthenticationError as exc:
         raise AIError("Anthropic API key rejected (check ANTHROPIC_API_KEY)") from exc
     except anthropic.APIConnectionError as exc:

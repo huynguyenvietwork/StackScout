@@ -18,16 +18,35 @@ A weekly tech radar that reads the sources that matter, picks what is relevant t
 
 > **Scope:** StackScout is currently designed for personal self-hosting. The web UI serves one local profile and has no login: it listens on 127.0.0.1 only, so don't expose it to a network without authentication in front of it. A managed hosted version may come later.
 
-You need an AI backend: an **Anthropic API key**, or the [Claude Code](https://code.claude.com) CLI already logged in (any CLI that reads a prompt on stdin works through `STACKSCOUT_AI_CMD`).
+You need an AI backend: an **Anthropic API key**, or the [Claude Code](https://code.claude.com) CLI already logged in (any CLI that reads a prompt on stdin works through `STACKSCOUT_AI_CMD`). See [what it costs](#what-it-costs).
 
-**Get the code**: `git clone https://github.com/huynguyenvietwork/StackScout`, or without git, [download the latest release](https://github.com/huynguyenvietwork/StackScout/releases/latest) (**Source code (zip)** under *Assets*), unzip it and open a terminal in that folder. The commands below run from there.
+### 🤖 Install with your AI assistant
 
-### Docker
+Using Claude Code, Cursor or Codex? Paste this:
+
+```text
+Install StackScout from https://github.com/huynguyenvietwork/StackScout: clone it, follow its AGENTS.md, run `main.py doctor` until there is no ❌, then open the web UI. When an API key or token is needed, ask me to enter it in my own terminal, never in this chat.
+```
+
+It checks your machine, installs what is missing and opens the web UI. [AGENTS.md](AGENTS.md) tells it what to do, and that secrets never go through the chat.
+
+### Docker, prebuilt image (no clone)
+
+```bash
+read -rsp "Anthropic API key: " ANTHROPIC_API_KEY && export ANTHROPIC_API_KEY   # hidden, not in your shell history
+docker run -d --name stackscout --restart unless-stopped -p 127.0.0.1:8000:8000 -e ANTHROPIC_API_KEY \
+  -v stackscout_data:/app/data -v stackscout_reports:/app/reports ghcr.io/huynguyenvietwork/stackscout
+```
+
+Open http://127.0.0.1:8000. Check the setup with `docker exec stackscout uv run --no-sync main.py doctor --online`. Notification channels are set in the web UI.
+
+### Docker Compose (from source)
 
 ```bash
 git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout   # or: unzip the release, cd into it
 cp .env.example .env          # set ANTHROPIC_API_KEY, and a notification channel if you want one
-docker compose up -d          # web UI on http://127.0.0.1:8000; digests go out on the schedule set in the Notifications tab
+docker compose up -d --build --wait   # web UI on http://127.0.0.1:8000; digests go out on the schedule set in the Notifications tab
+docker compose exec web uv run --no-sync main.py doctor   # check the setup
 docker compose --profile bot up -d   # optional: the Telegram bot too
 ```
 
@@ -36,11 +55,20 @@ docker compose --profile bot up -d   # optional: the Telegram bot too
 ```bash
 git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout   # or: unzip the release, cd into it
 uv sync                       # Python 3.11+, https://docs.astral.sh/uv/
-cp .env.example .env          # ANTHROPIC_API_KEY, or leave it empty to use the `claude` CLI
+uv run main.py setup          # creates .env, asks for the API key (hidden) or uses the `claude` CLI, then checks everything
 uv run main.py web            # http://127.0.0.1:8000
 ```
 
+No git? [Download the latest release](https://github.com/huynguyenvietwork/StackScout/releases/latest) (**Source code (zip)** under *Assets*), unzip it and open a terminal in that folder. Something wrong? `uv run main.py doctor` lists what is missing and how to fix it.
+
 Create your profile in the browser (about 2 minutes), press **Run this week's radar** (2–3 minutes), and comparisons fill in on their own over the next minutes.
+
+### What it costs
+
+StackScout itself is free. The AI calls are what cost something, once a week (or per day/month, as you schedule it):
+
+- **Claude Code CLI**: runs on your Claude plan, no extra bill. Measured on a fresh install with a 9-technology profile: one weekly run made 16 comparisons (6 against the stack, 10 new models vs their rivals) in about 17 minutes.
+- **Anthropic API key**: billed per token plus web searches. Not measured yet; the server log prints the tokens and searches of every call with running totals (`api usage: …`), so you can see your own cost. A smaller profile means fewer comparisons; `STACKSCOUT_MODEL` picks a cheaper model.
 
 ## Why
 

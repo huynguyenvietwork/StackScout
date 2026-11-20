@@ -8,6 +8,15 @@ All notable changes to StackScout are listed here. Versions follow [Semantic Ver
 
 - Comparisons open on their own full page (browser Back returns to the same place in the list), with sources and the week's original news beside them; a model's page starts with a table of its rivals.
 - More detailed comparisons: up to 5 pros and 5 cons, key numbers side by side, how hard it is to switch, longer "what's new" and "for you" notes. Older comparisons show a **Compare again** button.
+- **Install with your AI assistant**: paste one sentence into Claude Code, Cursor or Codex; [AGENTS.md](AGENTS.md) tells it how to install StackScout and never to ask for secrets in the chat.
+- `main.py doctor` checks the machine (Python, `.env`, AI backend, storage, port, profile) and says how to fix what is missing; `--online` also tests the API key (free) or the CLI.
+- `main.py setup` creates `.env` and asks for the API key with hidden input, or switches to the Claude Code CLI.
+- Prebuilt Docker image on every release: `ghcr.io/huynguyenvietwork/stackscout` (amd64 and arm64), so Docker users don't need to clone or build.
+- The server log shows tokens and web searches used by each API call, with running totals.
+
+### Fixed
+
+- Docker Compose on Linux: data and reports now live in named volumes owned by the container user (a bind-mounted `./data` was not writable by it). CI now starts the stack with `docker compose up` and runs `doctor` inside it.
 
 ## [0.1.1] - 2026-11-19
 

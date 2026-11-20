@@ -12,15 +12,38 @@ StackScout là radar công nghệ hằng tuần: đọc các nguồn chính ch�
 
 > **Phạm vi:** StackScout hiện được thiết kế để tự host cho cá nhân. Web UI phục vụ một hồ sơ local và không có đăng nhập (chỉ nghe trên 127.0.0.1, đừng mở ra mạng nếu không có lớp xác thực phía trước). Phiên bản hosted chính thức có thể được phát triển sau.
 
-**Lấy mã nguồn**: `git clone https://github.com/huynguyenvietwork/StackScout`, hoặc không cần git: [tải bản phát hành mới nhất](https://github.com/huynguyenvietwork/StackScout/releases/latest) (mục *Assets* → **Source code (zip)**), giải nén rồi mở terminal trong thư mục đó.
+Cần một trong hai: **API key Anthropic**, hoặc **Claude Code CLI** đã đăng nhập (chỉ dùng được khi chạy bằng uv, không dùng được trong Docker). Xem [chi phí](README.md#what-it-costs).
+
+### 🤖 Cài bằng trợ lý AI
+
+Dùng Claude Code, Cursor hay Codex? Dán câu này vào:
+
+```text
+Cài StackScout giúp tôi từ https://github.com/huynguyenvietwork/StackScout: clone về, làm theo AGENTS.md, chạy `main.py doctor` tới khi không còn ❌, rồi mở giao diện web. Khi cần API key hay token, hãy bảo tôi tự nhập trong terminal của tôi, không hỏi trong chat.
+```
+
+AI sẽ tự kiểm tra máy, cài phần còn thiếu rồi mở trang web. Key do bạn tự nhập, không đi qua khung chat.
+
+### Docker, image dựng sẵn (không cần clone)
+
+```bash
+read -rsp "Anthropic API key: " ANTHROPIC_API_KEY && export ANTHROPIC_API_KEY   # gõ ẩn, không lưu vào lịch sử
+docker run -d --name stackscout --restart unless-stopped -p 127.0.0.1:8000:8000 -e ANTHROPIC_API_KEY \
+  -v stackscout_data:/app/data -v stackscout_reports:/app/reports ghcr.io/huynguyenvietwork/stackscout
+```
+
+Mở http://127.0.0.1:8000. Kiểm tra: `docker exec stackscout uv run --no-sync main.py doctor --online`.
+
+### uv (dùng được cả Claude Code CLI)
 
 ```bash
 git clone https://github.com/huynguyenvietwork/StackScout && cd StackScout   # hoặc: giải nén bản tải về rồi cd vào
-cp .env.example .env     # điền ANTHROPIC_API_KEY (hoặc để trống nếu đã đăng nhập Claude Code CLI)
-docker compose up -d     # mở http://127.0.0.1:8000
+uv sync
+uv run main.py setup     # tạo .env, hỏi API key (gõ ẩn) hoặc dùng Claude Code CLI, rồi tự kiểm tra
+uv run main.py web       # mở http://127.0.0.1:8000
 ```
 
-Không dùng Docker: `uv sync && uv run main.py web`. Hướng dẫn đầy đủ (kênh thông báo, bot Telegram, lịch gửi) ở [README.md](README.md).
+Không có git: [tải bản phát hành mới nhất](https://github.com/huynguyenvietwork/StackScout/releases/latest) (mục *Assets* → **Source code (zip)**), giải nén rồi mở terminal trong thư mục đó. Gặp lỗi: `uv run main.py doctor` liệt kê phần còn thiếu và cách sửa. Docker Compose, kênh thông báo, bot Telegram, lịch gửi: xem [README.md](README.md).
 
 ## Tính năng chính
 
