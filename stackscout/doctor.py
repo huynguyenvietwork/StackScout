@@ -51,6 +51,9 @@ def check_env_file(path: Path = ENV_FILE) -> Check:
     if in_docker():
         return Check("ok", "Settings", "from the container environment (.env on the host)")
     if not path.exists():
+        if ai.backend() == "cli":  # the claude CLI needs no settings at all
+            return Check("info", "Settings", "no .env file (not needed with the claude CLI)",
+                         "for an API key or notification defaults: `uv run main.py setup`")
         return Check("warn", "Settings", "no .env file",
                      "run `uv run main.py setup` (or `cp .env.example .env` and edit it)")
     if os.name == "posix" and path.stat().st_mode & (stat.S_IRWXG | stat.S_IRWXO):
@@ -172,8 +175,13 @@ def report(checks: list[Check], out=sys.stdout) -> int:
     if failed:
         print(f"\n{failed} problem(s) to fix, then run `main.py doctor` again.", file=out)
         return 1
-    start = "docker compose up -d" if in_docker() else "uv run main.py web"
-    print(f"\nReady. Start with `{start}`, then open http://127.0.0.1:{PORT}", file=out)
+    port_busy = any(c.name == "Port" and c.status != "ok" for c in checks)
+    port = PORT + 1 if port_busy else PORT
+    if in_docker():
+        start = "docker compose up -d"
+    else:
+        start = "uv run main.py web" + (f" --port {port}" if port_busy else "")
+    print(f"\nReady. Start with `{start}`, then open http://127.0.0.1:{port}", file=out)
     return 0
 
 

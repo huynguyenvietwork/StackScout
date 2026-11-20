@@ -63,6 +63,13 @@ No git? [Download the latest release](https://github.com/huynguyenvietwork/Stack
 
 Create your profile in the browser (about 2 minutes), press **Run this week's radar** (2–3 minutes), and comparisons fill in on their own over the next minutes.
 
+### What it costs
+
+StackScout itself is free. The AI calls are what cost something, once a week (or per day/month, as you schedule it):
+
+- **Claude Code CLI**: runs on your Claude plan, no extra bill. Measured on a fresh install with a 9-technology profile: one weekly run made 16 comparisons (6 against the stack, 10 new models vs their rivals) in about 17 minutes.
+- **Anthropic API key**: billed per token plus web searches. Not measured yet; the server log prints the tokens and searches of every call with running totals (`api usage: …`), so you can see your own cost. A smaller profile means fewer comparisons; `STACKSCOUT_MODEL` picks a cheaper model.
+
 ## Why
 
 Keeping up is a part-time job: new models every week, new libraries, release notes, benchmarks that disagree. Most newsletters list *everything*. StackScout starts from **your stack** and answers one question per item: *should I care, and how does it compare with what I use today?*

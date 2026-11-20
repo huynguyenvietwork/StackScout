@@ -52,9 +52,12 @@ def test_ai_check_cli_found_or_missing(monkeypatch):
     assert doctor.check_ai(online=True).status == "ok"  # `cat` echoes the prompt back
 
 
-def test_env_file_check(tmp_path):
+def test_env_file_check(tmp_path, monkeypatch):
     env = tmp_path / ".env"
+    monkeypatch.setenv("STACKSCOUT_AI_BACKEND", "api")
     assert doctor.check_env_file(env).status == "warn"
+    monkeypatch.setenv("STACKSCOUT_AI_BACKEND", "cli")
+    assert doctor.check_env_file(env).status == "info"  # the claude CLI needs no .env
     env.write_text("X=1\n")
     env.chmod(0o644)
     if os.name == "posix":
@@ -78,7 +81,10 @@ def test_report_exit_code_and_fix_lines():
     assert code == 1 and "→ run setup" in out.getvalue() and "1 problem" in out.getvalue()
     out = io.StringIO()
     assert doctor.report([doctor.Check("ok", "Python", "3.12"), doctor.Check("info", "Profile", "none yet", "x")], out) == 0
-    assert "Ready" in out.getvalue()
+    assert "Ready" in out.getvalue() and "127.0.0.1:8000" in out.getvalue()
+    out = io.StringIO()
+    doctor.report([doctor.Check("warn", "Port", "8000 is in use", "x")], out)
+    assert "--port 8001" in out.getvalue() and "127.0.0.1:8001" in out.getvalue()
 
 
 def test_run_checks_without_profile_is_ready(monkeypatch):
